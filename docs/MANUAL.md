@@ -64,7 +64,7 @@
 
 - 买家 **Alex**，22 岁，港大学生，钱包余额 HK$1,500（模拟）。
 - 任务：**"帮我补一瓶洗衣液，2L 以上，HK$150 以内，可以换牌子，这周内买到。"**
-- 授权书：品类 `household`；单笔上限 HK$150；本次授权累计上限 HK$300；最多 2 次成功购买；7 天后过期；需先问我：接近单笔上限 90%、换牌子、商品属于"高关注类别"；保护级别：标准；允许支付方式：FPS、Tap & Go。
+- 授权书：品类 `household`；单笔上限 HK$150；本次授权累计上限 HK$300；最多 2 次成功购买；7 天后过期；需先问我：接近单笔上限 95%、换牌子、商品属于"高关注类别"；保护级别：标准；允许支付方式：FPS、Tap & Go。
 
 ### 2.2 商家与商品（`fixtures/catalog.json`，戚译匀负责填充）
 
@@ -249,7 +249,7 @@ audit_events(id, actor, action, entity, entity_id, payload jsonb, created_at)
   "task": { "query": "洗衣液", "qty": 1, "minSpec": { "volumeMl": 2000 }, "allowSubstituteBrand": true },
   "scope": { "categories": ["household"], "merchantDeny": [] },
   "caps": { "perTxnMinor": 15000, "totalMinor": 30000, "maxPurchases": 2 },
-  "reviewWhen": { "nearCapPct": 90, "substituteBrand": true, "watchCategories": ["supplement"], "newMerchantDays": null, "priceAboveRefPct": null },
+  "reviewWhen": { "nearCapPct": 95, "substituteBrand": true, "watchCategories": ["supplement"], "newMerchantDays": null, "priceAboveRefPct": null },
   "protectionLevel": "standard",
   "allowedMethods": ["fps", "tapngo_mc"],
   "expiresAt": "2026-10-09T23:59:59+08:00"
