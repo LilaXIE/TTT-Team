@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AppError } from "@/contracts/errors";
 import { fmtDateTime, fmtHKD } from "@/lib/format";
@@ -49,7 +49,7 @@ export default async function MandatePage({ params }: { params: Promise<{ id: st
         </div>
         <div className="flex gap-2">
           {m.status === "active" && (
-            <Button render={<Link href={`/task/new?mandate=${m.id}`} />}>让 Agent 去买</Button>
+            <Link href={`/task/new?mandate=${m.id}`} className={buttonVariants()}>让 Agent 去买</Link>
           )}
           <RevokeButton id={m.id} disabled={m.status !== "active"} />
         </div>

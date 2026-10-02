@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { fmtDate, fmtHKD } from "@/lib/format";
 import { getSession } from "@/server/auth/session";
@@ -50,7 +50,7 @@ export default async function HomePage() {
           <CardHeader>
             <CardDescription>下一步</CardDescription>
             <CardTitle className="text-base">
-              <Button render={<Link href="/mandate/new" />}>写一份授权书</Button>
+              <Link href="/mandate/new" className={buttonVariants()}>写一份授权书</Link>
             </CardTitle>
           </CardHeader>
         </Card>
@@ -63,7 +63,7 @@ export default async function HomePage() {
             <CardContent className="py-10 text-center text-sm text-zinc-600">
               还没有授权书。授权书写清楚：Agent 能买什么、最多花多少、哪些情况要先问你。
               <div className="mt-4">
-                <Button render={<Link href="/mandate/new" />}>新建授权</Button>
+                <Link href="/mandate/new" className={buttonVariants()}>新建授权</Link>
               </div>
             </CardContent>
           </Card>
