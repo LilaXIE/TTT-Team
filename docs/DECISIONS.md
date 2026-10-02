@@ -19,3 +19,8 @@ S1 示例含运费 138 是单笔上限 150 的 92%，按 90% 会被判 REVIEW（
 
 预览三张卡检验的是授权书边界（品类、上限、先问我条件、商家凭证），快照中去掉 minSpec/preferredBrand。否则「维他命 C」会因不满足「2L」被 SPEC_NOT_MET 拒绝，误导用户。演示脚本：上限 150→160 第三张卡 DENY→REVIEW(NEAR_CAP)；→170 变 ALLOW；勾选 supplement 品类后第二张卡 DENY→REVIEW(WATCH_CATEGORY)；保护级别加强后第三张卡命中 NEW_MERCHANT。
 
+
+## 2026-10-03 01:25 部署：Vercel + Supabase
+
+生产地址 https://mandate-wallet.vercel.app（main 自动部署）。数据库 Supabase Session pooler（5432，支持事务与 SET LOCAL）。Vercel 上连接池默认 2（PG_POOL_MAX 可覆盖），避免多实例耗尽免费版连接数。Function Region 设 sin1 以贴近数据库。
+

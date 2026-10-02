@@ -13,7 +13,8 @@ export function getPool(): Pool {
     if (!url) throw new Error("DATABASE_URL is not set");
     globalThis.__mwPool = new Pool({
       connectionString: url,
-      max: 10,
+      // Vercel 每个函数实例各开一个池；Supabase 免费版 pooler 连接数有限，线上设 PG_POOL_MAX=2
+      max: Number(process.env.PG_POOL_MAX ?? (process.env.VERCEL ? 2 : 10)),
       idleTimeoutMillis: 30_000,
       connectionTimeoutMillis: 10_000,
     });
