@@ -75,3 +75,13 @@
 遗留问题
 - `snapshot` 字段需要阶段 2 在写 decisions 时保存（见 DECISIONS），否则只能现场重算，违反阶段 4A 要求。
 - 账本分录的 `account` 是展示名，需要服务端拼好（如"买家钱包 Alex""商家 日日鲜百货"）。
+## 2026-10-03 03:15 第 4 步：导航开放 /inbox、/ledger、/pay-methods（lilaxie）
+
+做了什么
+- `src/components/app-shell.tsx`：三项 `ready` 改为 true，导航可点击。
+
+怎么验证
+- `npm run typecheck`、`npm run lint`、`npm run test:unit`（39 通过）、`npx next build` 通过。
+
+遗留问题
+- 导航在 640px 以下仍隐藏（原有 `hidden sm:flex`），390px 移动端没有入口；阶段 4A 移动端排版时再处理。

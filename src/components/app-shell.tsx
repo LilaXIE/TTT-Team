@@ -5,9 +5,9 @@ import { LogoutButton } from "./logout-button";
 const NAV: { href: string; label: string; ready: boolean }[] = [
   { href: "/", label: "首页", ready: true },
   { href: "/mandate/new", label: "新建授权", ready: true },
-  { href: "/inbox", label: "待确认", ready: false },
-  { href: "/ledger", label: "记录", ready: false },
-  { href: "/pay-methods", label: "支付方式", ready: false },
+  { href: "/inbox", label: "待确认", ready: true },
+  { href: "/ledger", label: "记录", ready: true },
+  { href: "/pay-methods", label: "支付方式", ready: true },
 ];
 
 export function AppShell({ user, children }: { user: SessionUser; children: React.ReactNode }) {
