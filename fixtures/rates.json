@@ -1,0 +1,32 @@
+{
+  "_note": "PLACEHOLDER — 戚译匀 2026-10-02 晚采集后替换。每个数字必须有 sourceUrl 与 observedAt；找不到来源填 null，界面显示「未核实」。截图存 docs/rates/。",
+  "observedAt": "2026-10-02T22:00:00+08:00",
+  "methods": [
+    {
+      "id": "fps",
+      "label": "FPS 转数快",
+      "network": "FPS",
+      "consumerFeeMinor": "0",
+      "settlement": "instant",
+      "rewards": null,
+      "sourceUrl": null,
+      "notes": "PLACEHOLDER：个人用户一般免费；无积分。待填来源。"
+    },
+    {
+      "id": "tapngo_mc",
+      "label": "Tap & Go Mastercard",
+      "network": "Mastercard",
+      "consumerFeeMinor": "0",
+      "settlement": "T+1 (simulated)",
+      "rewards": {
+        "type": "cashback_pct",
+        "value": 0.5,
+        "capMinorPerMonth": null,
+        "conditions": "PLACEHOLDER：登记条件 / 适用商户 / 有效期，原文摘录",
+        "sourceUrl": null
+      },
+      "sourceUrl": null,
+      "notes": "PLACEHOLDER：回赠为预计值，不计入保证节省。待填来源。"
+    }
+  ]
+}

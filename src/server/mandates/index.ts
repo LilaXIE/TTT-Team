@@ -1,2 +1,1 @@
-﻿// mandates module - see docs/MANUAL.md
-export {};
+﻿export * from "./service";

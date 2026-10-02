@@ -14,3 +14,8 @@ S1 示例含运费 138 是单笔上限 150 的 92%，按 90% 会被判 REVIEW（
 
 金额用 bigint 字面量（13800n），需要 ES2020+。Node 24 与现代浏览器均支持。
 
+
+## 2026-10-02 23:50 授权预览不带任务规格
+
+预览三张卡检验的是授权书边界（品类、上限、先问我条件、商家凭证），快照中去掉 minSpec/preferredBrand。否则「维他命 C」会因不满足「2L」被 SPEC_NOT_MET 拒绝，误导用户。演示脚本：上限 150→160 第三张卡 DENY→REVIEW(NEAR_CAP)；→170 变 ALLOW；勾选 supplement 品类后第二张卡 DENY→REVIEW(WATCH_CATEGORY)；保护级别加强后第三张卡命中 NEW_MERCHANT。
+

@@ -1,2 +1,1 @@
-﻿// trust module - see docs/MANUAL.md
-export {};
+﻿export * from "./credentials";

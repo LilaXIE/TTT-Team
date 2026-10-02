@@ -1,0 +1,110 @@
+{
+  "_note": "授权预览的三个固定示例。顺序固定：会直接买 / 会先问你 / 会被拒绝（在默认表单下）。用户改上限/保护级别后结果会变。",
+  "scenarios": [
+    {
+      "id": "cheap_familiar",
+      "title": "低价、熟悉商家",
+      "description": "日日鲜百货（注册 3 年）的品牌甲 2L 洗衣液 HK$118，运费 HK$20，含运费 HK$138。",
+      "merchant": {
+        "id": "A",
+        "name": "日日鲜百货",
+        "registeredAt": "2023-09-15T00:00:00+08:00",
+        "shippingFeeMinor": "2000",
+        "freeShippingOverMinor": "20000",
+        "deliveryDays": 3,
+        "returnDays": 14,
+        "acceptsMethods": ["fps", "tapngo_mc"],
+        "credentialStatus": "valid"
+      },
+      "product": {
+        "id": "A-LD-001",
+        "merchantId": "A",
+        "sku": "LD-001",
+        "name": "品牌甲 浓缩洗衣液 2L",
+        "brand": "品牌甲",
+        "category": "household",
+        "spec": { "volumeMl": 2000 },
+        "description": "",
+        "priceMinor": "11800",
+        "refPriceMinor": "12000",
+        "stockQty": 25,
+        "status": "published",
+        "riskTags": [],
+        "imageUrl": null
+      },
+      "qty": 1,
+      "shippingMinor": "2000",
+      "methodId": "fps"
+    },
+    {
+      "id": "watch_category",
+      "title": "高关注类别商品",
+      "description": "日日鲜百货的维他命 C 60 粒 HK$98，含运费 HK$118；属于保健品。",
+      "merchant": {
+        "id": "A",
+        "name": "日日鲜百货",
+        "registeredAt": "2023-09-15T00:00:00+08:00",
+        "shippingFeeMinor": "2000",
+        "freeShippingOverMinor": "20000",
+        "deliveryDays": 3,
+        "returnDays": 14,
+        "acceptsMethods": ["fps", "tapngo_mc"],
+        "credentialStatus": "valid"
+      },
+      "product": {
+        "id": "A-SU-001",
+        "merchantId": "A",
+        "sku": "SU-001",
+        "name": "维他命 C 1000mg 60 粒",
+        "brand": "品牌戊",
+        "category": "supplement",
+        "spec": { "count": 60 },
+        "description": "",
+        "priceMinor": "9800",
+        "refPriceMinor": "9900",
+        "stockQty": 30,
+        "status": "published",
+        "riskTags": ["health_claim"],
+        "imageUrl": null
+      },
+      "qty": 1,
+      "shippingMinor": "2000",
+      "methodId": "fps"
+    },
+    {
+      "id": "over_cap",
+      "title": "含运费超过单笔上限",
+      "description": "快快屋（注册 25 天）的品牌丙 2.5L 洗衣液 HK$128，运费 HK$30，含运费 HK$158。",
+      "merchant": {
+        "id": "B",
+        "name": "快快屋",
+        "registeredAt": "2026-09-07T00:00:00+08:00",
+        "shippingFeeMinor": "3000",
+        "freeShippingOverMinor": null,
+        "deliveryDays": 1,
+        "returnDays": 7,
+        "acceptsMethods": ["fps", "tapngo_mc"],
+        "credentialStatus": "valid"
+      },
+      "product": {
+        "id": "B-LD-003",
+        "merchantId": "B",
+        "sku": "LD-003",
+        "name": "品牌丙 植萃洗衣液 2.5L",
+        "brand": "品牌丙",
+        "category": "household",
+        "spec": { "volumeMl": 2500 },
+        "description": "",
+        "priceMinor": "12800",
+        "refPriceMinor": "12500",
+        "stockQty": 15,
+        "status": "published",
+        "riskTags": ["injection_text"],
+        "imageUrl": null
+      },
+      "qty": 1,
+      "shippingMinor": "3000",
+      "methodId": "fps"
+    }
+  ]
+}
