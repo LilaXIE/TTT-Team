@@ -18,3 +18,17 @@
 1. **S1 首选会是 B 家而不是 A 家。** A 家品牌甲 118+20 与 B 家品牌甲 108+30 含运费都是 HK$138；§6.1 排序"含运费升序 → 送达天数"会选 B（1 天）。§10 S1 预期为 A。金额、余额、剩余额度不受影响，但商家入账账户不同。可选：改 fixtures（例如 B 家该商品改 HK$110）或在排序加一条"同价优先注册更久的商家"。需李启成在阶段 2 选定。
 2. **戚译匀的真实费率还没进仓库。** 在 Hackathon 工作目录的 `fixtures/rates.json`、`docs/rates/`（截图、sources.json）中，已完成采集。但 Tap & Go `consumerFeeMinor` 为 `null`（未核实），现契约只允许金额字符串，导入需改 `src/contracts/schemas.ts` 与种子，并决定"手续费未知时不能自动支付"如何处理（她建议用 INFO_MISSING）。属于李启成锁定范围，需他同意后合入。
 3. `/inbox`、`/pay-methods` 仍为导航占位（阶段 3A）。
+
+## 2026-10-03 03:00 试合并戚译匀 / Ellan 数据交付（本地分支 qi-fixtures，未推送）
+
+做了什么
+- 把 Hackathon 工作目录中的 `fixtures/*.json`、`fixtures/README.md`、`docs/rates/`（3 张截图 + sources.json + README）、`tests/unit/fixtures.test.ts` 复制到本地分支 `qi-fixtures` 试跑。未改 lilaxie / main。
+
+怎么验证
+- `npm run fixtures:validate`、`tsc`、`vitest tests/unit`：不通过，原因如下。
+
+遗留问题（需李启成 + 戚译匀决定后再合）
+1. **Tap & Go `consumerFeeMinor: null`。** 现契约 `RatesFixture` 要求字符串 → Zod 报错；Codex 在 Hackathon 加的 `ObservedPaymentMethod`（允许 null）没带过来。即使契约放开，`seed.ts` 写 `payment_methods.consumer_fee_minor`（`NOT NULL`）会失败，需要迁移或"未核实方式不入库/不可支付"的规则。涉及契约、迁移、种子、结算，属李启成范围。
+2. **商品与预览 ID 全部改名**（`A-LD-001` → `A-LAUNDRY-01`，`cheap_familiar` → `auto-household` 等）。影响：`scripts/validate-fixtures.ts`、`tests/unit/mandate-preview.test.ts`、`src/lib/mock-tasks.ts` 写死旧 ID；且 seed 按 id upsert，已部署的 Supabase 里旧商品不会删除，目录会出现新旧两套商品。需要一次 reset 或改回旧 ID。
+3. **校验脚本两套。** mandate-wallet 阶段 1 已有 `validate-fixtures.ts`；Hackathon 版本（导出 `validateFixtures()`，含截图 SHA-256 校验）与之不同，`fixtures.test.ts` 依赖后者。需选一套。
+4. 已确认的事实：Qi 的 README 也指出 S1 同价 HK$138 时排序会选 B 家（与上一条汇报第 1 点一致），并明确"不能为展示 A 强改排序或价格"。S1 预期需按此更新。
