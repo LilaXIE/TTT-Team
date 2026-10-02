@@ -29,4 +29,5 @@ S1 示例含运费 138 是单笔上限 150 的 92%，按 90% 会被判 REVIEW（
 - 2026-10-03 02:50 | /inbox 取消按钮调用 POST /api/tasks/[id]/cancel（task → cancelled，不动资金）；该接口 MANUAL §7.2 未列，需李启成确认或指定替代 | 阶段 3A 要求 inbox 有"取消"，但没有对应接口
 - 2026-10-03 02:50 | /inbox 倒计时用服务端 remainingSeconds，以收到响应的时刻为起点，不用客户端时钟对比 expiresAt | 避免客户端时钟偏差；过期仍以服务端判定为准
 - 2026-10-03 02:50 | mock-s1/s2/s3 改为同一授权书的 v1/v2/v3（单笔上限 150/200/100），创建时间错开 10 分钟 | 三个任务的上限不同，放在 /ledger 同一条时间线上需要不同授权版本才自洽- 2026-10-03 03:00 | /pay-methods 响应里 consumerFeeMinor、consumerCostMinor、estRewardMinor 允许 null（= 未核实），null 不当作 0、不参与成本排序；排序结果由服务端给 costRank，前端按数组原顺序渲染 | 戚译匀核实 Tap & Go 手续费无法确认；现 contracts 的 PaymentMethod 要求字符串，需李启成在合入费率时一并决定
-- 2026-10-03 03:00 | /pay-methods 不带 cartId 或带 mock-* cartId 时直接显示 mock 购物车；/task 示例页也显示"查看支付方式比较"链接 | 演示时可从任一示例任务点进比较页
+- 2026-10-03 03:00 | /pay-methods 不带 cartId 或带 mock-* cartId 时直接显示 mock 购物车；/task 示例页也显示"查看支付方式比较"链接 | 演示时可从任一示例任务点进比较页- 2026-10-03 03:10 | /ledger 每条判定的"为什么"读取响应里的 snapshot（当时剩余额度、次数、含运费总额、支付方式），前端不重算；需要阶段 2 在写 decisions 时把这些值存进 rules/data 或单独字段 | 阶段 4A 要求"全部来自数据库记录，不现场重算"，现 decisions 表只存 rules 与 mandate_version
+- 2026-10-03 03:10 | 售后弹窗用页面内固定定位的 div 实现，不新增 shadcn dialog 组件；类型只给"退款 / 退货"两种 | 最简单；与阶段 3B 的 support 请求体 { type: 'refund'|'return', reason } 对齐

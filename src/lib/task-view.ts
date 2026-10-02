@@ -139,6 +139,75 @@ export interface PayMethodsCompare {
   methods: PayMethodOption[];
 }
 
+// ---------- GET /api/ledger（/ledger 页面） ----------
+// 按任务分组，新任务在前。全部来自数据库记录（decisions、payment_attempts、orders、journals），不现场重算。
+export interface LedgerDecision extends DecisionRecord {
+  /** 判定当时的快照 */
+  snapshot: {
+    remainingMinor: string;
+    remainingPurchases: number;
+    /** 实际扣款总额（商品 + 运费 + 消费者手续费）；还没有购物车时为 null */
+    totalMinor: string | null;
+    methodId: string | null;
+  };
+}
+
+export interface LedgerAttempt {
+  id: string;
+  orderId: string;
+  status: "pending" | "settled" | "declined";
+  /** declined 时的错误码，如 ISSUER_DECLINED、CAP_TOTAL、RISK_CONFIRMATION_REQUIRED */
+  reasonCode: string | null;
+  reason: string | null;
+  createdAt: string;
+}
+
+export interface SupportTicket {
+  id: string;
+  type: "refund" | "return";
+  reason: string;
+  status: "manual_review";
+  createdAt: string;
+}
+
+export interface LedgerReceipt {
+  orderId: string;
+  orderStatus: OrderView["status"];
+  transactionId: string | null;
+  merchantName: string;
+  items: { name: string; qty: number; unitPriceMinor: string }[];
+  subtotalMinor: string;
+  shippingMinor: string;
+  consumerFeeMinor: string;
+  totalMinor: string;
+  methodId: string;
+  paidAt: string | null;
+  /** SALE journal 的分录，合计为 0 */
+  entries: { account: string; amountMinor: string }[];
+  support: SupportTicket | null;
+}
+
+export interface LedgerGroup {
+  task: { id: string; inputText: string; status: TaskStatus; createdAt: string };
+  /** 任务执行时的授权版本与上限 */
+  mandate: { id: string; version: number; perTxnMinor: string; totalMinor: string; maxPurchases: number; expiresAt: string };
+  runMode: "llm" | "fallback" | null;
+  candidates: { productId: string; name: string; merchantName: string; totalMinor: string; outcome: Decision["outcome"]; chosen: boolean }[];
+  decisions: LedgerDecision[];
+  attempts: LedgerAttempt[];
+  receipt: LedgerReceipt | null;
+}
+
+export interface LedgerResponse {
+  groups: LedgerGroup[];
+}
+
+/** POST /api/orders/[id]/support 请求体；响应为 SupportTicket（重复提交返回同一工单） */
+export interface SupportRequest {
+  type: SupportTicket["type"];
+  reason: string;
+}
+
 export const SETTLEMENT_LABEL: Record<string, string> = {
   instant: "即时到账",
   "T+1 (simulated)": "T+1（模拟设定，不是官方结算承诺）",

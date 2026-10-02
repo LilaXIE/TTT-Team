@@ -2,7 +2,7 @@
 // 数字来自 fixtures/catalog.json 与 docs/MANUAL.md §10。
 // 三个任务依次在同一份授权书的 v1、v2、v3 下执行（修改授权 = 新版本）。
 import type { Decision, RuleHit } from "@/contracts/schemas";
-import type { CandidateView, InboxResponse, PayMethodsCompare, TaskDetail } from "./task-view";
+import type { CandidateView, InboxResponse, LedgerDecision, LedgerGroup, LedgerResponse, PayMethodsCompare, TaskDetail } from "./task-view";
 
 const T0 = "2026-10-03T09:00:00+08:00";
 const T2 = "2026-10-03T09:10:00+08:00";
@@ -226,3 +226,84 @@ export function mockPayMethods(cartId?: string): PayMethodsCompare {
     ],
   };
 }
+// ---------- /ledger：把 S1（v1 已付）→ S2（v2 等确认）→ S3（v3 拒绝）串成一条记录 ----------
+const MOCK_EXPIRES = "2026-10-09T23:59:59+08:00";
+
+function withSnapshot(t: TaskDetail, snaps: LedgerDecision["snapshot"][]): LedgerDecision[] {
+  return t.decisions.map((dd, i) => ({ ...dd, snapshot: snaps[i] }));
+}
+
+function groupOf(t: TaskDetail, perTxnMinor: string, snaps: LedgerDecision["snapshot"][], rest: Pick<LedgerGroup, "attempts" | "receipt">): LedgerGroup {
+  return {
+    task: { id: t.task.id, inputText: t.task.inputText, status: t.task.status, createdAt: t.task.createdAt },
+    mandate: { id: t.task.mandateId, version: t.task.mandateVersion, perTxnMinor, totalMinor: "30000", maxPurchases: 2, expiresAt: MOCK_EXPIRES },
+    runMode: t.run?.mode ?? null,
+    candidates: (t.run?.candidates ?? []).map((c) => ({
+      productId: c.productId,
+      name: c.name,
+      merchantName: c.merchantName,
+      totalMinor: c.totalMinor,
+      outcome: c.decision.outcome,
+      chosen: c.chosen,
+    })),
+    decisions: withSnapshot(t, snaps),
+    ...rest,
+  };
+}
+
+const beforeS1 = { remainingMinor: "30000", remainingPurchases: 2 };
+const afterS1 = { remainingMinor: "16200", remainingPurchases: 1 };
+
+export const MOCK_LEDGER: LedgerResponse = {
+  groups: [
+    groupOf(
+      s3,
+      "10000",
+      [
+        { ...afterS1, totalMinor: null, methodId: null },
+        { ...afterS1, totalMinor: "13800", methodId: null },
+      ],
+      { attempts: [], receipt: null },
+    ),
+    groupOf(
+      s2,
+      "20000",
+      [
+        { ...afterS1, totalMinor: null, methodId: null },
+        { ...afterS1, totalMinor: "15800", methodId: "fps" },
+      ],
+      { attempts: [], receipt: null },
+    ),
+    groupOf(
+      s1,
+      "15000",
+      [
+        { ...beforeS1, totalMinor: null, methodId: null },
+        { ...beforeS1, totalMinor: "13800", methodId: "fps" },
+        { ...beforeS1, totalMinor: "13800", methodId: "fps" },
+        { ...beforeS1, totalMinor: "13800", methodId: "fps" },
+      ],
+      {
+        attempts: [{ id: "mock-attempt-1", orderId: "mock-order-1", status: "settled", reasonCode: null, reason: null, createdAt: "2026-10-03T09:00:02+08:00" }],
+        receipt: {
+          orderId: "mock-order-1",
+          orderStatus: "paid",
+          transactionId: "mock-txn-1",
+          merchantName: "日日鲜百货",
+          items: [{ name: "品牌甲 浓缩洗衣液 2L", qty: 1, unitPriceMinor: "11800" }],
+          subtotalMinor: "11800",
+          shippingMinor: "2000",
+          consumerFeeMinor: "0",
+          totalMinor: "13800",
+          methodId: "fps",
+          paidAt: "2026-10-03T09:00:02+08:00",
+          entries: [
+            { account: "买家钱包 Alex", amountMinor: "-13800" },
+            { account: "商家 日日鲜百货", amountMinor: "13800" },
+          ],
+          support: null,
+        },
+      },
+    ),
+  ],
+};

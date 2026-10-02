@@ -61,3 +61,17 @@
 遗留问题
 - 真接口的手续费 null 需要契约放开（`src/contracts/schemas.ts` 的 `PaymentMethod.consumerFeeMinor`）和种子/迁移处理，见交接清单。
 - T+1 结算显示为"模拟设定，不是官方结算承诺"，依据戚译匀 notes；如阶段 2 的 settlement 字段取值不同，需补 `SETTLEMENT_LABEL`。
+## 2026-10-03 03:12 第 3 步：/ledger 记录页（阶段 4A 提前做，lilaxie）
+
+做了什么
+- `/ledger`：按任务分组（新任务在前），每组一条时间线：授权版本（链接 `/mandate/[id]`，显示当时的单笔、总额、次数、有效期）→ 候选摘要（判定徽标、首选、含运费总额）→ 各检查点判定（结果 + 规则人话，"为什么"展开后显示全部命中规则、当时剩余额度和次数、含运费总额、支付方式、授权版本与时间）→ 支付尝试（已结算 / 被拒绝 + 错误码）→ 收据（订单、交易、金额拆分、账本分录合计为 0）。任务标题链接到 `/task/[id]`。
+- 已付订单的收据上有"申请退款/退货"按钮：弹窗选类型、填原因（≥ 2 字）后 POST `/api/orders/[id]/support { type, reason }`，提交后显示"已提交人工处理；当前订单尚未退款"和工单号；已有工单时直接显示该状态。
+- `src/lib/task-view.ts` 新增 `LedgerResponse` / `LedgerGroup` / `LedgerDecision` / `LedgerAttempt` / `LedgerReceipt` / `SupportTicket` / `SupportRequest`。
+- 假数据 `MOCK_LEDGER`：S3（v3 单笔 100，QUOTE 拒绝）、S2（v2 单笔 200，等确认）、S1（v1 单笔 150，已付，分录 −13800 / +13800，授权剩余 300 → 162）。
+
+怎么验证
+- `npm run typecheck`、`npm run lint`、`npm run test:unit`（39 通过）、`npx next build`（/ledger 为动态路由）。未连数据库，未截图。
+
+遗留问题
+- `snapshot` 字段需要阶段 2 在写 decisions 时保存（见 DECISIONS），否则只能现场重算，违反阶段 4A 要求。
+- 账本分录的 `account` 是展示名，需要服务端拼好（如"买家钱包 Alex""商家 日日鲜百货"）。
