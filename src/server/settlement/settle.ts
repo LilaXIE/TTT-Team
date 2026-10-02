@@ -45,10 +45,10 @@ export async function settle(req: SettleRequest): Promise<SettleResult> {
     .digest("hex");
 
   return withTransaction(async (tx) => {
-    // 1. 幂等：payment_attempts 插入冲突时比较 request_hash
+    // 1. 幂等：ON CONFLICT 不会把 PostgreSQL 事务置为 aborted。
     const attemptId = await insertAttempt(tx, req.userId, req.idempotencyKey, requestHash);
     if (!attemptId) {
-      const existing = await tx.query<{ id: string; request_hash: string; status: string; result: unknown }>(
+      const existing = await tx.query<{ id: string; request_hash: string; status: string; result: SettleResult }>(
         `SELECT id, request_hash, status, result FROM payment_attempts WHERE user_id=$1 AND idempotency_key=$2`,
         [req.userId, req.idempotencyKey],
       );
@@ -57,11 +57,10 @@ export async function settle(req: SettleRequest): Promise<SettleResult> {
       if (ex.request_hash !== requestHash) {
         throw new AppError("IDEMPOTENCY_CONFLICT", "幂等键已用于不同请求。", { status: 409 });
       }
-      // 返回保存的结果
-      return ex.result as SettleResult;
+      return ex.result;
     }
 
-    // 2. 读取或创建订单
+    // 2. 读取或创建订单；这里只读取定位信息，不加业务锁。
     let orderId = req.orderId;
     if (!orderId) {
       if (!req.cartId || !req.cartVersion) {
@@ -70,24 +69,25 @@ export async function settle(req: SettleRequest): Promise<SettleResult> {
       orderId = await getOrCreateOrder(tx, req.cartId, req.cartVersion, req.userId, req.methodId);
     }
 
-    // 3. 固定取锁顺序（AGENTS.md 不变量 5）
-    const order = await lockOrder(tx, orderId, req.userId);
-    if (!order) throw new AppError("NOT_FOUND", "订单不存在。");
-    if (order.status !== "pending") {
-      return buildResult(attemptId, order, "denied", "订单已支付或已取消。");
-    }
-
-    const cart = await getCartVersion(tx, order.cart_id, order.cart_version);
+    const orderMeta = await readOrderMeta(tx, orderId, req.userId);
+    if (!orderMeta) throw new AppError("NOT_FOUND", "订单不存在。");
+    const cart = await getCartVersion(tx, orderMeta.cart_id, orderMeta.cart_version);
     if (!cart) throw new AppError("NOT_FOUND", "购物车版本不存在。");
 
-    const mandate = await lockMandateSnapshot(tx, order.mandate_id);
+    // 3. 固定取锁顺序：mandate → buyer credential → merchant credential →
+    // products(id 排序) → buyer account → merchant account → order。
+    const mandate = await lockMandateSnapshot(tx, orderMeta.mandate_id);
     if (!mandate) throw new AppError("NOT_FOUND", "授权书不存在。");
-
     const buyerCred = await lockBuyerCredential(tx, req.userId);
     const merchantCred = await lockMerchantCredential(tx, cart.merchantId);
     const products = await lockProducts(tx, cart.items.map((i) => i.productId));
     const buyerAccount = await lockAccount(tx, "buyer", req.userId);
     const merchantAccount = await lockAccount(tx, "merchant", cart.merchantId);
+    const order = await lockOrder(tx, orderId, req.userId);
+    if (!order) throw new AppError("NOT_FOUND", "订单不存在。");
+    if (order.status !== "pending") {
+      throw new AppError("ORDER_NOT_PENDING", "订单已支付或已取消。");
+    }
 
     // 4. 用锁内数据构造 EngineContext，重新调用 decide(PAY)
     const ctx = buildEngineContext(
@@ -104,8 +104,9 @@ export async function settle(req: SettleRequest): Promise<SettleResult> {
 
     // DENY → 记录 declined，提交，返回
     if (decision.outcome === "DENY") {
-      await updateAttempt(tx, attemptId, "denied", { decision });
-      return buildResult(attemptId, order, "denied", decision.rules[0]?.message ?? "被拒绝");
+      const result = buildResult(attemptId, order, "denied", decision.rules, decision.rules[0]?.message ?? "被拒绝");
+      await updateAttempt(tx, attemptId, orderId, "declined", result);
+      return result;
     }
 
     // REVIEW → 检查 confirmation
@@ -113,16 +114,18 @@ export async function settle(req: SettleRequest): Promise<SettleResult> {
       const confirmation = await getConfirmation(tx, cart.cartId, cart.version);
       const coverage = isCovered(decision, confirmation, cart.version, new Date());
       if (!coverage.covered) {
-        await updateAttempt(tx, attemptId, "review", { decision, coverage });
-        return buildResult(attemptId, order, "review_required", `需要确认：${coverage.reason}`);
+        const result = buildResult(attemptId, order, "review_required", decision.rules, `需要确认：${coverage.reason}`);
+        await updateAttempt(tx, attemptId, orderId, "review", result);
+        return result;
       }
     }
 
     // 5. 模拟发卡行拒绝（演示）
     const issuerDecline = await checkIssuerDecline(tx);
     if (issuerDecline) {
-      await updateAttempt(tx, attemptId, "denied", { reason: "ISSUER_DECLINED" });
-      return buildResult(attemptId, order, "denied", "发卡行拒绝");
+      const result = buildResult(attemptId, order, "denied", [], "发卡行拒绝");
+      await updateAttempt(tx, attemptId, orderId, "declined", result);
+      return result;
     }
 
     // 6. 条件更新（不变量 3、4）
@@ -148,25 +151,16 @@ export async function settle(req: SettleRequest): Promise<SettleResult> {
       ]);
     }
 
-    // 9. 更新 attempt
-    const receipt = {
-      orderId,
-      transactionId: attemptId,
-      totalMinor: totalMinor.toString(),
-      methodId: req.methodId,
-      merchant: cart.merchantId,
-      items: cart.items,
-      paidAt: new Date().toISOString(),
-      decision,
-    };
-    await updateAttempt(tx, attemptId, "succeeded", receipt);
+    const paidAt = new Date().toISOString();
+    const result = buildResult(attemptId, order, "succeeded", decision.rules, undefined, paidAt);
+    await updateAttempt(tx, attemptId, orderId, "settled", result);
     await tx.query(
       `INSERT INTO audit_events (actor, action, entity, entity_id, payload)
        VALUES ($1, 'payment.settle', 'order', $2, $3)`,
       [`user:${req.userId}`, orderId, JSON.stringify({ totalMinor: totalMinor.toString() })],
     );
 
-    return buildResult(attemptId, order, "succeeded", undefined, receipt.paidAt);
+    return result;
   }, { lockTimeoutMs: 3000, statementTimeoutMs: 10000, retries: 2 });
 }
 
@@ -176,18 +170,14 @@ async function insertAttempt(
   idempotencyKey: string,
   requestHash: string,
 ): Promise<string | null> {
-  try {
-    const r = await tx.query<{ id: string }>(
-      `INSERT INTO payment_attempts (user_id, idempotency_key, request_hash, status, result)
-       VALUES ($1, $2, $3, 'pending', '{}') RETURNING id`,
-      [userId, idempotencyKey, requestHash],
-    );
-    return r.rows[0].id;
-  } catch (e) {
-    // 冲突时返回 null，由调用者处理
-    if ((e as { code?: string }).code === "23505") return null;
-    throw e;
-  }
+  const result = await tx.query<{ id: string }>(
+    `INSERT INTO payment_attempts (user_id, idempotency_key, request_hash, status, result)
+     VALUES ($1, $2, $3, 'pending', '{}')
+     ON CONFLICT (user_id, idempotency_key) DO NOTHING
+     RETURNING id`,
+    [userId, idempotencyKey, requestHash],
+  );
+  return result.rows[0]?.id ?? null;
 }
 
 async function getOrCreateOrder(
@@ -212,12 +202,21 @@ async function getOrCreateOrder(
   );
   if (task.rowCount === 0) throw new AppError("NOT_FOUND", "任务不存在。");
 
-  const r = await tx.query<{ id: string }>(
+  const inserted = await tx.query<{ id: string }>(
     `INSERT INTO orders (task_id, cart_id, cart_version, user_id, merchant_id, total_minor, method_id, status)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, 'pending') RETURNING id`,
+     VALUES ($1, $2, $3, $4, $5, $6, $7, 'pending')
+     ON CONFLICT (cart_id, cart_version) DO NOTHING
+     RETURNING id`,
     [task.rows[0].id, cartId, cartVersion, userId, cart.merchantId, cart.totalMinor.toString(), methodId],
   );
-  return r.rows[0].id;
+  if (inserted.rows[0]) return inserted.rows[0].id;
+
+  const concurrent = await tx.query<{ id: string }>(
+    `SELECT id FROM orders WHERE cart_id=$1 AND cart_version=$2`,
+    [cartId, cartVersion],
+  );
+  if (!concurrent.rows[0]) throw new AppError("INTERNAL", "并发创建订单后无法读取订单。");
+  return concurrent.rows[0].id;
 }
 
 interface OrderRow {
@@ -228,6 +227,16 @@ interface OrderRow {
   mandate_id: string;
   status: string;
   total_minor: string;
+}
+
+async function readOrderMeta(tx: Tx, orderId: string, userId: string): Promise<OrderRow | null> {
+  const result = await tx.query<OrderRow>(
+    `SELECT o.id, o.task_id, o.cart_id, o.cart_version, o.status, o.total_minor, t.mandate_id
+     FROM orders o JOIN tasks t ON t.id=o.task_id
+     WHERE o.id=$1 AND o.user_id=$2`,
+    [orderId, userId],
+  );
+  return result.rows[0] ?? null;
 }
 
 async function lockOrder(tx: Tx, orderId: string, userId: string): Promise<OrderRow | null> {
@@ -307,19 +316,16 @@ function buildEngineContext(
     },
     cart: {
       version: cart.version,
-      items: cart.items.map((item) => {
-        const p = products.find((x) => x.id === item.productId);
-        return {
-          id: item.productId,
-          category: item.category,
-          brand: item.brand,
-          spec: item.spec,
-          priceMinor: item.unitPriceMinor,
-          refPriceMinor: item.refPriceMinor,
-          riskTags: item.riskTags,
-          qty: item.qty,
-        };
-      }),
+      items: cart.items.map((item) => ({
+        id: item.productId,
+        category: item.category,
+        brand: item.brand,
+        spec: item.spec,
+        priceMinor: item.unitPriceMinor,
+        refPriceMinor: item.refPriceMinor,
+        riskTags: item.riskTags,
+        qty: item.qty,
+      })),
       subtotalMinor: cart.subtotalMinor,
       shippingMinor: cart.shippingMinor,
       consumerFeeMinor: cart.consumerFeeMinor,
@@ -441,10 +447,12 @@ async function postSale(tx: Tx, orderId: string, buyerAccId: string, merchantAcc
   );
 }
 
-async function updateAttempt(tx: Tx, attemptId: string, status: string, result: unknown) {
-  await tx.query(`UPDATE payment_attempts SET status=$1, result=$2 WHERE id=$3`, [
+async function updateAttempt(tx: Tx, attemptId: string, orderId: string, status: string, result: SettleResult) {
+  const serialized = JSON.stringify(result);
+  await tx.query(`UPDATE payment_attempts SET order_id=$1, status=$2, result=$3 WHERE id=$4`, [
+    orderId,
     status,
-    JSON.stringify(result),
+    serialized,
     attemptId,
   ]);
 }
@@ -453,6 +461,7 @@ function buildResult(
   attemptId: string,
   order: OrderRow,
   status: "succeeded" | "denied" | "review_required",
+  decisionRules: unknown[],
   reason?: string,
   paidAt?: string,
 ): SettleResult {
@@ -462,7 +471,7 @@ function buildResult(
     transactionId: attemptId,
     totalMinor: order.total_minor,
     decisionOutcome: status === "succeeded" ? "ALLOW" : status === "denied" ? "DENY" : "REVIEW",
-    decisionRules: [],
+    decisionRules,
     ...(paidAt ? { paidAt } : {}),
     ...(reason ? { reason } : {}),
   };

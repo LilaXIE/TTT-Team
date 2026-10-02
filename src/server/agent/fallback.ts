@@ -32,12 +32,17 @@ export function extractIntentFallback(text: string): ExtractedIntent {
   const minSpec: Record<string, number> = {};
   let maxPriceMinor: bigint | null = null;
 
-  // 移除停用词
-  const words = cleaned.split(/[\s,，、]+/);
-  const filtered = words.filter((w) => !STOP_WORDS.has(w));
-  if (filtered.length > 0) {
-    // 提取第一个非停用词作为核心查询
-    query = filtered[0];
+  // 优先识别演示目录中的商品关键词；再退回清理后的首个词。
+  const knownQueries = ["洗衣液", "抽纸", "洗洁精", "垃圾袋", "维他命", "保健品", "抹布", "柔顺剂"];
+  const known = knownQueries.find((keyword) => cleaned.includes(keyword));
+  if (known) {
+    query = known;
+  } else {
+    const normalized = cleaned
+      .replace(/帮我|请|给我|补|购买|买|一瓶|一件|一个|一盒|一包|一箱/g, " ")
+      .trim();
+    const words = normalized.split(/[\s,，、]+/).filter((word) => word && !STOP_WORDS.has(word));
+    if (words.length > 0) query = words[0];
   }
 
   // 数量："2 瓶"、"三个"

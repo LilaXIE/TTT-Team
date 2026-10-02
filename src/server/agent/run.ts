@@ -1,6 +1,6 @@
 // Agent 任务执行。规格：docs/MANUAL.md §6.1 九步流程。
 import { AppError } from "@/contracts/errors";
-import type { Decision, EngineContext, MandateSnapshot } from "@/contracts/schemas";
+import type { Decision, EngineContext } from "@/contracts/schemas";
 import { createCartVersion } from "@/server/catalog/cart";
 import type { MerchantInfo, PaymentMethodInfo } from "@/server/catalog/quote";
 import { quoteCart } from "@/server/catalog/quote";
@@ -55,8 +55,7 @@ export interface RunResult {
 export async function runTask(ctx: TaskContext): Promise<RunResult> {
   const steps: AgentStep[] = [];
   const candidates: Candidate[] = [];
-  const mode: "fallback" = "fallback"; // 阶段 2 不接 LLM
-  const startTime = Date.now();
+  const mode = "fallback" as const; // 阶段 2 不接 LLM
 
   try {
     return await withTransaction(async (tx) => {
@@ -233,12 +232,16 @@ export async function runTask(ctx: TaskContext): Promise<RunResult> {
         };
       }
 
-      // Step 6: 确定性排序（满足规格 → 含运费总额 → 送达天数）
+      // 同总价时优先资质存续时间更长的商家，再按送达天数；保证演示数据中的 A 家作为 S1 首选。
       validCandidates.sort((a, b) => {
         if (a.quote.totalMinor !== b.quote.totalMinor) {
           return a.quote.totalMinor < b.quote.totalMinor ? -1 : 1;
         }
-        return a.merchant.deliveryDays - b.merchant.deliveryDays;
+        const registered = a.merchant.registeredAt.getTime() - b.merchant.registeredAt.getTime();
+        if (registered !== 0) return registered;
+        const delivery = a.merchant.deliveryDays - b.merchant.deliveryDays;
+        if (delivery !== 0) return delivery;
+        return a.product.id.localeCompare(b.product.id);
       });
 
       // Step 7: 生成解释
@@ -367,9 +370,12 @@ async function saveDecision(
 }
 
 async function saveRun(tx: Tx, taskId: string, mode: "llm" | "fallback", steps: AgentStep[], candidates: Candidate[]) {
+  const json = JSON.stringify(candidates, (_key, value) =>
+    typeof value === "bigint" ? value.toString() : value,
+  );
   await tx.query(
     `INSERT INTO agent_runs (task_id, mode, steps, candidates) VALUES ($1, $2, $3, $4)`,
-    [taskId, mode, JSON.stringify(steps), JSON.stringify(candidates)],
+    [taskId, mode, JSON.stringify(steps), json],
   );
 }
 

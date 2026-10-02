@@ -58,7 +58,13 @@ export async function createCartVersion(
     [
       cartId,
       newVersion,
-      JSON.stringify(quote.items),
+      JSON.stringify(
+        quote.items.map((item) => ({
+          ...item,
+          unitPriceMinor: item.unitPriceMinor.toString(),
+          refPriceMinor: item.refPriceMinor.toString(),
+        })),
+      ),
       quote.subtotalMinor.toString(),
       quote.shippingMinor.toString(),
       quote.consumerFeeMinor.toString(),
@@ -122,7 +128,14 @@ export async function getCartVersion(
     cartId: row.cart_id,
     version: row.version,
     merchantId: row.merchant_id,
-    items: row.items as CartVersionSnapshot["items"],
+    items: (row.items as Array<Omit<CartVersionSnapshot["items"][number], "unitPriceMinor" | "refPriceMinor"> & {
+      unitPriceMinor: string;
+      refPriceMinor: string;
+    }>).map((item) => ({
+      ...item,
+      unitPriceMinor: BigInt(item.unitPriceMinor),
+      refPriceMinor: BigInt(item.refPriceMinor),
+    })),
     subtotalMinor: BigInt(row.subtotal_minor),
     shippingMinor: BigInt(row.shipping_minor),
     consumerFeeMinor: BigInt(row.consumer_fee_minor),

@@ -7,12 +7,16 @@ import { runTask } from "@/server/agent/run";
 import { settle } from "@/server/settlement/settle";
 import { query } from "@/server/db/tx";
 
-const DEMO_USER_EMAIL = "alex@demo.hk";
-
-async function getUserId(): Promise<string> {
-  const r = await query<{ id: string }>(`SELECT id FROM users WHERE email=$1`, [DEMO_USER_EMAIL]);
-  if (r.rowCount === 0) throw new Error("Demo user not found");
-  return r.rows[0].id;
+async function createTask(userId: string, mandateId: string, inputText: string): Promise<string> {
+  return withTransaction(async (tx) => {
+    const result = await tx.query<{ id: string }>(
+      `INSERT INTO tasks (user_id, mandate_id, status, input_text)
+       VALUES ($1, $2, 'running', $3)
+       RETURNING id`,
+      [userId, mandateId, inputText],
+    );
+    return result.rows[0].id;
+  });
 }
 
 describe("S1: 自动完成正常结算", () => {
@@ -56,11 +60,13 @@ describe("S1: 自动完成正常结算", () => {
     expect(mandate.remainingPurchases).toBe(2);
 
     // 2. 执行任务
+    const inputText = "帮我补一瓶洗衣液，2L 以上，150 以内";
+    const taskId = await createTask(userId, mandate.id, inputText);
     const taskResult = await runTask({
-      taskId: "dummy", // runTask 会创建 task
+      taskId,
       userId,
       mandateId: mandate.id,
-      inputText: "帮我补一瓶洗衣液，2L 以上，150 以内",
+      inputText,
     });
 
     expect(taskResult.mode).toBe("fallback");
@@ -148,11 +154,13 @@ describe("S1: 自动完成正常结算", () => {
       allowedMethods: ["fps"],
     });
 
+    const inputText = "洗衣液";
+    const taskId = await createTask(userId, mandate.id, inputText);
     const taskResult = await runTask({
-      taskId: "dummy2",
+      taskId,
       userId,
       mandateId: mandate.id,
-      inputText: "洗衣液",
+      inputText,
     });
 
     if (!taskResult.selectedCartId) throw new Error("未创建购物车");
