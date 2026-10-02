@@ -148,7 +148,7 @@ export function TaskView({ id, initial, isMock }: { id: string; initial: TaskDet
               ) : (
                 <p className="text-zinc-500">{order ? `订单状态：${order.status}` : "尚未付款。"}</p>
               )}
-              {cart && !isMock && (
+              {cart && (
                 <Link href={`/pay-methods?cartId=${cart.cartId}&version=${cart.version}`} className="text-xs underline">
                   查看支付方式比较
                 </Link>

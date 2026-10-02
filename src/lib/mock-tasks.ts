@@ -2,7 +2,7 @@
 // 数字来自 fixtures/catalog.json 与 docs/MANUAL.md §10。
 // 三个任务依次在同一份授权书的 v1、v2、v3 下执行（修改授权 = 新版本）。
 import type { Decision, RuleHit } from "@/contracts/schemas";
-import type { CandidateView, InboxResponse, TaskDetail } from "./task-view";
+import type { CandidateView, InboxResponse, PayMethodsCompare, TaskDetail } from "./task-view";
 
 const T0 = "2026-10-03T09:00:00+08:00";
 const T2 = "2026-10-03T09:10:00+08:00";
@@ -182,3 +182,47 @@ export const MOCK_INBOX: InboxResponse = {
     },
   ],
 };
+// 费率口径来自戚译匀核实的 fixtures/rates.json（Hackathon 工作目录，尚未合入仓库）。
+const RATES_OBSERVED_AT = "2026-10-03T01:18:49+08:00";
+
+/** /pay-methods：按 cartId 找 mock 购物车，找不到用 mock-s1 的。 */
+export function mockPayMethods(cartId?: string): PayMethodsCompare {
+  const cart = Object.values(MOCK_TASKS).find((t) => t.cart?.cartId === cartId)?.cart ?? s1.cart!;
+  return {
+    cart: { cartId: cart.cartId, version: cart.version, merchantName: cart.merchantName, totalMinor: cart.totalMinor, methodId: cart.methodId },
+    methods: [
+      {
+        methodId: "fps",
+        label: "FPS 转数快",
+        network: "FPS",
+        eligible: true,
+        ineligibleReasons: [],
+        consumerFeeMinor: "0",
+        consumerCostMinor: (BigInt(cart.totalMinor) + 0n).toString(),
+        feeConditions: "手续费 0 仅限 HSBC 个人客户经其 App 或网上理财做本地港元付款；其他银行或储值支付工具可能收费。",
+        estRewardMinor: null,
+        rewardConditions: null,
+        settlement: "instant",
+        sourceUrl: "https://www.hsbc.com.hk/zh-hk/help/faq/transfers-and-payments/",
+        observedAt: RATES_OBSERVED_AT,
+        costRank: 1,
+      },
+      {
+        methodId: "tapngo_mc",
+        label: "Tap & Go Mastercard",
+        network: "Mastercard",
+        eligible: true,
+        ineligibleReasons: [],
+        consumerFeeMinor: null,
+        consumerCostMinor: null,
+        feeConditions: "收费表未明确列出香港本地港元消费免费；年费或增值免费不等于消费手续费为 0。",
+        estRewardMinor: null,
+        rewardConditions: null,
+        settlement: "T+1 (simulated)",
+        sourceUrl: "https://www.tapngo.com.hk/eng/charges.html",
+        observedAt: RATES_OBSERVED_AT,
+        costRank: null,
+      },
+    ],
+  };
+}

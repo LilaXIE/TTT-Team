@@ -47,3 +47,17 @@
 遗留问题
 - 取消接口 `POST /api/tasks/[id]/cancel` 不在 MANUAL §7.2，需李启成确认（见 DECISIONS）。
 - 确认后的提示按响应里的 `task.status` / `order.status` 判断（completed → 已付款；awaiting_confirmation → 购物车已变化），需与阶段 3A 实际响应对齐。
+## 2026-10-03 03:02 第 2 步：/pay-methods 支付方式比较页（lilaxie）
+
+做了什么
+- `/pay-methods?cartId&version`：顶部显示购物车版本、商家、含运费总额、当前选用方式；两列卡片（窄屏堆叠），每张显示资格（通过 / 不通过及原因）、消费者成本（含运费总额 + 手续费）、手续费适用条件、预计回赠、结算时效、来源链接和采集时间；排名徽标（成本最低 / 不参与成本排序）。底部声明："本次支付由模拟器执行；商家手续费不计入消费者成本；回赠为公开页面观测值，未核实的不计入节省。"
+- `src/lib/task-view.ts` 新增 `PayMethodOption` / `PayMethodsCompare` / `SETTLEMENT_LABEL`。
+- 假数据 `mockPayMethods()` 按戚译匀核实的口径：FPS 手续费 0（仅限 HSBC 个人客户经其 App 或网上理财做本地港元付款，来源 HSBC FAQ）；Tap & Go Mastercard 手续费 null 显示"未核实"、不参与排序（来源 Tap & Go 收费表）；两者回赠 null 显示"未核实"；采集时间 2026-10-03 01:18:49 +08:00。
+- `/task/[id]` 示例页的 Payment 卡也显示"查看支付方式比较"链接。
+
+怎么验证
+- `npm run typecheck`、`npm run lint`、`npm run test:unit`（39 通过）、`npx next build`（/pay-methods 为动态路由）。未连数据库，未截图。
+
+遗留问题
+- 真接口的手续费 null 需要契约放开（`src/contracts/schemas.ts` 的 `PaymentMethod.consumerFeeMinor`）和种子/迁移处理，见交接清单。
+- T+1 结算显示为"模拟设定，不是官方结算承诺"，依据戚译匀 notes；如阶段 2 的 settlement 字段取值不同，需补 `SETTLEMENT_LABEL`。

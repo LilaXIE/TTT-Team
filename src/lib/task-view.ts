@@ -106,3 +106,40 @@ export interface ConfirmationRequest {
   cartVersion: number;
   ruleIds: string[];
 }
+
+// ---------- GET /api/pay-methods/compare?cartId&version（/pay-methods 页面） ----------
+// 按 MANUAL §9：先资格后成本；回赠只展示不排序。数组顺序即服务端排序结果，前端按原顺序渲染。
+export interface PayMethodOption {
+  methodId: string;
+  label: string;
+  network: string;
+  /** 授权允许 ∧ 商家接受 ∧ 用户启用 */
+  eligible: boolean;
+  /** 不通过的原因（人话）；通过时为空数组 */
+  ineligibleReasons: string[];
+  /** 消费者手续费；null = 未核实，不能当作 0 */
+  consumerFeeMinor: string | null;
+  /** 购物车含运费总额 + 消费者手续费；手续费未核实时为 null */
+  consumerCostMinor: string | null;
+  /** 手续费的适用条件（来源页面摘要） */
+  feeConditions: string | null;
+  /** 预计回赠；null = 未核实或没有，不计入节省 */
+  estRewardMinor: string | null;
+  rewardConditions: string | null;
+  /** rates.json 原值，如 "instant"、"T+1 (simulated)" */
+  settlement: string;
+  sourceUrl: string | null;
+  observedAt: string;
+  /** 只在 eligible 且成本已知的方式中按成本升序排名（从 1 开始）；null = 不参与排序 */
+  costRank: number | null;
+}
+
+export interface PayMethodsCompare {
+  cart: { cartId: string; version: number; merchantName: string; totalMinor: string; methodId: string };
+  methods: PayMethodOption[];
+}
+
+export const SETTLEMENT_LABEL: Record<string, string> = {
+  instant: "即时到账",
+  "T+1 (simulated)": "T+1（模拟设定，不是官方结算承诺）",
+};
