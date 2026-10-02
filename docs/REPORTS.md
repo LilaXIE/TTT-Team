@@ -88,3 +88,45 @@
 ## 2026-10-03 03:25 第 5 步：邹思远展位稿与补充问答（不进仓库）
 
 - 文件：`C:\Users\xjx05\Desktop\NoWork\Hackathon\output\邹思远_展位稿与补充问答_草稿.md`（30 秒稿、2 分钟稿 S1→S3→S2→/ledger、补充问答第 13–15 条；"已实现"表述均标【实测后改为已演示】）。
+## 给李启成的早上交接清单（2026-10-03 03:30，李婧萱 / Cursor）
+
+lilaxie 分支已有 `/task/[id]`、`/task/new`、`/inbox`、`/pay-methods`、`/ledger` 五个页面，全部先调真接口，接口报错（401 除外）时回退到示例数据并标注"示例数据"。**前端期望的响应形状全部写在 `src/lib/task-view.ts`，以它为准。** 你的字段名如果不同，直接改 `task-view.ts` 或告诉我，我改页面；接口全部接通后删除 `src/lib/mock-tasks.ts` 和回退分支。
+
+### 1 需要对齐的接口字段
+
+通用：金额一律是分的十进制字符串（字段名以 Minor 结尾）；错误体 `{ code, message, ... }`（`src/lib/api.ts` 同时兼容 `{ error: { code, message } }`）；时间为 ISO 字符串。
+
+- **GET `/api/tasks/[id]`** → `TaskDetail`
+  - `task { id, mandateId, mandateVersion, status, inputText, createdAt }`，status ∈ running / awaiting_confirmation / completed / failed / cancelled；running 时前端每 2 秒轮询。
+  - `run { mode: "llm"|"fallback", steps[{ tool, summary, ms }], candidates: CandidateView[] } | null`；CandidateView = `productId, name, brand, merchantId, merchantName, merchantCredentialStatus, merchantAgeDays, priceMinor, shippingMinor, totalMinor, deliveryDays, decision, chosen, explanation?`。
+  - `cart: CartVersionView | null` = `cartId, version, merchantName, items[{ name, qty, unitPriceMinor }], subtotalMinor, shippingMinor, consumerFeeMinor, totalMinor, methodId, quoteExpiresAt`。
+  - `decisions: DecisionRecord[]`（Decision + `id, cartId, cartVersion`），按时间升序，**最后一条视为当前决策**。
+  - `order { id, status, totalMinor, methodId, merchantName, paidAt, transactionId } | null`。
+- **GET `/api/inbox`** → `{ items: InboxItem[] }`；InboxItem = `task { id, mandateId, mandateVersion, inputText, createdAt }`、`cart: CartVersionView`、`decision: DecisionRecord`（REVIEW）、`expiresAt`、`remainingSeconds`（前端以收到响应时刻起倒计时）。
+  - **POST `/api/confirmations`** 请求 `{ taskId, cartId, cartVersion, ruleIds }`（ruleIds = 该决策全部 REVIEW 规则），响应按 `TaskDetail` 处理：`task.status` 为 completed 或 `order.status` 为 paid → "已付款"；仍为 awaiting_confirmation → "购物车已变化，请重新确认"。
+  - **POST `/api/tasks/[id]/cancel`**（inbox 的取消按钮）：MANUAL §7.2 没有，**需要你确认是否加**，或指定替代做法（DECISIONS 已记）。
+- **GET `/api/pay-methods/compare?cartId&version`** → `PayMethodsCompare`：`cart { cartId, version, merchantName, totalMinor, methodId }`、`methods: PayMethodOption[]`；PayMethodOption = `methodId, label, network, eligible, ineligibleReasons[], consumerFeeMinor|null, consumerCostMinor|null, feeConditions|null, estRewardMinor|null, rewardConditions|null, settlement, sourceUrl|null, observedAt, costRank|null`。**null 表示未核实，前端显示"未核实"，不当作 0**；数组顺序就是排序结果；costRank 只在 eligible 且成本已知的方式中给。
+- **GET `/api/ledger`** → `{ groups: LedgerGroup[] }`，新任务在前；LedgerGroup =
+  - `task { id, inputText, status, createdAt }`、`mandate { id, version, perTxnMinor, totalMinor, maxPurchases, expiresAt }`（任务执行时那一版）、`runMode`、`candidates[{ productId, name, merchantName, totalMinor, outcome, chosen }]`；
+  - `decisions: LedgerDecision[]` = DecisionRecord + `snapshot { remainingMinor, remainingPurchases, totalMinor|null, methodId|null }`。**这些是判定当时的值，阶段 4A 要求来自数据库记录、不现场重算，需要你在写 decisions 时一并保存**（现 decisions 表只有 rules 与 mandate_version）；
+  - `attempts[{ id, orderId, status: pending|settled|declined, reasonCode|null, reason|null, createdAt }]`；
+  - `receipt { orderId, orderStatus, transactionId, merchantName, items, subtotalMinor, shippingMinor, consumerFeeMinor, totalMinor, methodId, paidAt, entries[{ account, amountMinor }], support: SupportTicket|null } | null`；entries 的 account 请给展示名（如"买家钱包 Alex"）。
+  - **POST `/api/orders/[id]/support`** 请求 `{ type: "refund"|"return", reason }`，响应 `SupportTicket { id, type, reason, status: "manual_review", createdAt }`，重复提交返回同一工单（与阶段 3B 一致）。
+
+### 2 S1 预期：同价 HK$138 时会选 B 家，不是 A 家
+
+A 家品牌甲 2L HK$118 + 运费 20 与 B 家品牌甲 2L HK$108 + 运费 30 含运费都是 HK$138。§6.1 排序"含运费升序 → 送达天数"会选 B 家（1 天送达，A 家 3 天）；§10 S1 写的是 A 家。金额、余额、授权剩余（162、1 次）不受影响，只是商家入账账户不同。戚译匀的 README 也指出这一点，并要求不为展示 A 家去强改排序或价格。**请你定一个：把 S1 预期改为 B 家（最简单，只改 §10 文字、S1 集成测试断言和展位稿）；或改排序规则（例如同价按注册时间长者优先，需改 §6.1）。** 写 S1 集成测试前需要定。
+
+### 3 戚译匀数据合并要做的三个决定
+
+详情见我本地的 `qi-fixtures` 分支（未推送，只在李婧萱电脑上）和本文件"试合并戚译匀 / Ellan 数据交付"一条；原始文件在 Hackathon 工作目录的 `fixtures/`、`docs/rates/`。
+
+1. **Tap & Go 手续费 null 的契约、种子和迁移。** `src/contracts/schemas.ts` 的 `PaymentMethod.consumerFeeMinor` 现要求字符串，Zod 会报错；`payment_methods.consumer_fee_minor` 为 NOT NULL，种子会失败。要定：契约是否允许 null；迁移改成可空，还是未核实的方式不入库；结算和引擎怎么处理"手续费未知"（戚译匀建议 `INFO_MISSING`，blocking，确认不能放行；或在 ROUTE 判为不可用）。前端已按 null = 未核实处理。
+2. **商品和预览 ID 改名与已部署数据库的旧数据。** 她把 `A-LD-001` 改成 `A-LAUNDRY-01`、`cheap_familiar` 改成 `auto-household` 等。影响 `scripts/validate-fixtures.ts`、`tests/unit/mandate-preview.test.ts`、`src/lib/mock-tasks.ts`；而且种子按 id upsert，已部署的 Supabase 里旧商品不会被删，目录会出现新旧两套。要定：接受新 ID 并对部署库做一次 reset，还是改回旧 ID。
+3. **两套 validate-fixtures 选哪套。** 仓库阶段 1 的 `scripts/validate-fixtures.ts`，与 Hackathon 目录里的版本（导出 `validateFixtures()`，含截图 SHA-256 校验，`tests/unit/fixtures.test.ts` 依赖它）不同，需要保留一套。
+
+### 4 其他需要你知道的
+
+- 示例数据里 mock-s1/s2/s3 改为同一授权书的 v1/v2/v3（单笔 150/200/100），只影响示例，不影响接口。
+- `/pay-methods` 的 settlement 显示依赖 `SETTLEMENT_LABEL`（目前只有 "instant" 和 "T+1 (simulated)"），如果你的取值不同告诉我。
+- 本轮没有改 `src/server/`、`src/contracts/`、`migrations/`、`fixtures/`、`package.json`；没有连任何数据库；没有合并 main。
