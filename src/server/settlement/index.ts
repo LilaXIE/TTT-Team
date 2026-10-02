@@ -1,2 +1,2 @@
-﻿// settlement module - see docs/MANUAL.md
+// settlement module - see docs/MANUAL.md
 export {};

@@ -4,7 +4,6 @@ import { Pool, types } from "pg";
 types.setTypeParser(20, (v) => v);
 
 declare global {
-  // eslint-disable-next-line no-var
   var __mwPool: Pool | undefined;
 }
 

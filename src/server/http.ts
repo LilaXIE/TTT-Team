@@ -9,10 +9,7 @@ export function json(data: unknown, init?: ResponseInit) {
 }
 
 export function handleError(e: unknown): NextResponse {
-  if (e instanceof AppError) {
-    const { status, body } = toResponse(e);
-    return NextResponse.json(body, { status });
-  }
+  if (e instanceof AppError) return toResponse(e);
   if (e instanceof ZodError) {
     return NextResponse.json(
       { error: { code: "VALIDATION_ERROR", message: "输入格式不正确。", details: e.issues } },

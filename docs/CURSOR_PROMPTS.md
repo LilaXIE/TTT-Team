@@ -134,7 +134,7 @@
 - `npm run db:migrate && npm run db:seed && npm run fixtures:validate` 成功；再次 seed 不重复发资金。
 - `npm run test:unit` 全绿，用例数 ≥ 15。
 - 登录 alex@demo.hk 成功；错误密码失败；未登录访问 /mandate/new 被重定向。
-- /mandate/new：把单笔上限从 150 改为 160，第三张卡从"会被拒绝"变为"会直接买"；把保护级别改为加强，第一张卡若示例商家为新商家则变为"会先问你"。
+- /mandate/new：把单笔上限从 150 改为 160，第三张卡从「会被拒绝」变为「会先问你」（接近上限 98%）；改为 170 变为「会直接买」。勾选保健品品类后，第二张卡从「会被拒绝」变为「会先问你」。保护级别改为加强，第三张卡（新商家 25 天）额外命中「新商家」。
 - 签发后 /mandate/[id] 正确显示；撤销后状态为 revoked。
 
 完成后列出：fixtures 中标记 PLACEHOLDER 的内容（给戚译匀替换）、messages.ts 路径（给邹思远审校）。

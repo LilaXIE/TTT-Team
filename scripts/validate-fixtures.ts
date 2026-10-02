@@ -1,4 +1,4 @@
-﻿// 校验 fixtures/*.json：Zod 结构 + docs/MANUAL.md §2.2 的业务要求。不连数据库。
+// 校验 fixtures/*.json：Zod 结构 + docs/MANUAL.md §2.2 的业务要求。不连数据库。
 import { loadCatalog, loadRates, loadScenarios } from "../src/server/fixtures";
 
 const errors: string[] = [];

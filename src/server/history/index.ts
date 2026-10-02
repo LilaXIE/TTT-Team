@@ -1,2 +1,2 @@
-﻿// history module - see docs/MANUAL.md
+// history module - see docs/MANUAL.md
 export {};

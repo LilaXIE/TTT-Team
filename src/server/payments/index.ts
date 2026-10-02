@@ -1,2 +1,2 @@
-﻿// payments module - see docs/MANUAL.md
+// payments module - see docs/MANUAL.md
 export {};

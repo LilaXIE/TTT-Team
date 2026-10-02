@@ -1,2 +1,2 @@
-﻿// catalog module - see docs/MANUAL.md
+// catalog module - see docs/MANUAL.md
 export {};

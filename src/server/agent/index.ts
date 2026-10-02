@@ -1,2 +1,2 @@
-﻿// agent module - see docs/MANUAL.md
+// agent module - see docs/MANUAL.md
 export {};

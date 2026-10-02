@@ -15,8 +15,8 @@ export type CredentialStatus = z.infer<typeof CredentialStatus>;
 export const MandateStatus = z.enum(["active", "revoked", "expired", "completed"]);
 export type MandateStatus = z.infer<typeof MandateStatus>;
 
-// ---------- 授权�?----------
-/** 表单草稿（前�?�?preview / create）。金额为港元字符串，服务端转分�?*/
+// ---------- 授权书 ----------
+/** 表单草稿（前端 → preview / create）。金额为港元字符串，服务端转分。 */
 export const MandateDraft = z.object({
   taskText: z.string().min(2).max(200),
   task: z.object({
@@ -44,7 +44,7 @@ export const MandateDraft = z.object({
 });
 export type MandateDraft = z.infer<typeof MandateDraft>;
 
-/** 编译后的授权�?JSON（存库）。金额为分字符串�?*/
+/** 编译后的授权书 JSON（存库）。金额为分字符串。 */
 export const MandateJson = z.object({
   task: MandateDraft.shape.task,
   scope: z.object({ categories: z.array(z.string()), merchantDeny: z.array(z.string()) }),
@@ -56,7 +56,7 @@ export const MandateJson = z.object({
 });
 export type MandateJson = z.infer<typeof MandateJson>;
 
-// ---------- 商品 / 商家 / 支付方式（fixtures �?API�?----------
+// ---------- 商品 / 商家 / 支付方式（fixtures 与 API） ----------
 export const Merchant = z.object({
   id: z.string(),
   name: z.string(),
@@ -125,7 +125,7 @@ export const PreviewScenario = z.object({
 export type PreviewScenario = z.infer<typeof PreviewScenario>;
 export const ScenariosFixture = z.object({ scenarios: z.array(PreviewScenario).length(3) });
 
-// ---------- 购物�?----------
+// ---------- 购物车 ----------
 export const CartItem = z.object({
   productId: z.string(),
   name: z.string(),
