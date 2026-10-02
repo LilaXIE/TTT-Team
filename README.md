@@ -28,6 +28,8 @@ npm run db:seed
 npm run dev                          # http://localhost:3000
 ```
 
+`npm run dev` 监听 `0.0.0.0:3000`，同一局域网的队友可用 `http://<你的局域网IP>:3000` 访问（`ipconfig` 看 IPv4；Windows 需放行防火墙入站 TCP 3000；校园 Wi‑Fi 若有客户端隔离则不可用）。`next.config.ts` 的 `allowedDevOrigins` 已放行常见私有网段。
+
 方式 B（有 Docker）：`docker compose up --build`，自动迁移与种子。
 
 演示账号：`alex@demo.hk / demo1234`（阶段 1 后可用）。
