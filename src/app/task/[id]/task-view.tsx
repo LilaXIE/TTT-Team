@@ -5,27 +5,24 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { OutcomeBadge, RuleList } from "@/components/decision-badge";
+import { MockBanner, SectionTag } from "@/components/section-tag";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { api, ApiError } from "@/lib/api";
 import { fmtDateTime, fmtHKD } from "@/lib/format";
-import { METHOD_LABEL, TASK_STATUS_LABEL, type CandidateView, type DecisionRecord, type TaskDetail } from "@/lib/task-view";
+import {
+  CHECKPOINT_LABEL,
+  METHOD_LABEL,
+  TASK_STATUS_LABEL,
+  type CandidateView,
+  type DecisionRecord,
+  type TaskDetail,
+} from "@/lib/task-view";
+import { useNow } from "@/lib/use-now";
 
 const POLL_MS = 2000;
 const CONFIRM_TTL_MS = 30 * 60 * 1000;
-
-const CHECKPOINT_LABEL: Record<string, string> = {
-  INTENT: "理解任务",
-  CANDIDATES: "筛选候选",
-  QUOTE: "报价与额度",
-  ROUTE: "支付方式",
-  PAY: "结算",
-};
-
-function SectionTag({ children }: { children: React.ReactNode }) {
-  return <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-zinc-400">{children}</span>;
-}
 
 export function TaskView({ id, initial, isMock }: { id: string; initial: TaskDetail | null; isMock: boolean }) {
   const [data, setData] = useState<TaskDetail | null>(initial);
@@ -67,11 +64,7 @@ export function TaskView({ id, initial, isMock }: { id: string; initial: TaskDet
 
   return (
     <div className="space-y-4">
-      {isMock && (
-        <p className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 px-3 py-2 text-xs text-zinc-600">
-          示例数据：阶段 2 接口接通前用于预览页面。
-        </p>
-      )}
+      {isMock && <MockBanner />}
 
       <div>
         <div className="flex flex-wrap items-center gap-2">
@@ -248,16 +241,7 @@ function DecisionCard({
   const [pending, start] = useTransition();
   const reviewIds = decision.rules.filter((r) => r.severity === "REVIEW").map((r) => r.id);
   const canConfirm = decision.outcome === "REVIEW" && awaiting && decision.cartId !== null && decision.cartVersion !== null;
-  const [now, setNow] = useState<number | null>(null);
-  useEffect(() => {
-    const tick = () => setNow(Date.now());
-    const first = setTimeout(tick, 0);
-    const every = setInterval(tick, 30_000);
-    return () => {
-      clearTimeout(first);
-      clearInterval(every);
-    };
-  }, []);
+  const now = useNow(30_000);
   const remainingMin =
     now === null ? null : Math.max(0, Math.ceil((new Date(decision.evaluatedAt).getTime() + CONFIRM_TTL_MS - now) / 60_000));
 

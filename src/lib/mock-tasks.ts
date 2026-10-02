@@ -1,13 +1,18 @@
 // /task/mock-s1|mock-s2|mock-s3 的示例数据，供阶段 2 接口就绪前做页面。接口接通后删除本文件。
 // 数字来自 fixtures/catalog.json 与 docs/MANUAL.md §10。
+// 三个任务依次在同一份授权书的 v1、v2、v3 下执行（修改授权 = 新版本）。
 import type { Decision, RuleHit } from "@/contracts/schemas";
-import type { CandidateView, TaskDetail } from "./task-view";
+import type { CandidateView, InboxResponse, TaskDetail } from "./task-view";
 
 const T0 = "2026-10-03T09:00:00+08:00";
+const T2 = "2026-10-03T09:10:00+08:00";
+const T3 = "2026-10-03T09:20:00+08:00";
 
-function d(outcome: Decision["outcome"], checkpoint: Decision["checkpoint"], rules: RuleHit[] = []): Decision {
-  return { outcome, checkpoint, rules, mandateVersion: 1, evaluatedAt: T0 };
+function d(outcome: Decision["outcome"], checkpoint: Decision["checkpoint"], rules: RuleHit[] = [], mandateVersion = 1, evaluatedAt = T0): Decision {
+  return { outcome, checkpoint, rules, mandateVersion, evaluatedAt };
 }
+const d2 = (outcome: Decision["outcome"], checkpoint: Decision["checkpoint"], rules: RuleHit[] = []) => d(outcome, checkpoint, rules, 2, T2);
+const d3 = (outcome: Decision["outcome"], checkpoint: Decision["checkpoint"], rules: RuleHit[] = []) => d(outcome, checkpoint, rules, 3, T3);
 
 const capPerTxn = (total: string, cap: string): RuleHit => ({
   id: "CAP_PER_TXN",
@@ -108,7 +113,7 @@ const substitute: RuleHit = {
 };
 
 const s2: TaskDetail = {
-  task: { id: "mock-s2", mandateId: "mock-mandate", mandateVersion: 1, status: "awaiting_confirmation", inputText: "帮我补一瓶洗衣液，2.5L 以上，HK$200 以内，可以换牌子。", createdAt: T0 },
+  task: { id: "mock-s2", mandateId: "mock-mandate", mandateVersion: 2, status: "awaiting_confirmation", inputText: "帮我补一瓶洗衣液，2.5L 以上，HK$200 以内，可以换牌子。", createdAt: T2 },
   run: {
     mode: "fallback",
     steps: [
@@ -118,8 +123,8 @@ const s2: TaskDetail = {
       { tool: "engine_decide", summary: "QUOTE + ROUTE：REVIEW（换了品牌）→ 暂停等你确认", ms: 1 },
     ],
     candidates: [
-      { ...B_LD_003, chosen: true, decision: d("REVIEW", "CANDIDATES", [substitute]), explanation: "满足 2.5L 的选项里含运费最低，次日送达；但不是你常买的品牌甲。" },
-      { ...A_LD_002, chosen: false, decision: d("REVIEW", "CANDIDATES", [{ ...substitute, message: "候选是「品牌乙」，和你常买的「品牌甲」不是同一个牌子。" }]) },
+      { ...B_LD_003, chosen: true, decision: d2("REVIEW", "CANDIDATES", [substitute]), explanation: "满足 2.5L 的选项里含运费最低，次日送达；但不是你常买的品牌甲。" },
+      { ...A_LD_002, chosen: false, decision: d2("REVIEW", "CANDIDATES", [{ ...substitute, message: "候选是「品牌乙」，和你常买的「品牌甲」不是同一个牌子。" }]) },
     ],
   },
   cart: {
@@ -132,17 +137,17 @@ const s2: TaskDetail = {
     consumerFeeMinor: "0",
     totalMinor: "15800",
     methodId: "fps",
-    quoteExpiresAt: "2026-10-03T09:05:00+08:00",
+    quoteExpiresAt: "2026-10-03T09:15:00+08:00",
   },
   decisions: [
-    { ...d("ALLOW", "INTENT"), id: "1", cartId: null, cartVersion: null },
-    { ...d("REVIEW", "QUOTE", [substitute]), id: "2", cartId: "mock-cart-2", cartVersion: 1 },
+    { ...d2("ALLOW", "INTENT"), id: "1", cartId: null, cartVersion: null },
+    { ...d2("REVIEW", "QUOTE", [substitute]), id: "2", cartId: "mock-cart-2", cartVersion: 1 },
   ],
   order: null,
 };
 
 const s3: TaskDetail = {
-  task: { id: "mock-s3", mandateId: "mock-mandate", mandateVersion: 1, status: "failed", inputText: "帮我补一瓶洗衣液，2L 以上，HK$100 以内。", createdAt: T0 },
+  task: { id: "mock-s3", mandateId: "mock-mandate", mandateVersion: 3, status: "failed", inputText: "帮我补一瓶洗衣液，2L 以上，HK$100 以内。", createdAt: T3 },
   run: {
     mode: "fallback",
     steps: [
@@ -151,16 +156,29 @@ const s3: TaskDetail = {
       { tool: "engine_decide", summary: "QUOTE：DENY（CAP_PER_TXN），没有可切换的次选", ms: 1 },
     ],
     candidates: [
-      { ...A_LD_001, chosen: true, decision: d("DENY", "CANDIDATES", [capPerTxn("HK$138.00", "HK$100.00")]) },
-      { ...B_LD_003, chosen: false, decision: d("DENY", "CANDIDATES", [capPerTxn("HK$158.00", "HK$100.00")]) },
+      { ...A_LD_001, chosen: true, decision: d3("DENY", "CANDIDATES", [capPerTxn("HK$138.00", "HK$100.00")]) },
+      { ...B_LD_003, chosen: false, decision: d3("DENY", "CANDIDATES", [capPerTxn("HK$158.00", "HK$100.00")]) },
     ],
   },
   cart: null,
   decisions: [
-    { ...d("ALLOW", "INTENT"), id: "1", cartId: null, cartVersion: null },
-    { ...d("DENY", "QUOTE", [capPerTxn("HK$138.00", "HK$100.00")]), id: "2", cartId: null, cartVersion: null },
+    { ...d3("ALLOW", "INTENT"), id: "1", cartId: null, cartVersion: null },
+    { ...d3("DENY", "QUOTE", [capPerTxn("HK$138.00", "HK$100.00")]), id: "2", cartId: null, cartVersion: null },
   ],
   order: null,
 };
 
 export const MOCK_TASKS: Record<string, TaskDetail> = { "mock-s1": s1, "mock-s2": s2, "mock-s3": s3 };
+
+/** /inbox：mock-s2 等你确认。remainingSeconds 以页面加载时刻为起点倒计时。 */
+export const MOCK_INBOX: InboxResponse = {
+  items: [
+    {
+      task: { id: s2.task.id, mandateId: s2.task.mandateId, mandateVersion: s2.task.mandateVersion, inputText: s2.task.inputText, createdAt: s2.task.createdAt },
+      cart: s2.cart!,
+      decision: s2.decisions.at(-1)!,
+      expiresAt: "2026-10-03T09:40:00+08:00",
+      remainingSeconds: 25 * 60,
+    },
+  ],
+};

@@ -24,3 +24,8 @@ S1 示例含运费 138 是单笔上限 150 的 92%，按 90% 会被判 REVIEW（
 
 生产地址 https://mandate-wallet.vercel.app（main 自动部署）。数据库 Supabase Session pooler（5432，支持事务与 SET LOCAL）。Vercel 上连接池默认 2（PG_POOL_MAX 可覆盖），避免多实例耗尽免费版连接数。Function Region 设 sin1 以贴近数据库。
 
+
+- 2026-10-03 02:50 | /inbox、/pay-methods、/ledger 在真接口返回任何错误（404 未上线、500 等，401 除外）时都回退到 mock 数据并标注"示例数据"和失败原因 | 阶段 2 接口未上线；只区分 404 会让 500 时页面空白，演示更不稳
+- 2026-10-03 02:50 | /inbox 取消按钮调用 POST /api/tasks/[id]/cancel（task → cancelled，不动资金）；该接口 MANUAL §7.2 未列，需李启成确认或指定替代 | 阶段 3A 要求 inbox 有"取消"，但没有对应接口
+- 2026-10-03 02:50 | /inbox 倒计时用服务端 remainingSeconds，以收到响应的时刻为起点，不用客户端时钟对比 expiresAt | 避免客户端时钟偏差；过期仍以服务端判定为准
+- 2026-10-03 02:50 | mock-s1/s2/s3 改为同一授权书的 v1/v2/v3（单笔上限 150/200/100），创建时间错开 10 分钟 | 三个任务的上限不同，放在 /ledger 同一条时间线上需要不同授权版本才自洽

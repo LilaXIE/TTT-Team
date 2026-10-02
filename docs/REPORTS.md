@@ -32,3 +32,18 @@
 2. **商品与预览 ID 全部改名**（`A-LD-001` → `A-LAUNDRY-01`，`cheap_familiar` → `auto-household` 等）。影响：`scripts/validate-fixtures.ts`、`tests/unit/mandate-preview.test.ts`、`src/lib/mock-tasks.ts` 写死旧 ID；且 seed 按 id upsert，已部署的 Supabase 里旧商品不会删除，目录会出现新旧两套商品。需要一次 reset 或改回旧 ID。
 3. **校验脚本两套。** mandate-wallet 阶段 1 已有 `validate-fixtures.ts`；Hackathon 版本（导出 `validateFixtures()`，含截图 SHA-256 校验）与之不同，`fixtures.test.ts` 依赖后者。需选一套。
 4. 已确认的事实：Qi 的 README 也指出 S1 同价 HK$138 时排序会选 B 家（与上一条汇报第 1 点一致），并明确"不能为展示 A 强改排序或价格"。S1 预期需按此更新。
+
+## 2026-10-03 02:52 第 1 步：/inbox 待确认页（lilaxie）
+
+做了什么
+- `/inbox`：列出 awaiting_confirmation 任务；标题链接到 `/task/[id]`；显示购物车（商家、商品、含运费总额、手续费、支付方式）、命中的 REVIEW 规则（规则人话）、30 分钟倒计时（每秒更新，到 0 显示"已过期"并隐藏按钮）、确认按钮（POST `/api/confirmations { taskId, cartId, cartVersion, ruleIds }`，ruleIds 为全部 REVIEW 规则）和取消按钮（POST `/api/tasks/[id]/cancel`）。含 `blocking` 规则（INFO_MISSING）时不显示确认。
+- `src/lib/task-view.ts` 新增 `InboxItem` / `InboxResponse` / `ConfirmationRequest`，`CHECKPOINT_LABEL` 移到这里共用。
+- `src/lib/mock-tasks.ts` 新增 `MOCK_INBOX`（来自 mock-s2）；mock-s2、mock-s3 改为授权书 v2、v3。
+- 抽出 `src/components/section-tag.tsx`（SectionTag、MockBanner）和 `src/lib/use-now.ts`（渲染期不调用 Date.now()），`/task/[id]` 改用它们。
+
+怎么验证
+- `npm run typecheck`、`npm run lint`、`npm run test:unit`（39 通过）、`npx next build`（/inbox 为动态路由）。未连数据库，未运行 dev，未截图。
+
+遗留问题
+- 取消接口 `POST /api/tasks/[id]/cancel` 不在 MANUAL §7.2，需李启成确认（见 DECISIONS）。
+- 确认后的提示按响应里的 `task.status` / `order.status` 判断（completed → 已付款；awaiting_confirmation → 购物车已变化），需与阶段 3A 实际响应对齐。
