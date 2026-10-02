@@ -2,13 +2,13 @@ import Link from "next/link";
 import type { SessionUser } from "@/server/auth/session";
 import { LogoutButton } from "./logout-button";
 
-const NAV = [
-  { href: "/", label: "首页" },
-  { href: "/mandate/new", label: "新建授权" },
-  { href: "/inbox", label: "待确认" },
-  { href: "/ledger", label: "记录" },
-  { href: "/pay-methods", label: "支付方式" },
-] as const;
+const NAV: { href: string; label: string; ready: boolean }[] = [
+  { href: "/", label: "首页", ready: true },
+  { href: "/mandate/new", label: "新建授权", ready: true },
+  { href: "/inbox", label: "待确认", ready: false },
+  { href: "/ledger", label: "记录", ready: false },
+  { href: "/pay-methods", label: "支付方式", ready: false },
+];
 
 export function AppShell({ user, children }: { user: SessionUser; children: React.ReactNode }) {
   return (
@@ -21,11 +21,17 @@ export function AppShell({ user, children }: { user: SessionUser; children: Reac
               MandateWallet
             </Link>
             <nav className="hidden gap-4 text-sm text-zinc-600 sm:flex">
-              {NAV.map((n) => (
-                <Link key={n.href} href={n.href} className="hover:text-zinc-900">
-                  {n.label}
-                </Link>
-              ))}
+              {NAV.map((n) =>
+                n.ready ? (
+                  <Link key={n.href} href={n.href} className="hover:text-zinc-900">
+                    {n.label}
+                  </Link>
+                ) : (
+                  <span key={n.href} className="cursor-not-allowed text-zinc-400" title="即将上线">
+                    {n.label}
+                  </span>
+                ),
+              )}
             </nav>
           </div>
           <div className="flex items-center gap-3 text-sm">

@@ -7,8 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { fmtDate, fmtHKD } from "@/lib/format";
 import { getSession } from "@/server/auth/session";
 import { getBuyerBalanceMinor } from "@/server/ledger/queries";
-import { listMandates } from "@/server/mandates/service";
+import { summarizeMandates } from "@/server/mandates/service";
 import { getBuyerCredential } from "@/server/trust/credentials";
+import { TaskPrompt } from "./task-prompt";
 
 const STATUS_LABEL: Record<string, string> = { active: "生效中", revoked: "已撤销", expired: "已过期", completed: "已完成" };
 
@@ -16,41 +17,26 @@ export default async function HomePage() {
   const user = await getSession();
   if (!user) redirect("/login");
 
-  const [balance, credential, mandates] = await Promise.all([
+  const [balance, credential, { mandates, activeCount, availableMinor }] = await Promise.all([
     getBuyerBalanceMinor(user.id),
     getBuyerCredential(user.id),
-    listMandates(user.id),
+    summarizeMandates(user.id),
   ]);
 
   return (
     <AppShell user={user}>
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
+      <TaskPrompt />
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+        <Metric label="钱包余额（模拟）" value={fmtHKD(balance)} />
+        <Metric label="生效中的授权" value={`${activeCount} 份`} hint={`共 ${mandates.length} 份`} />
+        <Metric label="Agent 还能花" value={fmtHKD(availableMinor)} hint="所有生效授权的剩余额度" />
+        <Card size="sm">
           <CardHeader>
-            <CardDescription>钱包余额（模拟）</CardDescription>
-            <CardTitle className="text-2xl tabular-nums">{fmtHKD(balance)}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>身份凭证</CardDescription>
+            <CardDescription>身份凭证 · Trust</CardDescription>
             <CardTitle className="flex items-center gap-2 text-base">
-              {credential ? (
-                <>
-                  <Badge variant={credential.status === "valid" ? "default" : "destructive"}>{credential.status}</Badge>
-                  <span className="text-zinc-600">{credential.type} · {credential.issuer}</span>
-                </>
-              ) : (
-                <Badge variant="destructive">missing</Badge>
-              )}
-            </CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>下一步</CardDescription>
-            <CardTitle className="text-base">
-              <Button render={<Link href="/mandate/new" />}>写一份授权书</Button>
+              <Badge variant={credential?.status === "valid" ? "default" : "destructive"}>{credential?.status ?? "missing"}</Badge>
+              <span className="truncate text-sm font-normal text-zinc-600">{credential?.type ?? "无"}</span>
             </CardTitle>
           </CardHeader>
         </Card>
@@ -88,5 +74,17 @@ export default async function HomePage() {
         )}
       </section>
     </AppShell>
+  );
+}
+
+function Metric({ label, value, hint }: { label: string; value: string; hint?: string }) {
+  return (
+    <Card size="sm">
+      <CardHeader>
+        <CardDescription>{label}</CardDescription>
+        <CardTitle className="text-xl tabular-nums">{value}</CardTitle>
+        {hint && <p className="text-xs text-zinc-500">{hint}</p>}
+      </CardHeader>
+    </Card>
   );
 }

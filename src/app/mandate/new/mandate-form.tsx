@@ -41,10 +41,10 @@ function toLocalDateInput(iso: string): string {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 }
 
-export function MandateForm({ methods }: { methods: { id: string; label: string }[] }) {
+export function MandateForm({ methods, initialTask }: { methods: { id: string; label: string }[]; initialTask?: string }) {
   const router = useRouter();
   const [draft, setDraft] = useState<MandateDraft>({
-    taskText: "帮我补一瓶洗衣液，2L 以上，HK$150 以内，可以换牌子，这周内买到。",
+    taskText: initialTask ?? "帮我补一瓶洗衣液，2L 以上，HK$150 以内，可以换牌子，这周内买到。",
     task: { query: "洗衣液", qty: 1, minSpec: { volumeMl: 2000 }, allowSubstituteBrand: true, preferredBrand: "品牌甲" },
     categories: ["household"],
     merchantDeny: [],

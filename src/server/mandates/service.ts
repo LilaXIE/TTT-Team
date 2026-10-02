@@ -225,6 +225,15 @@ export async function listMandates(userId: string): Promise<MandateRecord[]> {
   return r.rows.map(toRecord);
 }
 
+/** 首页汇总：生效中（active 且未过期）的数量与剩余额度合计。 */
+export async function summarizeMandates(userId: string) {
+  const mandates = await listMandates(userId);
+  const now = Date.now();
+  const active = mandates.filter((m) => m.status === "active" && new Date(m.expiresAt).getTime() > now);
+  const availableMinor = active.reduce((s, m) => s + BigInt(m.remainingMinor), 0n);
+  return { mandates, activeCount: active.length, availableMinor };
+}
+
 /** 撤销：status=revoked + 事件。之后任何 pay 都 DENY MANDATE_REVOKED（结算事务内重读）。幂等。 */
 export async function revokeMandate(userId: string, id: string): Promise<MandateRecord> {
   return withTransaction(async (tx) => {

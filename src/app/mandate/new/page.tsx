@@ -4,9 +4,11 @@ import { getSession } from "@/server/auth/session";
 import { loadRates } from "@/server/fixtures";
 import { MandateForm } from "./mandate-form";
 
-export default async function NewMandatePage() {
+export default async function NewMandatePage({ searchParams }: { searchParams: Promise<{ task?: string | string[] }> }) {
   const user = await getSession();
   if (!user) redirect("/login");
+  const { task } = await searchParams;
+  const initialTask = (Array.isArray(task) ? task[0] : task)?.slice(0, 200) || undefined;
   const rates = loadRates();
   const methods = rates.methods.map((m) => ({ id: m.id, label: m.label }));
   return (
@@ -17,7 +19,7 @@ export default async function NewMandatePage() {
           这是 Agent 唯一能花钱的依据。右侧三张卡会随你的设置实时变化，让你在签发前就知道它会怎么做。
         </p>
       </div>
-      <MandateForm methods={methods} />
+      <MandateForm methods={methods} initialTask={initialTask} />
     </AppShell>
   );
 }
