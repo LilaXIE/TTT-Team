@@ -36,7 +36,7 @@ export function UserBubble({ b }: { b: B<"user"> }) {
 
 export function ZevSays({ children, working }: { children: React.ReactNode; working?: boolean }) {
   return (
-    <div className="flex items-start gap-3">
+    <div className="zev-line flex items-start gap-3">
       <ZevAvatar working={working} className="mt-0.5" />
       <div className="min-w-0 flex-1 pt-1 text-[15px] leading-relaxed">{children}</div>
     </div>

@@ -56,7 +56,12 @@ export function ZevCharacter({ mood = "idle", className }: { mood?: ZevMood; cla
   const pose = poseFor(mood);
   const id = useId().replace(/:/g, "");
   return (
-    <span className={cn("zev inline-block shrink-0", `zev-pose-${pose}`, `zev-mood-${mood}`, className)} aria-hidden>
+    <span className={cn("zev relative inline-block shrink-0", `zev-pose-${pose}`, `zev-mood-${mood}`, className)} aria-hidden>
+      <span className="zev-talk">
+        <i />
+        <i />
+        <i />
+      </span>
       <svg viewBox="0 0 64 64" className="size-full overflow-visible">
         <defs>
           <linearGradient id={id} x1="20" y1="8" x2="48" y2="60" gradientUnits="userSpaceOnUse">

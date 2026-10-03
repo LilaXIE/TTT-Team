@@ -150,8 +150,22 @@ export function LiveRun({ taskId }: { taskId: string }) {
       <div className="flex justify-end">
         <div className="max-w-[80%] rounded-[18px] rounded-br-md bg-ink px-4 py-2.5 text-[14px] text-white">{data.task.input_text}</div>
       </div>
-      <div className="flex items-start gap-3">
-        <ZevAvatar />
+      <div className="zev-line flex items-start gap-3">
+        <ZevAvatar
+          mood={
+            !data
+              ? "search"
+              : data.task.status === "completed"
+                ? "done"
+                : candidates.some((c) => c.decision.outcome === "ALLOW")
+                  ? "done"
+                  : candidates.some((c) => c.decision.outcome === "REVIEW")
+                    ? "ask"
+                    : candidates.length > 0
+                      ? "deny"
+                      : "search"
+          }
+        />
         <Panel className="min-w-0 flex-1">
           <p className="text-[14px] text-soft">
             {t("下面是演示目录里的商品。能不能买由规则引擎决定，不是模型决定。", "These are demo-catalogue items. The rules decide, not the model.")}

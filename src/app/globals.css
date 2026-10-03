@@ -150,24 +150,61 @@
   transform-box: fill-box;
   transform-origin: center;
 }
+.zev-talk {
+  display: none;
+  position: absolute;
+  right: -2px;
+  bottom: 2px;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+.zev-talk i {
+  display: block;
+  width: 3px;
+  height: 4px;
+  border-radius: 99px;
+  background: #6d5bd0;
+  animation: zev-bar 0.7s ease-in-out infinite;
+}
+.zev-talk i:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.zev-talk i:nth-child(3) {
+  animation-delay: 0.24s;
+}
+.zev-mood-search .zev-talk,
+.zev-mood-ask .zev-talk,
+.zev-mood-deny .zev-talk,
+.zev-mood-done .zev-talk {
+  display: flex;
+}
 .zev-pose-rest .zev-rig {
-  animation: zev-bob 3.2s ease-in-out infinite;
+  animation: zev-bob 2.4s ease-in-out infinite;
+}
+.zev-pose-rest .zev-shadow {
+  animation: zev-shadow 2.4s ease-in-out infinite;
 }
 .zev-pose-rest .zev-eyes {
-  animation: zev-blink 5s infinite;
+  animation: zev-blink 4.2s infinite;
 }
 .zev-pose-look .zev-rig {
-  animation: zev-sway 1.6s ease-in-out infinite;
+  animation: zev-sway 0.85s ease-in-out infinite;
+}
+.zev-pose-look .zev-shadow {
+  animation: zev-shadow 0.85s ease-in-out infinite;
 }
 .zev-pose-look .zev-face {
   transform: translate(2.4px, -0.6px);
 }
 .zev-pose-look .zev-eyes {
-  animation: zev-scan 1.6s ease-in-out infinite;
+  animation: zev-scan 0.85s ease-in-out infinite;
 }
 .zev-pose-ask .zev-rig {
-  transform: rotate(-8deg);
-  animation: zev-bob 2.4s ease-in-out infinite;
+  animation: zev-ask 1.1s ease-in-out infinite;
+}
+.zev-pose-ask .zev-shadow {
+  animation: zev-shadow 1.1s ease-in-out infinite;
 }
 .zev-pose-ask .zev-brow-l {
   transform: rotate(18deg);
@@ -176,7 +213,10 @@
   transform: rotate(-18deg);
 }
 .zev-pose-done .zev-rig {
-  animation: zev-hop 1.8s ease-in-out infinite;
+  animation: zev-hop 0.9s ease-in-out infinite;
+}
+.zev-pose-done .zev-shadow {
+  animation: zev-shadow 0.9s ease-in-out infinite;
 }
 .zev-pose-done .zev-brow-l {
   transform: rotate(-16deg) translateY(-0.4px);
@@ -209,13 +249,42 @@
   animation: none;
 }
 
+@keyframes zev-bar {
+  0%,
+  100% {
+    height: 3px;
+  }
+  50% {
+    height: 12px;
+  }
+}
+@keyframes zev-shadow {
+  0%,
+  100% {
+    transform: scaleX(1);
+    opacity: 0.1;
+  }
+  50% {
+    transform: scaleX(0.72);
+    opacity: 0.05;
+  }
+}
 @keyframes zev-bob {
   0%,
   100% {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(1.2px);
+    transform: translateY(-7px);
+  }
+}
+@keyframes zev-ask {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-10deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(6deg);
   }
 }
 @keyframes zev-blink {
@@ -232,10 +301,10 @@
 @keyframes zev-sway {
   0%,
   100% {
-    transform: rotate(-3deg);
+    transform: translateY(0) rotate(-12deg);
   }
   50% {
-    transform: rotate(4deg);
+    transform: translateY(-6px) rotate(12deg);
   }
 }
 @keyframes zev-scan {
@@ -244,17 +313,19 @@
     transform: translateX(0);
   }
   50% {
-    transform: translateX(1.6px);
+    transform: translateX(3px);
   }
 }
 @keyframes zev-hop {
   0%,
-  62%,
   100% {
-    transform: translateY(0);
+    transform: translateY(0) scale(1, 1);
   }
-  76% {
-    transform: translateY(-3px);
+  40% {
+    transform: translateY(-12px) scale(0.96, 1.06);
+  }
+  70% {
+    transform: translateY(1px) scale(1.06, 0.92);
   }
 }
 @keyframes zev-shake {
@@ -262,8 +333,24 @@
   100% {
     transform: rotate(-8deg) translateX(0);
   }
-  50% {
-    transform: rotate(-8deg) translateX(-1.8px);
+  25% {
+    transform: rotate(-14deg) translateX(-4px);
+  }
+  75% {
+    transform: rotate(4deg) translateX(4px);
+  }
+}
+.zev-line {
+  animation: zev-line-in 0.45s ease both;
+}
+@keyframes zev-line-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 @keyframes zev-breathe {

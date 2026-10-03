@@ -74,7 +74,7 @@ export function HomeView() {
       <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
         <section className="relative overflow-hidden rounded-[24px] border border-line bg-[linear-gradient(135deg,#ffffff_0%,#f6f4ff_55%,#ecebff_100%)] p-6 sm:p-8">
           <div className="flex items-center gap-2.5 text-[13px] text-soft">
-            <ZevAvatar className="size-7" mood={s.session.frozen ? "frozen" : "idle"} />
+            <ZevAvatar className="size-7" mood={s.session.frozen ? "frozen" : sending ? "search" : "idle"} />
             Zev
           </div>
           <h1 className="mt-5 font-heading text-[30px] leading-tight sm:text-[40px]">
