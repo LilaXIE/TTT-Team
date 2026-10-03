@@ -35,9 +35,7 @@ export function HomeView() {
   const [liveDenied, setLiveDenied] = useState<{ id: string; input_text: string } | null>(null);
   const daily = activeMandates(s)[0] ?? s.mandates[0];
   const pending = now === null ? [] : openPending(s, now);
-  const hour = now === null ? null : Number(new Date(now).toLocaleString("en-GB", { hour: "2-digit", hour12: false, timeZone: "Asia/Hong_Kong" }));
-  const greeting =
-    hour === null ? t("你好", "Hello") : hour < 12 ? t("早上好", "Good morning") : hour < 18 ? t("下午好", "Good afternoon") : t("晚上好", "Good evening");
+  const greeting = t("欢迎", "Welcome");
 
   const go = async (q: string) => {
     const clean = q.trim();

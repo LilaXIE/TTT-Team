@@ -1,6 +1,5 @@
 // Agent 任务执行。规格：docs/MANUAL.md §6.1 九步流程。
 import { AppError } from "@/contracts/errors";
-import { hkdToMinor } from "@/contracts/money";
 import type { Decision, EngineContext } from "@/contracts/schemas";
 import { createCartVersion } from "@/server/catalog/cart";
 import type { MerchantInfo, PaymentMethodInfo } from "@/server/catalog/quote";
@@ -146,13 +145,6 @@ export async function runTask(ctx: TaskContext): Promise<RunResult> {
         const merchant = buildMerchantInfo(p);
         const productWithQty = { ...p, qty: intent.qty };
         const quote = quoteCart(merchant, [productWithQty], method);
-        const range = mandate.task.priceRangeHKD;
-        if (range) {
-          const minPrice = hkdToMinor(range.min);
-          const maxPrice = hkdToMinor(range.max);
-          if (quote.subtotalMinor < minPrice || quote.subtotalMinor > maxPrice) continue;
-        }
-
         const candidateCtx: EngineContext = {
           now: new Date(),
           mandate,
@@ -215,29 +207,37 @@ export async function runTask(ctx: TaskContext): Promise<RunResult> {
           evaluatedAt: new Date().toISOString(),
         };
 
-        if (mergedDecision.outcome !== "DENY") {
-          validCandidates.push({ product: p, merchant, quote, decision: mergedDecision });
-        }
+        validCandidates.push({ product: p, merchant, quote, decision: mergedDecision });
       }
+      const payable = validCandidates.filter((c) => c.decision.outcome !== "DENY");
       steps.push({
         tool: "evaluate_candidates",
         inputSummary: `${products.length} products`,
-        outputSummary: `${validCandidates.length} valid`,
+        outputSummary: `${payable.length} valid`,
         durationMs: Date.now() - t4,
       });
 
-      if (validCandidates.length === 0) {
+      if (payable.length === 0) {
+        const shown = validCandidates.map((c) => ({
+          product: c.product,
+          merchant: c.merchant,
+          quote: { subtotalMinor: c.quote.subtotalMinor, shippingMinor: c.quote.shippingMinor, totalMinor: c.quote.totalMinor },
+          explanation: c.decision.rules.map((r) => r.message).join(" "),
+          decision: c.decision,
+        }));
         await tx.query(`UPDATE tasks SET status='failed', updated_at=now() WHERE id=$1`, [ctx.taskId]);
-        await saveRun(tx, ctx.taskId, mode, steps, []);
+        await saveRun(tx, ctx.taskId, mode, steps, shown);
         return {
           taskId: ctx.taskId,
           mode,
           status: "failed",
           steps,
-          candidates,
+          candidates: shown,
           error: "所有候选均被拒绝。",
         };
       }
+      validCandidates.length = 0;
+      validCandidates.push(...payable);
 
       // 同总价时优先资质存续时间更长的商家，再按送达天数；保证演示数据中的 A 家作为 S1 首选。
       validCandidates.sort((a, b) => {

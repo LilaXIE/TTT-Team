@@ -32,6 +32,24 @@ export function extractIntentFallback(text: string): ExtractedIntent {
   const minSpec: Record<string, number> = {};
   let maxPriceMinor: bigint | null = null;
 
+  const lower = cleaned.toLowerCase();
+  const aliases: Array<[string, string]> = [
+    ["laundry liquid", "洗衣液"],
+    ["laundry detergent", "洗衣液"],
+    ["dish soap", "洗洁精"],
+    ["dishwashing", "洗洁精"],
+    ["facial tissue", "纸巾"],
+    ["tissue", "纸巾"],
+    ["paper towel", "纸巾"],
+    ["tumbler", "保温杯"],
+    ["thermos", "保温杯"],
+    ["vitamin", "维他命"],
+    ["detergent", "洗衣液"],
+    ["laundry", "洗衣液"],
+  ];
+  const alias = aliases.find(([phrase]) => lower.includes(phrase));
+  if (alias) query = alias[1];
+
   // 优先识别演示目录中的商品关键词；再退回清理后的首个词。
   const knownQueries = [
     "洗衣液",
@@ -57,13 +75,16 @@ export function extractIntentFallback(text: string): ExtractedIntent {
     "沐浴露",
   ];
   const known = knownQueries.find((keyword) => cleaned.includes(keyword));
-  if (known) {
+  if (alias) {
+    query = alias[1];
+  } else if (known) {
     query = known;
   } else {
     const normalized = cleaned
       .replace(/帮我|请|给我|补|购买|买|一瓶|一件|一个|一盒|一包|一箱/g, " ")
       .trim();
-    const words = normalized.split(/[\s,，、]+/).filter((word) => word && !STOP_WORDS.has(word));
+    const englishStop = new Set(["a", "an", "the", "buy", "get", "me", "my", "another", "pack", "bottle", "of", "under", "within", "this", "week", "help", "carefully", "pick"]);
+    const words = normalized.split(/[\s,，、.]+/).filter((word) => word && !STOP_WORDS.has(word) && !englishStop.has(word.toLowerCase()) && word.length > 1);
     if (words.length > 0) query = words[0];
   }
 
@@ -98,7 +119,7 @@ export function extractIntentFallback(text: string): ExtractedIntent {
   }
 
   // 价格上限："150 以内"、"≤150"
-  const priceMatch = cleaned.match(/(\d+)\s*以内/) || cleaned.match(/≤\s*(\d+)/);
+  const priceMatch = cleaned.match(/(\d+)\s*以内/) || cleaned.match(/≤\s*(\d+)/) || cleaned.match(/(?:under|below|cap(?:ped)? at)\s*(?:hk\$)?\s*(\d+)/i) || cleaned.match(/hk\$\s*(\d+)/i);
   if (priceMatch) {
     maxPriceMinor = BigInt(parseInt(priceMatch[1], 10)) * 100n;
   }
