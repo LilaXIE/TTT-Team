@@ -11,9 +11,11 @@ import { MandateEditor, MandatePreview, draftError } from "@/components/app/mand
 import { Chip, Countdown, Eyebrow, Money, OutcomeChip, Panel, ProductThumb, SimNote, ZevAvatar } from "@/components/app/primitives";
 import { useStepUp } from "@/components/app/step-up";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { fmtDateTime, fmtMoney } from "@/lib/format";
 import { useLang } from "@/lib/i18n";
+import { createServerMandate } from "@/lib/live";
 import { requestHigherCap, signDraft } from "@/lib/mock/agent";
 import { METHODS, merchantOf, productOf } from "@/lib/mock/catalog";
 import { evaluate } from "@/lib/mock/evaluate";
@@ -113,7 +115,11 @@ export function DraftBlock({ b, index, taskId }: { b: B<"draft">; index: number;
         en: `“${fields.title.en}”: ≤ ${fmtMoney(fields.perTxnMinor, "en")} per order, ≤ ${fmtMoney(fields.totalMinor, "en")} total, up to ${fields.maxPurchases} purchases, valid ${fields.days} days.`,
       },
     });
-    if (ok) signDraft(taskId, index, fields);
+    if (!ok) return;
+    const first = s.tasks.find((x) => x.id === taskId)?.blocks.find((x) => x.kind === "user");
+    const text = first && first.kind === "user" ? (typeof first.text === "string" ? first.text : first.text.zh) : fields.title.zh;
+    await createServerMandate(fields, text);
+    signDraft(taskId, index, fields);
   };
 
   return (
@@ -444,16 +450,129 @@ export function DeniedBlock({ b, taskId }: { b: B<"denied">; taskId: string }) {
   );
 }
 
+export function fillComposer(text: string) {
+  window.dispatchEvent(new CustomEvent("zev-fill", { detail: text }));
+  document.getElementById("task-composer")?.focus();
+}
+
+const GUIDE = [
+  {
+    key: "what",
+    zh: "买什么",
+    en: "What",
+    options: [
+      ["洗衣液", "laundry liquid"],
+      ["抽纸", "tissue"],
+      ["水杯", "a cup"],
+      ["洗洁精", "dish soap"],
+      ["维生素", "vitamins"],
+    ],
+  },
+  {
+    key: "size",
+    zh: "规格",
+    en: "Size",
+    options: [
+      ["2L 以上", "2L or more"],
+      ["小包装", "a small pack"],
+      ["不限规格", "any size"],
+    ],
+  },
+  {
+    key: "budget",
+    zh: "预算",
+    en: "Budget",
+    options: [
+      ["100 以内", "under 100"],
+      ["150 以内", "under 150"],
+      ["不限预算", "no budget cap"],
+    ],
+  },
+  {
+    key: "when",
+    zh: "什么时候要",
+    en: "When",
+    options: [
+      ["今天到", "today"],
+      ["这周内", "this week"],
+      ["不急", "no rush"],
+    ],
+  },
+] as const;
+
+export function NeedGuide({ onApply }: { onApply?: (text: string) => void }) {
+  const { t, lang } = useLang();
+  const [open, setOpen] = useState(false);
+  const [picked, setPicked] = useState<Record<string, string>>({});
+  const sentence = GUIDE.map((g) => picked[g.key]).filter((v) => v && !v.startsWith("不")).join("，");
+  const apply = () => {
+    const text = sentence ? t(`帮我买${sentence}`, `Get me ${sentence}`) : t("帮我买日用品", "Get me household supplies");
+    if (onApply) onApply(text);
+    else fillComposer(text);
+    setOpen(false);
+  };
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="mx-auto flex items-center gap-2 rounded-full border border-dashed border-line px-4 py-2 text-[13px] text-soft transition-colors hover:border-violet hover:text-violet"
+      >
+        <Sparkles className="size-4" />
+        {t("帮我把需求说清楚", "Help me say what I want")}
+      </button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="rounded-[24px] p-6 sm:max-w-md">
+          <DialogTitle className="font-heading text-xl">{t("先选几个条件", "Pick a few filters")}</DialogTitle>
+          <DialogDescription>{t("选完我会写成一句话放进对话框。这只改搜索，不改你已经签过的金额上限。", "I'll turn this into one sentence in the box. It only changes the search, not a cap you already signed.")}</DialogDescription>
+          <div className="space-y-3">
+            {GUIDE.map((g) => (
+              <div key={g.key}>
+                <div className="mb-1.5 text-[12px] text-soft">{lang === "zh" ? g.zh : g.en}</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {g.options.map(([zh, en]) => {
+                    const label = lang === "zh" ? zh : en;
+                    const on = picked[g.key] === zh;
+                    return (
+                      <button
+                        key={zh}
+                        type="button"
+                        onClick={() => setPicked((p) => ({ ...p, [g.key]: on ? "" : zh }))}
+                        className={cn("rounded-full border px-3 py-1 text-[13px]", on ? "border-violet bg-violet-soft/60 text-violet" : "border-line text-ink/80 hover:border-violet")}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setOpen(false)}>
+              {t("取消", "Cancel")}
+            </Button>
+            <Button onClick={apply}>{t("写进对话框", "Put it in the box")}</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
 export function HintBlock() {
   const { t } = useLang();
   return (
-    <button
-      type="button"
-      onClick={() => document.getElementById("task-composer")?.focus()}
-      className="mx-auto flex items-center gap-2 rounded-full border border-dashed border-line px-4 py-2 text-[13px] text-soft transition-colors hover:border-violet hover:text-violet"
-    >
-      <Sparkles className="size-4" />
-      {t("没有想要的？详细描述你的需求。", "Not quite right? Describe what you want in more detail.")}
-    </button>
+    <div className="flex flex-wrap justify-center gap-2">
+      <button
+        type="button"
+        onClick={() => document.getElementById("task-composer")?.focus()}
+        className="flex items-center gap-2 rounded-full border border-dashed border-line px-4 py-2 text-[13px] text-soft transition-colors hover:border-violet hover:text-violet"
+      >
+        <Sparkles className="size-4" />
+        {t("没有想要的？详细描述你的需求。", "Not quite right? Describe what you want in more detail.")}
+      </button>
+      <NeedGuide />
+    </div>
   );
 }

@@ -100,15 +100,17 @@ export function AppShell({ demoMode, children }: { demoMode: boolean; children: 
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 bg-canvas/85 px-4 backdrop-blur sm:px-6 lg:px-10">
+          <header className="sticky top-0 z-50 flex h-14 items-center justify-between gap-3 bg-canvas/85 px-4 backdrop-blur sm:px-6 lg:px-10">
             <Link href="/" className="md:hidden">
               <Logo />
             </Link>
             <div className="hidden md:block" />
             <div className="flex items-center gap-2">
-              <Link href="/inbox" className="relative grid size-9 place-items-center rounded-full text-ink/70 hover:bg-white md:hidden" aria-label={t("待确认", "To approve")}>
+              <Link href="/inbox" className="relative grid size-10 place-items-center rounded-full text-ink/70 hover:bg-white" aria-label={t("通知 · 待确认", "Notifications · to approve")}>
                 <Bell className="size-[18px]" />
-                {pendingCount > 0 && <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-violet" />}
+                {pendingCount > 0 && (
+                  <span className="absolute top-1 right-1 grid min-w-4 place-items-center rounded-full bg-violet px-1 text-[10px] text-white">{pendingCount}</span>
+                )}
               </Link>
               <LangToggle />
             </div>

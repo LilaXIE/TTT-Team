@@ -111,6 +111,8 @@ export function HomeView() {
             <Money minor={daily.remainingMinor} className="mt-1 block font-heading text-[26px] leading-tight" />
             <div className="text-[12px] text-soft">
               {t("共", "of")} <Money minor={daily.totalMinor} />
+              {" · "}
+              {t("签过的额度里还没用完的，不是账户现金", "unused allowance you signed, not cash")}
             </div>
             <Link href={`/mandate/${daily.id}`} className="mt-2 inline-flex items-center gap-1 text-[13px] text-violet hover:underline">
               {t("看边界", "See limits")} <ChevronRight className="size-3.5" />
@@ -136,7 +138,7 @@ export function HomeView() {
         <Panel className="flex flex-col">
           <div className="text-[13px] text-soft">{t("Agent 零钱包", "Agent pocket")}</div>
           <Money minor={s.pocketMinor} className="mt-1 block font-heading text-[26px] leading-tight" />
-          <div className="mt-2 text-[13px] text-soft">{t("从 Tap & Go 充值，只给 Zev 用（模拟）", "Funded from Tap & Go, only for Zev (simulated)")}</div>
+          <div className="mt-2 text-[13px] text-soft">{t("从 Tap & Go 充进来、只给 Zev 用的钱。和授权额度不会自动互转。", "Money moved in from Tap & Go, only for Zev. It does not become mandate allowance on its own.")}</div>
           <Link href="/wallet" className="mt-auto inline-flex items-center gap-1 pt-3 text-[13px] text-violet hover:underline">
             {t("打开钱包", "Open wallet")} <ChevronRight className="size-3.5" />
           </Link>

@@ -119,7 +119,7 @@ export function activeMandates(s: MockState): MockMandate[] {
   return s.mandates.filter((m) => m.status === "active");
 }
 
-/** 如果账号此刻被盗，最多损失 = min(零钱包余额, 所有生效授权的剩余额度之和) */
+/** Zev 现在最多能花 = min(零钱包余额, 所有生效授权的剩余额度之和) */
 export function maxLossMinor(s: MockState): bigint {
   if (s.session.frozen) return 0n;
   const remaining = activeMandates(s).reduce((a, m) => a + BigInt(m.remainingMinor), 0n);
@@ -466,8 +466,8 @@ export const actions = {
     });
   },
 
-  requestSupport(orderId: string) {
-    set((s) => ({ ...s, orders: s.orders.map((o) => (o.id === orderId ? { ...o, support: "manual_review" as const } : o)) }));
+  requestSupport(orderId: string, note?: string) {
+    set((s) => ({ ...s, orders: s.orders.map((o) => (o.id === orderId ? { ...o, support: "manual_review" as const, supportNote: note } : o)) }));
   },
 
   // ---- 偏好与连接 ----

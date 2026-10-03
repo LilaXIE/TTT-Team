@@ -2,11 +2,13 @@
 
 import { Fingerprint, Hourglass, ShieldOff } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { hkdToMinor } from "@/contracts/money";
 import { MandateCard, QuotaRing, useMandateStatusLabel } from "@/components/app/mandate-card";
 import { Chip, Countdown, Eyebrow, Money, PageHeader, Panel, PanelTitle, ProductThumb } from "@/components/app/primitives";
+import { Composer } from "@/components/app/task/task-view";
 import { useStepUp } from "@/components/app/step-up";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -14,11 +16,14 @@ import { Input } from "@/components/ui/input";
 import { fmtDate, fmtDateTime, fmtMoney } from "@/lib/format";
 import { useLang } from "@/lib/i18n";
 import { METHODS, productOf } from "@/lib/mock/catalog";
+import { startTask } from "@/lib/mock/agent";
+import { startLiveTask } from "@/lib/live";
 import { actions, useMock, useNow, useSessionMode } from "@/lib/mock/store";
 import { CATEGORY_LABEL } from "@/lib/rule-text";
 
 export function MandateDetail({ id }: { id: string }) {
   const { t, lang } = useLang();
+  const router = useRouter();
   const s = useMock();
   const mode = useSessionMode();
   const stepUp = useStepUp();
@@ -243,6 +248,26 @@ export function MandateDetail({ id }: { id: string }) {
             </ol>
             <p className="mt-4 text-[12px] text-soft">{t("每笔订单都记着它用的是哪个版本。", "Every order records which version it used.")}</p>
           </Panel>
+          {active && (
+            <Panel>
+              <PanelTitle>{t("还想改要求", "Change what to buy")}</PanelTitle>
+              <p className="mb-3 text-[13px] text-soft">{t("授权还在。下面补充规格、牌子或送到时间，会按同一份授权重新找。金额上限不会在这里被改掉。", "The mandate stays. Add a spec, brand or delivery time below and Zev searches again under the same mandate. Caps are not changed here.")}</p>
+              <Composer
+                placeholder={t("例如：改成无香，今天到", "e.g. unscented, arrives today")}
+                disabled={mode === "attacker" || s.session.frozen}
+                onSend={(text) => {
+                  void (async () => {
+                    const liveId = await startLiveTask(`${m.title[lang]}。${text}`).catch(() => null);
+                    if (liveId) {
+                      router.push(`/task/${liveId}`);
+                      return;
+                    }
+                    router.push(`/task/${startTask(text)}`);
+                  })();
+                }}
+              />
+            </Panel>
+          )}
           {m.revokedAt && (
             <Panel className="text-[13px]">
               <Eyebrow className="mb-1">{t("已撤销", "Revoked")}</Eyebrow>

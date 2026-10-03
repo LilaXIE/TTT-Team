@@ -1,12 +1,13 @@
 "use client";
 
 import { Hourglass, MapPin, TriangleAlert } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Countdown, PageHeader, Panel, PanelTitle } from "@/components/app/primitives";
 import { useStepUp } from "@/components/app/step-up";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { fmtDateTime } from "@/lib/format";
+import { api } from "@/lib/api";
 import { useLang } from "@/lib/i18n";
 import { actions, useMock, useSessionMode } from "@/lib/mock/store";
 import { BackToMe } from "../back-link";
@@ -17,7 +18,14 @@ export default function AddressPage() {
   const mode = useSessionMode();
   const stepUp = useStepUp();
   const [next, setNext] = useState("");
+  const [saved, setSaved] = useState<string | null>(null);
   const waiting = s.cooling.filter((c) => c.kind === "address" && c.status === "waiting");
+
+  useEffect(() => {
+    void api<{ addresses: Array<{ address: string; isDefault: boolean }> }>("/api/profile")
+      .then((res) => setSaved(res.addresses.find((a) => a.isDefault)?.address ?? res.addresses[0]?.address ?? null))
+      .catch(() => setSaved(null));
+  }, []);
 
   const submit = async () => {
     const v = next.trim();
@@ -25,6 +33,15 @@ export default function AddressPage() {
     const ok = await stepUp({ title: { zh: "修改收货地址", en: "Change address" }, detail: { zh: `改为：${v}。24 小时后生效。`, en: `To: ${v}. Effective in 24 hours.` } });
     if (!ok) return;
     actions.requestAddressChange(v, mode === "attacker");
+    try {
+      await api("/api/profile", {
+        method: "POST",
+        json: { action: "saveAddress", address: { name: s.user.name, phone: "85200000000", address: v, isDefault: true } },
+      });
+      setSaved(v);
+    } catch {
+      // 没登录时仍保留页面上的冷静期演示。
+    }
     setNext("");
   };
 
@@ -41,7 +58,7 @@ export default function AddressPage() {
               </span>
               <div>
                 <div className="text-[12px] text-soft">{t("当前地址", "Current")}</div>
-                <div className="mt-0.5 text-[16px]">{s.address[lang]}</div>
+                <div className="mt-0.5 text-[16px]">{saved ?? s.address[lang]}</div>
               </div>
             </div>
           </Panel>

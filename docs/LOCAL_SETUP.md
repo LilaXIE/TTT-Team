@@ -18,10 +18,10 @@ postgresql://mw:mw@localhost:5432/mandate_wallet
 
 ## 2. 配置环境变量
 
-复制模板：
+复制模板（文件名是 `.env.example`，复制出来的才叫 `.env.local`）：
 
 ```powershell
-Copy-Item .env.local.example .env.local
+Copy-Item .env.example .env.local
 ```
 
 生成密钥：

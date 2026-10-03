@@ -9,11 +9,13 @@ import { Chip, Eyebrow, Money, OutcomeChip, PageHeader, Panel, PanelTitle, Produ
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { fmtDateTime } from "@/lib/format";
+import { api } from "@/lib/api";
 import { useLang } from "@/lib/i18n";
 import { METHODS, merchantOf, productOf } from "@/lib/mock/catalog";
 import { actions, useMock, useSessionMode } from "@/lib/mock/store";
 import type { MockOrder } from "@/lib/mock/types";
 import { RULE_TITLE, ruleText } from "@/lib/rule-text";
+import { workStepTitle, type WorkStep } from "@/lib/work-log";
 
 type Filter = "all" | "auto" | "confirmed" | "support";
 
@@ -30,10 +32,17 @@ const CHECKED = [
 ];
 
 export function LedgerView({ focus }: { focus?: string }) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const s = useMock();
   const [filter, setFilter] = useState<Filter>("all");
   const [open, setOpen] = useState<string | null>(focus ?? null);
+  const [liveOrders, setLiveOrders] = useState<Array<{ id: string; status: string; total_minor: string; task_id: string; task_text: string; steps: WorkStep[] | null }>>([]);
+  const [liveOpen, setLiveOpen] = useState<string | null>(null);
+  useEffect(() => {
+    void api<{ orders: Array<{ id: string; status: string; total_minor: string; task_id: string; task_text: string; steps: WorkStep[] | null }> }>("/api/orders")
+      .then((res) => setLiveOrders(res.orders))
+      .catch(() => setLiveOrders([]));
+  }, []);
   useEffect(() => {
     if (focus) document.getElementById(`order-${focus}`)?.scrollIntoView({ block: "center" });
   }, [focus]);
@@ -53,6 +62,43 @@ export function LedgerView({ focus }: { focus?: string }) {
       <PageHeader eyebrow={t("记录", "Records")} title={t("每一笔都能追溯", "Every order, fully traceable")} description={t("从你签的授权，到 Zev 看过的候选、规则怎么判、用什么付的款，都在这里。", "From the mandate you signed to what Zev looked at, how the rules decided and how it paid.")} />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div>
+          {liveOrders.length > 0 && (
+            <Panel className="mb-4">
+              <PanelTitle>{t("规则引擎记下的订单", "Orders from the rules engine")}</PanelTitle>
+              <ul className="space-y-2">
+                {liveOrders.map((o) => (
+                  <li key={o.id} className="text-[14px]">
+                    <button type="button" onClick={() => setLiveOpen(liveOpen === o.id ? null : o.id)} className="flex w-full items-center justify-between gap-3 text-left">
+                      <span className="min-w-0 truncate">{o.task_text}</span>
+                      <span className="shrink-0 text-soft">
+                        {o.status} · <Money minor={o.total_minor} />
+                      </span>
+                    </button>
+                    {liveOpen === o.id && (
+                      <div className="mt-2 rounded-2xl bg-canvas/70 p-3">
+                        <div className="mb-2 text-[12px] text-soft">{t("Zev 的工作记录", "Zev's work log")}</div>
+                        {(o.steps ?? []).length === 0 ? (
+                          <p className="text-[13px] text-soft">{t("这次没有留下步骤。", "No steps were saved for this one.")}</p>
+                        ) : (
+                          <ol className="space-y-1.5">
+                            {(o.steps ?? []).map((step, i) => (
+                              <li key={`${step.tool}-${i}`}>
+                                <div>{workStepTitle(step.tool, lang)}</div>
+                                {step.outputSummary && <div className="text-[12px] text-soft">{step.outputSummary}</div>}
+                              </li>
+                            ))}
+                          </ol>
+                        )}
+                        <Link href={`/task/${o.task_id}`} className="mt-2 inline-block text-[13px] text-violet hover:underline">
+                          {t("打开这次任务", "Open this task")}
+                        </Link>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </Panel>
+          )}
           <div className="mb-4 inline-flex flex-wrap rounded-full bg-white p-1 ring-1 ring-line">
             {tabs.map((tab) => (
               <button key={tab.k} type="button" onClick={() => setFilter(tab.k)} className={cn("h-8 rounded-full px-3.5 text-[13px] transition-colors", filter === tab.k ? "bg-ink text-white" : "text-soft hover:text-ink")}>
@@ -130,7 +176,8 @@ function Trace({ o }: { o: MockOrder }) {
   const mode = useSessionMode();
   const [why, setWhy] = useState(false);
   const [support, setSupport] = useState(false);
-  const [reason, setReason] = useState<"missing" | "quality" | "not_me">("missing");
+  const [reason, setReason] = useState<"missing" | "quality" | "not_me" | "other">("missing");
+  const [otherText, setOtherText] = useState("");
   const m = s.mandates.find((x) => x.id === o.mandateId);
   const task = s.tasks.find((x) => x.id === o.taskId);
   const method = METHODS.find((x) => x.id === o.method);
@@ -171,6 +218,17 @@ function Trace({ o }: { o: MockOrder }) {
                 return u && u.kind === "user" ? (typeof u.text === "string" ? u.text : u.text[lang]) : "";
               })()}
             </Link>
+          )}
+          {task && task.timeline.length > 0 && (
+            <ol className="mt-3 space-y-2">
+              <li className="text-[12px] text-soft">{t("Zev 的工作记录", "Zev's work log")}</li>
+              {task.timeline.map((step) => (
+                <li key={step.checkpoint}>
+                  <div className="text-[13px]">{step.title[lang]}</div>
+                  <div className="text-[12px] text-soft">{step.detail[lang]}</div>
+                </li>
+              ))}
+            </ol>
           )}
         </Step>
 
@@ -249,7 +307,9 @@ function Trace({ o }: { o: MockOrder }) {
             ) : (
               <Chip tone="ask">
                 <Clock className="size-3" />
-                {t("人工处理中，预计 1 个工作日内回复（模拟）", "With a person, reply within 1 business day (simulated)")}
+                {o.supportNote
+                  ? t(`人工处理中：${o.supportNote}`, `With a person: ${o.supportNote}`)
+                  : t("人工处理中，预计 1 个工作日内回复（模拟）", "With a person, reply within 1 business day (simulated)")}
               </Chip>
             )}
             <Link href="/pay-methods" className="text-[13px] text-violet hover:underline">
@@ -269,6 +329,7 @@ function Trace({ o }: { o: MockOrder }) {
                 ["missing", t("没收到货", "Didn't arrive")],
                 ["quality", t("东西有问题", "Something's wrong with it")],
                 ["not_me", t("这笔不是我让买的", "I didn't ask for this")],
+                ["other", t("其他", "Something else")],
               ] as const
             ).map(([k, label]) => (
               <button key={k} type="button" onClick={() => setReason(k)} className={cn("flex w-full items-center rounded-2xl border px-4 py-3 text-left text-[14px] transition-colors", reason === k ? "border-violet bg-violet-soft/60" : "border-line hover:border-soft/50")}>
@@ -276,6 +337,15 @@ function Trace({ o }: { o: MockOrder }) {
               </button>
             ))}
           </div>
+          {reason === "other" && (
+            <textarea
+              value={otherText}
+              onChange={(e) => setOtherText(e.target.value)}
+              rows={3}
+              placeholder={t("写下原因", "Write the reason")}
+              className="w-full resize-none rounded-2xl border border-line bg-white px-3 py-2 text-[14px] outline-none focus:border-violet"
+            />
+          )}
           {reason === "not_me" && (
             <p className="rounded-2xl bg-no-soft p-3 text-[13px] text-no">
               {t("如果怀疑账号被盗，先去「我的 › 安全」一键冻结，再提交。", "If you think your account is compromised, freeze it under Me › Security first.")}
@@ -289,8 +359,15 @@ function Trace({ o }: { o: MockOrder }) {
               {t("取消", "Cancel")}
             </Button>
             <Button
+              disabled={reason === "other" && !otherText.trim()}
               onClick={() => {
-                actions.requestSupport(o.id);
+                const labels = {
+                  missing: t("没收到货", "Didn't arrive"),
+                  quality: t("东西有问题", "Something's wrong with it"),
+                  not_me: t("这笔不是我让买的", "I didn't ask for this"),
+                  other: otherText.trim(),
+                };
+                actions.requestSupport(o.id, labels[reason]);
                 setSupport(false);
                 toast(t("已提交，转人工处理（模拟）", "Submitted to a person (simulated)"));
               }}

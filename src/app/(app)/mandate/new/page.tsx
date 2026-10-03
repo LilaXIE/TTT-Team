@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { fmtMoney } from "@/lib/format";
 import { useLang } from "@/lib/i18n";
+import { createServerMandate } from "@/lib/live";
 import { draftFromIntent } from "@/lib/mock/agent";
 import { actions, useSessionMode } from "@/lib/mock/store";
 import type { DraftFields, QueryKind } from "@/lib/mock/types";
@@ -45,6 +46,7 @@ export default function NewMandatePage() {
       },
     });
     if (!ok) return;
+    await createServerMandate(fields, fields.title.zh);
     const id = actions.signMandate(fields, "");
     router.push(`/mandate/${id}`);
   };

@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // 关掉开发角标，避免它盖住右上角的待确认铃铛。
+  devIndicators: false,
   // 开发时允许局域网内队友用 IP 访问（next dev -H 0.0.0.0）。仅对 dev server 生效，生产构建忽略。
   allowedDevOrigins: ["172.16.*.*", "192.168.*.*", "10.*.*.*", "*.local"],
   // Docker 镜像用 standalone 输出（阶段 4）

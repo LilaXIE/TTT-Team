@@ -33,7 +33,29 @@ export function extractIntentFallback(text: string): ExtractedIntent {
   let maxPriceMinor: bigint | null = null;
 
   // 优先识别演示目录中的商品关键词；再退回清理后的首个词。
-  const knownQueries = ["洗衣液", "抽纸", "洗洁精", "垃圾袋", "维他命", "保健品", "抹布", "柔顺剂"];
+  const knownQueries = [
+    "洗衣液",
+    "洗衣凝珠",
+    "柔顺剂",
+    "抽纸",
+    "纸巾",
+    "卷纸",
+    "洗洁精",
+    "垃圾袋",
+    "维他命",
+    "维生素",
+    "保健品",
+    "钙片",
+    "鱼油",
+    "保温杯",
+    "马克杯",
+    "水杯",
+    "抹布",
+    "牙刷",
+    "牙膏",
+    "洗发水",
+    "沐浴露",
+  ];
   const known = knownQueries.find((keyword) => cleaned.includes(keyword));
   if (known) {
     query = known;

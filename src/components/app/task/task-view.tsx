@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { fmtDateTime } from "@/lib/format";
 import { useLang } from "@/lib/i18n";
 import { followUp, startTask } from "@/lib/mock/agent";
+import { startLiveTask } from "@/lib/live";
+import { LiveRun } from "./live-run";
 import { useMock, useNow, useSessionMode } from "@/lib/mock/store";
 import type { Block, MockTask, TimelineStep } from "@/lib/mock/types";
 import { AwaitingBlock, DeniedBlock, DraftBlock, HintBlock, InScopeBlock, ReceiptBlock, UserBubble, WorkingBlock, ZevBlock } from "./blocks";
@@ -49,6 +51,14 @@ function BlockView({ b, index, task }: { b: Block; index: number; task: MockTask
 export function Composer({ onSend, placeholder, autoFocus, disabled }: { onSend: (text: string) => void; placeholder: string; autoFocus?: boolean; disabled?: boolean }) {
   const { t } = useLang();
   const [text, setText] = useState("");
+  useEffect(() => {
+    const onFill = (e: Event) => {
+      const detail = (e as CustomEvent<string>).detail;
+      if (typeof detail === "string") setText(detail);
+    };
+    window.addEventListener("zev-fill", onFill);
+    return () => window.removeEventListener("zev-fill", onFill);
+  }, []);
   const send = () => {
     const v = text.trim();
     if (!v || disabled) return;
@@ -132,7 +142,14 @@ export function Timeline({ task, className }: { task: MockTask; className?: stri
   );
 }
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export function TaskView({ taskId }: { taskId: string }) {
+  if (UUID.test(taskId)) return <LiveRun taskId={taskId} />;
+  return <MockTaskView taskId={taskId} />;
+}
+
+function MockTaskView({ taskId }: { taskId: string }) {
   const { t, lang } = useLang();
   const s = useMock();
   const router = useRouter();
@@ -222,13 +239,35 @@ export function NewTask({ q }: { q?: string }) {
   useEffect(() => {
     if (!q || started.current) return;
     started.current = true;
-    const id = startTask(q);
-    router.replace(`/task/${id}`);
+    void (async () => {
+      try {
+        const liveId = await startLiveTask(q);
+        if (liveId) {
+          router.replace(`/task/${liveId}`);
+          return;
+        }
+      } catch {
+        // 落到模拟任务。
+      }
+      const id = startTask(q);
+      router.replace(`/task/${id}`);
+    })();
   }, [q, router]);
 
   const start = (text: string) => {
-    const id = startTask(text);
-    router.push(`/task/${id}`);
+    void (async () => {
+      try {
+        const liveId = await startLiveTask(text);
+        if (liveId) {
+          router.push(`/task/${liveId}`);
+          return;
+        }
+      } catch {
+        // 没有登录或没有授权时，继续用页面里的模拟任务。
+      }
+      const id = startTask(text);
+      router.push(`/task/${id}`);
+    })();
   };
 
   const examples = [

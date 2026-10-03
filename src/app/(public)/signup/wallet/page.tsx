@@ -16,7 +16,7 @@ export default function SignupWalletPage() {
     <>
       <StepTitle
         title={t("连接你的钱包", "Connect your wallet")}
-        sub={t("Zev 不直接动你的钱包。它只从一个单独的「Agent 零钱包」付款，零钱包从你的钱包充值。被盗时，最多损失零钱包里的钱。", "Zev never touches your main wallet. It pays only from a separate Agent pocket that you top up. If anything goes wrong, the most you can lose is what's in the pocket.")}
+        sub={t("Zev 不直接动你的 Tap & Go。它只从一个单独的「Agent 零钱包」付款，钱要你自己充进去。没有充进去的钱，Zev 碰不到。", "Zev never touches your Tap & Go balance. It pays only from a separate Agent pocket that you top up yourself. Money you have not moved in stays out of reach.")}
       />
       <div className="rounded-2xl border border-line bg-white p-4">
         <div className="flex items-center gap-3">

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Newsreader } from "next/font/google";
 import { cookies } from "next/headers";
-import "lxgw-wenkai-webfont/lxgwwenkai-regular.css";
-import "misans/lib/Normal/MiSansVF.min.css";
+import { DeferredFonts } from "@/components/app/deferred-fonts";
 import { Toaster } from "@/components/ui/sonner";
 import { LangProvider } from "@/lib/i18n";
 import { LANG_COOKIE, type Lang } from "@/lib/lang";
@@ -22,8 +21,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang={lang === "zh" ? "zh-Hans" : "en"} className={`${inter.variable} ${newsreader.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-canvas text-ink">
         <LangProvider initial={lang}>
+          <DeferredFonts />
           {children}
-          <Toaster position="top-center" />
+          <Toaster position="top-center" closeButton />
         </LangProvider>
       </body>
     </html>

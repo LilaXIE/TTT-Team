@@ -38,10 +38,17 @@ const DEFAULTS: UserPreferences = {
   allowedMethods: ["fps", "tapngo_mc"],
 };
 
+function minorToHkd(minor: string): string {
+  const v = BigInt(minor);
+  const neg = v < 0n;
+  const abs = neg ? -v : v;
+  return `${neg ? "-" : ""}${abs / 100n}.${(abs % 100n).toString().padStart(2, "0")}`;
+}
+
 function toPreferences(row: { per_txn_cap_minor: string; total_cap_minor: string; max_purchases: number; review_when: unknown; protection_level: "standard" | "enhanced"; allowed_methods: string[] }): UserPreferences {
   return {
-    perTxnHKD: (Number(BigInt(row.per_txn_cap_minor)) / 100).toFixed(2),
-    totalHKD: (Number(BigInt(row.total_cap_minor)) / 100).toFixed(2),
+    perTxnHKD: minorToHkd(String(row.per_txn_cap_minor)),
+    totalHKD: minorToHkd(String(row.total_cap_minor)),
     maxPurchases: row.max_purchases,
     reviewWhen: ReviewWhen.parse(row.review_when),
     protectionLevel: row.protection_level,

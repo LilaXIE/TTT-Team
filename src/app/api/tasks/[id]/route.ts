@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { toResponse } from "@/contracts/errors";
 import { requireSession } from "@/server/auth/session";
 import { query } from "@/server/db/tx";
+import { json } from "@/server/http";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -13,9 +14,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       id: string;
       status: string;
       input_text: string;
+      mandate_id: string;
       created_at: Date;
     }>(
-      `SELECT id, status, input_text, created_at FROM tasks WHERE id=$1 AND user_id=$2`,
+      `SELECT id, status, input_text, mandate_id, created_at FROM tasks WHERE id=$1 AND user_id=$2`,
       [id, session.id],
     );
 
@@ -29,11 +31,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     );
 
     const decisions = await query(
-      `SELECT checkpoint, outcome, rules, created_at FROM decisions WHERE task_id=$1 ORDER BY id`,
+      `SELECT checkpoint, outcome, rules, cart_id, cart_version, created_at FROM decisions WHERE task_id=$1 ORDER BY id`,
       [id],
     );
 
-    return NextResponse.json({
+    return json({
       task: task.rows[0],
       run: run.rows[0] ?? null,
       decisions: decisions.rows,

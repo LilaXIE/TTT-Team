@@ -108,6 +108,8 @@ export interface MockOrder {
   idempotencyKey: string;
   confirmedRules: RuleId[];
   support: "none" | "manual_review";
+  /** 用户提交售后时写的原因，只用于展示 */
+  supportNote?: string;
   /** 被过滤或未选中的候选，用于记录页追溯 */
   candidates: { productId: string; outcome: Outcome; rules: RuleRef[] }[];
 }

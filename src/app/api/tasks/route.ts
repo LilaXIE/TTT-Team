@@ -1,10 +1,11 @@
 // POST /api/tasks — 创建任务并执行 Agent run
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { z } from "zod";
 import { toResponse } from "@/contracts/errors";
 import { requireSession } from "@/server/auth/session";
 import { runTask } from "@/server/agent/run";
 import { withTransaction } from "@/server/db/tx";
+import { json } from "@/server/http";
 
 const CreateTaskSchema = z.object({
   mandateId: z.string().uuid(),
@@ -35,7 +36,7 @@ export async function POST(req: NextRequest) {
       inputText: text,
     });
 
-    return NextResponse.json(result);
+    return json(result);
   } catch (e) {
     return toResponse(e);
   }
