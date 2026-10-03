@@ -24,3 +24,15 @@ S1 示例含运费 138 是单笔上限 150 的 92%，按 90% 会被判 REVIEW（
 
 生产地址 https://mandate-wallet.vercel.app（main 自动部署）。数据库 Supabase Session pooler（5432，支持事务与 SET LOCAL）。Vercel 上连接池默认 2（PG_POOL_MAX 可覆盖），避免多实例耗尽免费版连接数。Function Region 设 sin1 以贴近数据库。
 
+
+## 2026-10-03 20:40 UI 重做（feat/ui-redesign）：先用模拟数据搭全部页面
+
+- 分支 feat/ui-redesign 从 origin/Nick 切出，只做页面与层次，不接数据库。数据在 src/lib/mock：localStorage 存全局状态（跨标签页同步，用于攻击演示），sessionStorage 存本标签页是本人还是攻击者。旧页面删除，接线代码仍在 origin/Nick，接真实接口时按页替换 store 的 actions。
+- 页面以设计讨论中新定的流程为准，超出 MANUAL 的：注册五步、Tap & Go / 快快屋授权页、精选模式（细挑）、付款方式说明、安全与验证等级、地址冷静期、攻击演示面板。
+- 精选模式不新增规则：签发时把品类放进 watchCategories，所以每笔都是 REVIEW；偏好只影响推荐排序，不进规则判断。
+- 前端预览直接调用纯函数 decideCandidate（同一套规则）；结算时在 mock store 里重新判定一次，不读取页面上显示的结果。DENY 没有确认入口。
+- Zev 在原型里是确定性的规则演示模式（src/lib/mock/agent.ts），不调用模型；界面标「规则演示模式（模板）」。
+- 演示用时间：放宽上限 / 改地址的冷静期原型里缩成 2 分钟（文案仍写 24 小时规则）；范围内自动付款前留 8 秒可「先别买」。
+- 界面一次只显示一种语言（右上角切换），Trust / Agent 等标签也跟着翻译，覆盖 AGENTS.md「保留英文标签」一条。
+- 筛选滑块按 10 港元一档的整数档位工作，换算回分时用 bigint，不出现浮点金额。
+
