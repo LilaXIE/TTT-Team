@@ -2,7 +2,9 @@
 
 import { Inbox } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Chip, Money, OutcomeChip, PageHeader, Panel, PanelTitle, ProductThumb } from "@/components/app/primitives";
+import { api } from "@/lib/api";
 import { PendingCard } from "@/components/app/task/blocks";
 import { fmtDateTime } from "@/lib/format";
 import { useLang } from "@/lib/i18n";
@@ -26,6 +28,12 @@ export default function InboxPage() {
       return [{ task, productId: b.productId, at: b.at, rules: b.rules, total: ev.total }];
     }),
   );
+  const [liveDenied, setLiveDenied] = useState<Array<{ id: string; input_text: string }>>([]);
+  useEffect(() => {
+    void api<{ denied?: Array<{ id: string; input_text: string }> }>("/api/orders")
+      .then((res) => setLiveDenied(res.denied ?? []))
+      .catch(() => setLiveDenied([]));
+  }, []);
   const statusLabel = {
     pending: t("已过期", "Expired"),
     confirmed: t("已确认", "Approved"),
@@ -43,6 +51,32 @@ export default function InboxPage() {
       />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="space-y-4">
+          <Panel>
+            <PanelTitle>{t("被拦住的", "Stopped")}</PanelTitle>
+            <ul className="space-y-3">
+              {liveDenied.map((d) => (
+                <li key={d.id}>
+                  <Link href={`/task/${d.id}`} className="block rounded-2xl px-1 py-1 hover:bg-canvas/60">
+                    <div className="text-[14px]">{d.input_text}</div>
+                    <div className="text-[12px] text-no">{t("规则引擎拒绝。没有确认按钮。", "The rules refused this. There is no approve button.")}</div>
+                  </Link>
+                </li>
+              ))}
+              {denied.map((d) => (
+                <li key={d.task.id + d.at}>
+                  <Link href={`/task/${d.task.id}`} className="flex items-center gap-3 rounded-2xl p-1 hover:bg-canvas/60">
+                    <ProductThumb product={productOf(d.productId)} className="size-10 rounded-xl" />
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-[14px]">{productOf(d.productId).name[lang]}</div>
+                      <div className="truncate text-[12px] text-no">{d.rules.map((r) => RULE_TITLE[r.id][lang]).join(t("、", ", "))}</div>
+                    </div>
+                    <Money minor={d.total} className="text-[13px]" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 text-[12px] text-soft">{t("拒绝不能被确认绕过。想买只能先改授权。", "A refusal cannot be confirmed away. Buying it means changing the mandate first.")}</p>
+          </Panel>
           {now === null ? (
             <div className="h-48 animate-pulse rounded-[20px] bg-white/60" />
           ) : live.length === 0 ? (

@@ -3,7 +3,7 @@
 import { ArrowRight, ArrowUp, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MandateCard, QuotaRing } from "@/components/app/mandate-card";
 import { Countdown, Money, OutcomeChip, Panel, PanelTitle, ProductThumb, ZevAvatar } from "@/components/app/primitives";
 import { SecurityCard } from "@/components/app/security-card";
@@ -20,6 +20,7 @@ export const SUGGESTIONS = [
   { zh: "再买一包纸巾。", en: "Buy another pack of tissue." },
   { zh: "帮我细挑一个黑色、极简的保温杯。", en: "Help me carefully pick a black, minimal tumbler." },
   { zh: "帮我买一瓶洗洁精。", en: "Buy a bottle of dish soap." },
+  { zh: "单笔上限 HK$100，帮我买洗衣液。", en: "Cap each order at HK$100 and buy laundry liquid." },
 ];
 
 export function HomeView() {
@@ -29,6 +30,8 @@ export function HomeView() {
   const now = useNow(30_000);
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
+  const [livePaid, setLivePaid] = useState<{ task_id: string; total_minor: string; task_text: string } | null>(null);
+  const [liveDenied, setLiveDenied] = useState<{ id: string; input_text: string } | null>(null);
   const daily = activeMandates(s)[0] ?? s.mandates[0];
   const pending = now === null ? [] : openPending(s, now);
   const hour = now === null ? null : Number(new Date(now).toLocaleString("en-GB", { hour: "2-digit", hour12: false, timeZone: "Asia/Hong_Kong" }));
@@ -54,6 +57,18 @@ export function HomeView() {
     }
     router.push(`/task/new?q=${encodeURIComponent(next)}`);
   };
+
+  useEffect(() => {
+    void api<{ orders: Array<{ status: string; total_minor: string; task_id: string; task_text: string }>; denied?: Array<{ id: string; input_text: string }> }>("/api/orders")
+      .then((res) => {
+        const paid = res.orders.find((o) => o.status === "paid") ?? res.orders[0];
+        if (paid) setLivePaid(paid);
+        if (res.denied?.[0]) setLiveDenied(res.denied[0]);
+      })
+      .catch(() => {
+        /* 没登录就用页面里已经放好的 138 港元和被拒绝示例 */
+      });
+  }, []);
 
   return (
     <div className="grid gap-5">
@@ -103,6 +118,19 @@ export function HomeView() {
           </div>
         </section>
         <SecurityCard />
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Link href={livePaid ? `/task/${livePaid.task_id}` : "/task/s1"} className="rounded-[20px] border border-ok/30 bg-white px-4 py-3 hover:border-ok">
+          <div className="text-[12px] text-ok">{t("已入账", "Paid")}</div>
+          <div className="mt-1 font-heading text-[18px]">{livePaid ? <Money minor={livePaid.total_minor} /> : t("138.00 港元", "HK$138.00")}</div>
+          <div className="mt-1 text-[13px] text-soft">{livePaid ? livePaid.task_text : t("含运费 138.00 港元。打开能看到 Zev 的工作记录。", "HK$138.00 with shipping. Open it to see Zev's work log.")}</div>
+        </Link>
+        <Link href={liveDenied ? `/task/${liveDenied.id}` : "/task/s3"} className="rounded-[20px] border border-no/30 bg-white px-4 py-3 hover:border-no">
+          <div className="text-[12px] text-no">{t("已拦住", "Stopped")}</div>
+          <div className="mt-1 font-heading text-[18px]">{t("这单不能确认放行", "This one cannot be approved")}</div>
+          <div className="mt-1 text-[13px] text-soft">{liveDenied ? liveDenied.input_text : t("2.5L 洗衣液含运费 158 港元，超过单笔上限。拒绝没有确认按钮。", "The 2.5L laundry liquid is HK$158 with shipping, over the cap. A refusal has no approve button.")}</div>
+        </Link>
       </div>
 
       <div className="grid gap-5 md:grid-cols-3">

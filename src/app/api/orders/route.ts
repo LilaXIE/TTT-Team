@@ -25,5 +25,12 @@ export const GET = route(async (req: Request) => {
      LIMIT 20`,
     [user.id],
   );
-  return json({ orders: orders.rows });
+  const denied = await query<{ id: string; input_text: string; status: string }>(
+    `SELECT id, input_text, status FROM tasks
+     WHERE user_id = $1 AND status = 'failed'
+     ORDER BY created_at DESC
+     LIMIT 5`,
+    [user.id],
+  );
+  return json({ orders: orders.rows, denied: denied.rows });
 });

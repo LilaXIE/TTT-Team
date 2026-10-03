@@ -30,6 +30,7 @@
 
 ## 工作方式
 - 每个阶段结束运行 `npm run typecheck && npm run lint && npm run test:unit` 并修到通过。
+- 用户能看到的更新做完就提交，推到 GitHub 的 `lilaxie-ui-redesign` 和 `integrate`，并等到 Vercel 生产部署 Ready。不要等用户再确认一次才推。
 - 不要新增 docs/MANUAL.md 未列出的功能、页面、表。需要取舍时选最简单的实现，并在 docs/DECISIONS.md 追加一行。
 - 所有 npm scripts 必须能在 Windows PowerShell 下运行（用 cross-env 或 Node 脚本设置环境变量，不用 bash 语法）。
 - 中文界面，保留 Trust / E-commerce / Agent / Payment 英文标签。
