@@ -319,6 +319,7 @@ function seedTasks(): MockTask[] {
           reason: { zh: "品牌甲两家都卖完了。品牌丙 2L 含运费 135.00 港元，评分 4.4。", en: "Brand Jia is sold out at both stores. Brand Bing 2L is HK$135.00 with shipping, rated 4.4." },
         },
         { kind: "awaiting", pendingId: "pc_s2", at: "2026-10-03T11:02:08+08:00" },
+        { kind: "hint", at: "2026-10-03T11:02:09+08:00" },
       ],
       timeline: [
         { checkpoint: "INTENT", title: { zh: "理解任务", en: "Understand the task" }, detail: { zh: "在「日用品补货」范围内，还剩 1 次、162.00 港元。", en: "Within “Household restock”: 1 purchase and HK$162.00 left." }, outcome: "ALLOW", at: "2026-10-03T11:02:02+08:00" },

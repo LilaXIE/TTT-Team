@@ -206,7 +206,7 @@ function MockTaskView({ taskId }: { taskId: string }) {
             <BlockView key={i} b={b} index={i} task={task} />
           ))}
         </div>
-        <div ref={bottom} className="h-4" />
+        <div ref={bottom} className="h-28" />
 
         <div className="sticky bottom-20 z-10 mt-6 md:bottom-4">
           <Composer

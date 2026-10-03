@@ -396,6 +396,24 @@ export const actions = {
       pocketLog: [{ id: uid("pl"), at: nowIso(), kind: "topup" as const, amountMinor, note: { zh: "从 Tap & Go 充值（模拟）", en: "Top-up from Tap & Go (simulated)" } }, ...s.pocketLog],
     }));
   },
+  /** 演示用：把零钱包改成一个绝对金额。不够付时结算会停，不会改从银行扣。 */
+  setPocketForDemo(amountMinor: string) {
+    set((s) => {
+      const next = BigInt(amountMinor);
+      const cur = BigInt(s.pocketMinor);
+      if (next === cur) return s;
+      const up = next > cur;
+      const delta = (up ? next - cur : cur - next).toString();
+      return {
+        ...s,
+        pocketMinor: amountMinor,
+        pocketLog: [
+          { id: uid("pl"), at: nowIso(), kind: up ? ("topup" as const) : ("spend" as const), amountMinor: delta, note: { zh: "演示控制：调整零钱包", en: "Demo control: pocket adjusted" } },
+          ...s.pocketLog,
+        ],
+      };
+    });
+  },
 
   // ---- 任务 ----
   createTask(task: Omit<MockTask, "createdAt" | "agentMode">): string {
