@@ -10,6 +10,7 @@ import { SecurityCard } from "@/components/app/security-card";
 import { TaskStatusChip } from "@/components/app/task-status";
 import { buttonVariants } from "@/components/ui/button";
 import { fmtDateTime } from "@/lib/format";
+import { api } from "@/lib/api";
 import { useLang } from "@/lib/i18n";
 import { merchantOf, productOf } from "@/lib/mock/catalog";
 import { activeMandates, openPending, useMock, useNow } from "@/lib/mock/store";
@@ -26,15 +27,25 @@ export function HomeView() {
   const s = useMock();
   const now = useNow(30_000);
   const [text, setText] = useState("");
+  const [sending, setSending] = useState(false);
   const daily = activeMandates(s)[0] ?? s.mandates[0];
   const pending = now === null ? [] : openPending(s, now);
   const hour = now === null ? null : Number(new Date(now).toLocaleString("en-GB", { hour: "2-digit", hour12: false, timeZone: "Asia/Hong_Kong" }));
   const greeting =
     hour === null ? t("你好", "Hello") : hour < 12 ? t("早上好", "Good morning") : hour < 18 ? t("下午好", "Good afternoon") : t("晚上好", "Good evening");
 
-  const go = (q: string) => {
-    if (!q.trim()) return;
-    router.push(`/task/new?q=${encodeURIComponent(q.trim())}`);
+  const go = async (q: string) => {
+    const clean = q.trim();
+    if (!clean || sending) return;
+    setSending(true);
+    let next = clean;
+    try {
+      const draft = await api<{ query: string }>("/api/chat", { method: "POST", json: { message: clean } });
+      if (draft.query.trim()) next = clean.includes(draft.query) ? clean : `${clean}（${draft.query}）`;
+    } catch {
+      // 没登录或模型超时：仍用原话进入任务页，页面不卡住。
+    }
+    router.push(`/task/new?q=${encodeURIComponent(next)}`);
   };
 
   return (
@@ -55,7 +66,7 @@ export function HomeView() {
             className="mt-6 flex items-end gap-2 rounded-[20px] border border-line bg-white p-2 pl-4 focus-within:border-violet"
             onSubmit={(e) => {
               e.preventDefault();
-              go(text);
+              void go(text);
             }}
           >
             <textarea
@@ -65,19 +76,19 @@ export function HomeView() {
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
-                  go(text);
+                  void go(text);
                 }
               }}
               placeholder={t("例如：帮我补一瓶洗衣液，HK$150 以内…", "e.g. Restock laundry liquid under HK$150…")}
               className="min-h-12 flex-1 resize-none bg-transparent py-2 text-[15px] outline-none placeholder:text-soft"
             />
-            <button type="submit" className="grid size-10 shrink-0 place-items-center rounded-full bg-violet text-white disabled:opacity-40" disabled={!text.trim()} aria-label={t("发送", "Send")}>
+            <button type="submit" className="grid size-10 shrink-0 place-items-center rounded-full bg-violet text-white disabled:opacity-40" disabled={!text.trim() || sending} aria-label={t("发送", "Send")}>
               <ArrowUp className="size-5" />
             </button>
           </form>
           <div className="mt-3 flex flex-wrap gap-2">
             {SUGGESTIONS.map((q) => (
-              <button key={q.zh} type="button" onClick={() => go(q[lang])} className="rounded-full border border-line bg-white/80 px-3 py-1.5 text-left text-[13px] text-ink/80 hover:border-violet hover:text-ink">
+              <button key={q.zh} type="button" onClick={() => void go(q[lang])} className="rounded-full border border-line bg-white/80 px-3 py-1.5 text-left text-[13px] text-ink/80 hover:border-violet hover:text-ink">
                 {q[lang]}
               </button>
             ))}

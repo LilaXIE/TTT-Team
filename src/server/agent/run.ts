@@ -1,5 +1,6 @@
 // Agent 任务执行。规格：docs/MANUAL.md §6.1 九步流程。
 import { AppError } from "@/contracts/errors";
+import { hkdToMinor } from "@/contracts/money";
 import type { Decision, EngineContext } from "@/contracts/schemas";
 import { createCartVersion } from "@/server/catalog/cart";
 import type { MerchantInfo, PaymentMethodInfo } from "@/server/catalog/quote";
@@ -145,6 +146,12 @@ export async function runTask(ctx: TaskContext): Promise<RunResult> {
         const merchant = buildMerchantInfo(p);
         const productWithQty = { ...p, qty: intent.qty };
         const quote = quoteCart(merchant, [productWithQty], method);
+        const range = mandate.task.priceRangeHKD;
+        if (range) {
+          const minPrice = hkdToMinor(range.min);
+          const maxPrice = hkdToMinor(range.max);
+          if (quote.subtotalMinor < minPrice || quote.subtotalMinor > maxPrice) continue;
+        }
 
         const candidateCtx: EngineContext = {
           now: new Date(),
@@ -287,9 +294,8 @@ export async function runTask(ctx: TaskContext): Promise<RunResult> {
 
       await saveDecision(tx, ctx.taskId, cartVersion.cartId, cartVersion.version, selected.decision);
 
-      // Step 9: ALLOW → settle / REVIEW → awaiting_confirmation / DENY → 尝试次选
+      // Step 9: ALLOW 也先停在确认。付款必须走 /api/orders/:id/pay，不能在任务事务外偷偷结算。
       if (selected.decision.outcome === "ALLOW") {
-        // 阶段 2 暂不实现自动结算，先返回 awaiting_confirmation
         await tx.query(`UPDATE tasks SET status='awaiting_confirmation', updated_at=now() WHERE id=$1`, [
           ctx.taskId,
         ]);

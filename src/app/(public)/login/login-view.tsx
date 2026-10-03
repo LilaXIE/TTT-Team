@@ -8,8 +8,12 @@ import { useEffect, useState } from "react";
 import { Dot, Eyebrow, OutcomeChip, ZevAvatar } from "@/components/app/primitives";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { api, ApiError } from "@/lib/api";
 import { useLang } from "@/lib/i18n";
 import { actions, setSessionMode } from "@/lib/mock/store";
+
+const DEMO_EMAIL = "alex@demo.hk";
+const DEMO_PASSWORD = "demo1234";
 
 const SCENE_MS = 3200;
 
@@ -87,10 +91,25 @@ function Stage() {
 export function LoginView({ attacker }: { attacker: boolean }) {
   const { t } = useLang();
   const router = useRouter();
-  const [via, setVia] = useState<"phone" | "email">("phone");
+  const [via, setVia] = useState<"phone" | "email">(attacker ? "phone" : "email");
   const [id, setId] = useState(attacker ? "5123 5678" : "");
   const [pw, setPw] = useState(attacker ? "alex-2026!" : "");
   const [passkey, setPasskey] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const signIn = async (email: string, password: string) => {
+    setBusy(true);
+    setError(null);
+    try {
+      await api("/api/auth/login", { method: "POST", json: { email, password } });
+      setSessionMode("owner");
+      router.push("/");
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : t("登录失败。请确认数据库已启动并完成种子数据。", "Sign-in failed. Check that the database is seeded."));
+      setBusy(false);
+    }
+  };
 
   const loginWithPassword = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,10 +117,14 @@ export function LoginView({ attacker }: { attacker: boolean }) {
     if (attacker) {
       setSessionMode("attacker");
       actions.attackerLogin();
-    } else {
-      setSessionMode("owner");
+      router.push("/");
+      return;
     }
-    router.push("/");
+    if (via === "phone") {
+      setError(t("演示账号用邮箱登录。", "The demo account uses email."));
+      return;
+    }
+    void signIn(id.trim(), pw);
   };
 
   const loginWithPasskey = () => {
@@ -172,10 +195,28 @@ export function LoginView({ attacker }: { attacker: boolean }) {
               <Input value={id} onChange={(e) => setId(e.target.value)} placeholder="name@example.com" type="email" autoComplete="email" />
             )}
             <Input value={pw} onChange={(e) => setPw(e.target.value)} placeholder={t("密码", "Password")} type="password" autoComplete="current-password" />
-            <Button type="submit" variant="outline" size="lg" className="w-full" disabled={!id || !pw}>
+            <Button type="submit" variant="outline" size="lg" className="w-full" disabled={!id || !pw || busy}>
               {t("用密码登录", "Sign in with password")}
             </Button>
           </form>
+          {!attacker && (
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="mt-3 w-full"
+              disabled={busy}
+              onClick={() => {
+                setVia("email");
+                setId(DEMO_EMAIL);
+                setPw(DEMO_PASSWORD);
+                void signIn(DEMO_EMAIL, DEMO_PASSWORD);
+              }}
+            >
+              {t("使用演示账号 alex@demo.hk", "Use demo account alex@demo.hk")}
+            </Button>
+          )}
+          {error && <p className="mt-3 text-[13px] text-no">{error}</p>}
 
           <p className="mt-4 rounded-2xl bg-violet-soft/70 px-3.5 py-3 text-[12.5px] leading-relaxed text-violet">
             {t("密码登录只能查看。签授权、付款、改上限和地址，都要再用通行密钥确认。", "Password sign-in is view-only. Signing mandates, paying, and changing limits or address all need your passkey.")}

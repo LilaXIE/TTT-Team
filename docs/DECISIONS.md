@@ -41,3 +41,7 @@ S1 示例含运费 138 是单笔上限 150 的 92%，按 90% 会被判 REVIEW（
 
 Vercel 新项目 mandate-wallet-ui（https://mandate-wallet-ui.vercel.app），连同一个 GitHub 仓库，Production Branch 设为 lilaxie-ui-redesign，推送即上线；原 mandate-wallet 项目仍跟 main。只设 DEMO_MODE=true，不配数据库，数据存在访问者浏览器里。
 
+## 2026-10-04 01:28 集成：Zev 界面 + Nick_2 后端，不含淘宝和邮件验证码
+
+integrate 分支保留 Zev 页面。合入偏好、地址、聊天表和注册/聊天接口。不带淘宝爬虫、SMTP、旧工作台页面，也不带 app_1902.py 和 taobao_state.json。ALLOW 不再在事务外自动结算，付款仍走订单接口。Zev 对话只产出搜索草稿，金额和能否购买由规则引擎决定；没有 DeepSeek key 或超时则用关键词抽取。旧密钥暂不废除，等 Sunny 测完再说。
+
