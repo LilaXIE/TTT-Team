@@ -1,6 +1,6 @@
 {
-  "_note": "PLACEHOLDER — 戚译匀 2026-10-02 晚采集后替换。每个数字必须有 sourceUrl 与 observedAt；找不到来源填 null，界面显示「未核实」。截图存 docs/rates/。",
-  "observedAt": "2026-10-02T22:00:00+08:00",
+  "_note": "费率只记公开页面上读到的数字。回赠不参与选路，也不入账。",
+  "observedAt": "2026-10-04T04:15:00+08:00",
   "methods": [
     {
       "id": "fps",
@@ -9,8 +9,8 @@
       "consumerFeeMinor": "0",
       "settlement": "instant",
       "rewards": null,
-      "sourceUrl": null,
-      "notes": "PLACEHOLDER：个人用户一般免费；无积分。待填来源。"
+      "sourceUrl": "https://www.hsbc.com.hk/zh-hk/help/faq/transfers-and-payments/",
+      "notes": "汇丰个人客户经其 App 或网上理财做本地港元 FPS 转账免收手续费。其他银行或储值支付工具可能收费。"
     },
     {
       "id": "tapngo_mc",
@@ -18,15 +18,9 @@
       "network": "Mastercard",
       "consumerFeeMinor": "0",
       "settlement": "T+1 (simulated)",
-      "rewards": {
-        "type": "cashback_pct",
-        "value": 0.5,
-        "capMinorPerMonth": null,
-        "conditions": "PLACEHOLDER：登记条件 / 适用商户 / 有效期，原文摘录",
-        "sourceUrl": null
-      },
-      "sourceUrl": null,
-      "notes": "PLACEHOLDER：回赠为预计值，不计入保证节省。待填来源。"
+      "rewards": null,
+      "sourceUrl": "https://www.tapngo.com.hk/eng/charges.html",
+      "notes": "收费表 2026-09-14：Mastercard 以非港币结算收 2%（豁免至 2026-12-31）；海外以港币结算收 1%。本地港元签账没有对应收费项，消费者手续费记 0。现金增值 0.3% 另计，现豁免至 2026-12-31。收费表没有常设消费回赠；0.5% 属于另一张英国 Tap 卡，不记入。"
     }
   ]
 }

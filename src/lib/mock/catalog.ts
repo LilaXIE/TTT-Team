@@ -291,18 +291,18 @@ export const METHODS: {
     id: "tapngo_mc",
     label: { zh: "Tap & Go Mastercard", en: "Tap & Go Mastercard" },
     network: "Mastercard",
-    consumerFeeMinor: null,
+    consumerFeeMinor: "0",
     settlement: { zh: "T+1（模拟设定）", en: "T+1 (simulated)" },
     feeNote: {
-      zh: "收费表没有明确写出本地港元消费免费。年费或增值免费不等于消费手续费为 0。",
-      en: "The fee table does not state that local HKD spending is free. No annual or top-up fee does not mean a zero spending fee.",
+      zh: "拍住赏收费表（2026-09-14）对「以非港币结算」收 Mastercard 2%（豁免至 2026-12-31），对「海外以港币结算」收 1%。本地港元签账不在这两项里，这笔消费者手续费是 0。现金增值另收 0.3%，现亦豁免至 2026-12-31。",
+      en: "The Tap & Go charges page (14 Sep 2026) prices Mastercard spends settled in a foreign currency at 2% (waived until 31 Dec 2026) and overseas spends settled in HKD at 1%. A local HKD purchase is in neither row, so this consumer fee is 0. Cash top-up is a separate 0.3%, also waived until 31 Dec 2026.",
     },
     rewardNote: {
-      zh: "网传 0.5% 回赠未核实；The Club 指定商户优惠不适用于模拟商家。",
-      en: "A 0.5% cashback is often quoted but unverified. The Club merchant offers do not apply to the simulated stores.",
+      zh: "收费表没有常设消费回赠。网上的 0.5% 是另一张英国 Tap 卡，不是拍住赏。The Club 积分是指定网站的限期优惠，不适用于这些模拟商家。",
+      en: "The charges page has no standing spend reward. The 0.5% figure is a different UK Tap card, not Tap & Go. The Club points are a limited offer on one site and do not apply to these simulated merchants.",
     },
     sourceUrl: "https://www.tapngo.com.hk/eng/charges.html",
-    observedAt: "2026-10-03T01:18:49+08:00",
+    observedAt: "2026-10-04T04:15:00+08:00",
   },
 ];
 

@@ -112,7 +112,7 @@ export default function PayMethodsPage() {
         <ul className="grid gap-2 text-[13px] text-soft sm:grid-cols-2">
           <li>· {t("零钱包付得起、商家也收 Tap & Go 时，用 Tap & Go。钱本来就是从那里充进来的。", "When the pocket covers it and the shop takes Tap & Go, use Tap & Go. That is where the pocket was funded.")}</li>
           <li>· {t("否则用 FPS。已观测的个人本地港元手续费是 0。", "Otherwise use FPS. The observed personal local-HKD fee is 0.")}</li>
-          <li>· {t("手续费查不到的标「未核实」，不当成 0，也不拿来击败 FPS。", "Unknown fees stay unverified. They are not treated as zero, and not used to beat FPS.")}</li>
+          <li>· {t("本地港元消费两边的手续费都是 0。非港币结算或海外以港币结算，Tap & Go 另有收费，这笔演示用不到。", "Local HKD spending is 0 on both rails. Tap & Go charges for foreign-currency settlement and for overseas spends settled in HKD. This demo does not use those.")}</li>
           <li>· {t("回赠只展示，不参与选择，也不计入预算。", "Rewards are shown only. They never choose the method or count toward the budget.")}</li>
         </ul>
       </Panel>

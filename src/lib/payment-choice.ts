@@ -1,9 +1,9 @@
 import type { MethodId, Tx } from "@/lib/mock/types";
 
 /**
- * 选付款方式。不拿未核实的手续费去比价。
+ * 选付款方式。本地港元消费两边的消费者手续费都已观测为 0，所以不靠费率分胜负。
  * 零钱包里的钱是从 Tap & Go 充进来的，所以零钱包付得起、商家也收 Tap & Go 时用它。
- * 否则用已观测手续费为 0 的 FPS。
+ * 否则用 FPS。
  */
 export function choosePaymentMethod(opts: {
   allowed: MethodId[];
@@ -15,8 +15,8 @@ export function choosePaymentMethod(opts: {
     return {
       id: "tapngo_mc",
       reason: {
-        zh: "这笔从 Agent 零钱包扣。零钱包是从 Tap & Go 充进来的，所以走 Tap & Go，不再从银行账户做一笔 FPS。Tap & Go 的消费手续费没有核实，没有把它当成 0 来和 FPS 比谁更便宜。",
-        en: "This comes out of the Agent pocket. The pocket was topped up from Tap & Go, so the payment uses Tap & Go instead of a second FPS transfer from the bank. Tap & Go's spending fee is unverified, and was not treated as zero to beat FPS.",
+        zh: "这笔从 Agent 零钱包扣。零钱包是从 Tap & Go 充进来的，所以走 Tap & Go，不再从银行账户做一笔 FPS。本地港元消费的手续费两边都是 0，不是因为 Tap & Go 更便宜。",
+        en: "This comes out of the Agent pocket. The pocket was topped up from Tap & Go, so the payment uses Tap & Go instead of a second FPS transfer from the bank. The local-HKD consumer fee is 0 on both rails, so this is not because Tap & Go is cheaper.",
       },
     };
   }
@@ -32,8 +32,8 @@ export function choosePaymentMethod(opts: {
   return {
     id: "tapngo_mc",
     reason: {
-      zh: "授权和这家店只允许 Tap & Go。消费手续费仍标为未核实。",
-      en: "The mandate and this shop only allow Tap & Go. Its spending fee stays unverified.",
+      zh: "授权和这家店只允许 Tap & Go。本地港元签账的消费者手续费是 0。",
+      en: "The mandate and this shop only allow Tap & Go. The consumer fee on a local HKD purchase is 0.",
     },
   };
 }
