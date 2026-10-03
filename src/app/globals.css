@@ -128,3 +128,139 @@
     @apply font-sans;
   }
 }
+/* Agent 形象：透明泡泡。data-thinking="true" 时内部浮现淡紫色雾 */
+@layer components {
+  .agent-bubble {
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    isolation: isolate;
+    background:
+      radial-gradient(circle at 50% 50%, transparent 52%, oklch(0.82 0.05 290 / 0.22) 78%, oklch(0.7 0.08 285 / 0.45) 100%);
+    --bubble-size: 48px;
+    box-shadow:
+      inset calc(var(--bubble-size) * -0.04) calc(var(--bubble-size) * -0.06) calc(var(--bubble-size) * 0.12) oklch(0.7 0.1 300 / 0.18),
+      0 calc(var(--bubble-size) * 0.06) calc(var(--bubble-size) * 0.18) oklch(0.5 0.06 290 / 0.14);
+    animation: agent-bubble-float 4.5s ease-in-out infinite;
+    transition: transform 0.6s ease;
+  }
+  .agent-bubble[data-thinking="true"] {
+    animation:
+      agent-bubble-float 4.5s ease-in-out infinite,
+      agent-bubble-breathe 2.4s ease-in-out infinite;
+  }
+
+  .agent-bubble__rim {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: conic-gradient(
+      from 200deg,
+      oklch(0.85 0.1 300 / 0.7),
+      oklch(0.9 0.08 200 / 0.6),
+      oklch(0.92 0.09 120 / 0.45),
+      oklch(0.88 0.1 60 / 0.55),
+      oklch(0.85 0.1 340 / 0.65),
+      oklch(0.85 0.1 300 / 0.7)
+    );
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1px));
+    animation: agent-bubble-spin 12s linear infinite;
+  }
+
+  .agent-bubble__shine {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 22% 14% at 32% 24%, oklch(1 0 0 / 0.95), transparent 70%),
+      radial-gradient(ellipse 30% 20% at 33% 27%, oklch(0.8 0.06 290 / 0.25), transparent 75%),
+      radial-gradient(circle at 26% 34%, oklch(1 0 0 / 0.5) 0 3%, transparent 4%),
+      radial-gradient(ellipse 26% 10% at 66% 84%, oklch(1 0 0 / 0.45), transparent 70%);
+  }
+
+  .agent-bubble__fog {
+    position: absolute;
+    inset: 6%;
+    border-radius: inherit;
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.85);
+    transition:
+      opacity 0.7s ease,
+      transform 0.9s ease;
+  }
+  .agent-bubble[data-thinking="true"] .agent-bubble__fog {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .agent-bubble__wisp {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(calc(var(--bubble-size) * 0.12));
+    animation-play-state: paused;
+  }
+  .agent-bubble[data-thinking="true"] .agent-bubble__wisp {
+    animation-play-state: running;
+  }
+  .agent-bubble__wisp--a {
+    width: 70%;
+    height: 55%;
+    left: 5%;
+    top: 30%;
+    background: oklch(0.82 0.09 300 / 0.75);
+    animation: agent-bubble-drift-a 5s ease-in-out infinite;
+  }
+  .agent-bubble__wisp--b {
+    width: 60%;
+    height: 50%;
+    right: 0;
+    top: 10%;
+    background: oklch(0.86 0.07 280 / 0.65);
+    animation: agent-bubble-drift-b 6.5s ease-in-out infinite;
+  }
+  .agent-bubble__wisp--c {
+    width: 50%;
+    height: 40%;
+    left: 30%;
+    bottom: 0;
+    background: oklch(0.9 0.06 320 / 0.6);
+    animation: agent-bubble-drift-c 4.2s ease-in-out infinite;
+  }
+
+  @keyframes agent-bubble-float {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -4%; }
+  }
+  @keyframes agent-bubble-breathe {
+    0%, 100% { scale: 1; }
+    50% { scale: 1.04 0.98; }
+  }
+  @keyframes agent-bubble-spin {
+    to { rotate: 360deg; }
+  }
+  @keyframes agent-bubble-drift-a {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(25%, -20%) scale(1.15); }
+  }
+  @keyframes agent-bubble-drift-b {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-30%, 35%) scale(0.9); }
+  }
+  @keyframes agent-bubble-drift-c {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-20%, -40%) scale(1.2); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .agent-bubble,
+    .agent-bubble[data-thinking="true"],
+    .agent-bubble__rim,
+    .agent-bubble__wisp {
+      animation: none;
+    }
+  }
+}

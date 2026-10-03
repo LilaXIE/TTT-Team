@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { SessionUser } from "@/server/auth/session";
+import { AgentBubble } from "./agent-bubble";
 import { LogoutButton } from "./logout-button";
 
 const NAV = [
@@ -17,7 +18,7 @@ export function AppShell({ user, children }: { user: SessionUser; children: Reac
         <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-4">
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <span className="inline-block size-6 rounded-md bg-zinc-900" aria-hidden />
+              <AgentBubble size={26} />
               MandateWallet
             </Link>
             <nav className="hidden gap-4 text-sm text-zinc-600 sm:flex">

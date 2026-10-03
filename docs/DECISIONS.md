@@ -19,3 +19,7 @@ S1 示例含运费 138 是单笔上限 150 的 92%，按 90% 会被判 REVIEW（
 
 预览三张卡检验的是授权书边界（品类、上限、先问我条件、商家凭证），快照中去掉 minSpec/preferredBrand。否则「维他命 C」会因不满足「2L」被 SPEC_NOT_MET 拒绝，误导用户。演示脚本：上限 150→160 第三张卡 DENY→REVIEW(NEAR_CAP)；→170 变 ALLOW；勾选 supplement 品类后第二张卡 DENY→REVIEW(WATCH_CATEGORY)；保护级别加强后第三张卡命中 NEW_MERCHANT。
 
+
+## 2026-10-03 18:55 Agent 形象：透明泡泡
+
+Agent 形象为纯 CSS 透明泡泡组件 `AgentBubble`（`thinking` 属性控制）：思考时内部浮现淡紫色雾并轻微呼吸，停止时内部透明。不引入新依赖；顶栏 Logo 改用该泡泡（静止态）；尊重 prefers-reduced-motion。
