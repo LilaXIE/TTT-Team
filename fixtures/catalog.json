@@ -1822,6 +1822,7260 @@
         "health_claim"
       ],
       "imageUrl": null
+    },
+    {
+      "id": "A-CAT-001",
+      "merchantId": "A",
+      "sku": "CAT-001",
+      "name": "竹纤维洗碗巾 3条",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 3
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1800",
+      "refPriceMinor": "1944",
+      "stockQty": 7,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-002",
+      "merchantId": "B",
+      "sku": "CAT-002",
+      "name": "不锈钢衣架 10个",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 10
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3000",
+      "refPriceMinor": "3240",
+      "stockQty": 8,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-003",
+      "merchantId": "A",
+      "sku": "CAT-003",
+      "name": "地板除尘纸 30张",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 30
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2400",
+      "refPriceMinor": "2592",
+      "stockQty": 9,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-004",
+      "merchantId": "B",
+      "sku": "CAT-004",
+      "name": "马桶刷套装 1套",
+      "brand": "清洁乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2700",
+      "refPriceMinor": "2916",
+      "stockQty": 10,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-005",
+      "merchantId": "A",
+      "sku": "CAT-005",
+      "name": "香薰蜡烛 200支",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "weightG": 200
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4500",
+      "refPriceMinor": "4860",
+      "stockQty": 11,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-006",
+      "merchantId": "B",
+      "sku": "CAT-006",
+      "name": "除湿袋 6包",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 6
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2600",
+      "refPriceMinor": "2808",
+      "stockQty": 12,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-007",
+      "merchantId": "A",
+      "sku": "CAT-007",
+      "name": "管道疏通剂 500瓶",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "volumeMl": 500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2600",
+      "refPriceMinor": "2808",
+      "stockQty": 13,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-008",
+      "merchantId": "B",
+      "sku": "CAT-008",
+      "name": "洗衣网袋 3个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 3
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1700",
+      "refPriceMinor": "1836",
+      "stockQty": 14,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-009",
+      "merchantId": "A",
+      "sku": "CAT-009",
+      "name": "晒衣夹 24个",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 24
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1200",
+      "refPriceMinor": "1296",
+      "stockQty": 15,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-010",
+      "merchantId": "B",
+      "sku": "CAT-010",
+      "name": "玻璃擦 1支",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2000",
+      "refPriceMinor": "2160",
+      "stockQty": 16,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-011",
+      "merchantId": "A",
+      "sku": "CAT-011",
+      "name": "抽真空收纳袋 4个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 4
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3900",
+      "refPriceMinor": "4212",
+      "stockQty": 17,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-012",
+      "merchantId": "B",
+      "sku": "CAT-012",
+      "name": "粘毛器补充装 3卷",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 3
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1600",
+      "refPriceMinor": "1728",
+      "stockQty": 18,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-013",
+      "merchantId": "A",
+      "sku": "CAT-013",
+      "name": "厨房油污湿巾 30片",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 30
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2100",
+      "refPriceMinor": "2268",
+      "stockQty": 19,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-014",
+      "merchantId": "B",
+      "sku": "CAT-014",
+      "name": "家用消毒液 1000瓶",
+      "brand": "清洁乙",
+      "category": "household",
+      "spec": {
+        "volumeMl": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2300",
+      "refPriceMinor": "2484",
+      "stockQty": 20,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-015",
+      "merchantId": "A",
+      "sku": "CAT-015",
+      "name": "浴帘 1幅",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6900",
+      "refPriceMinor": "7452",
+      "stockQty": 21,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-016",
+      "merchantId": "B",
+      "sku": "CAT-016",
+      "name": "防滑地垫 1块",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4300",
+      "refPriceMinor": "4644",
+      "stockQty": 22,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-017",
+      "merchantId": "A",
+      "sku": "CAT-017",
+      "name": "棉被收纳箱 1个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5900",
+      "refPriceMinor": "6372",
+      "stockQty": 23,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-018",
+      "merchantId": "B",
+      "sku": "CAT-018",
+      "name": "折叠雨伞 1把",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "7700",
+      "refPriceMinor": "8316",
+      "stockQty": 24,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-019",
+      "merchantId": "A",
+      "sku": "CAT-019",
+      "name": "旅行分装瓶 4个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 4
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2900",
+      "refPriceMinor": "3132",
+      "stockQty": 25,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-020",
+      "merchantId": "B",
+      "sku": "CAT-020",
+      "name": "针线盒 1套",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2000",
+      "refPriceMinor": "2160",
+      "stockQty": 26,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-021",
+      "merchantId": "A",
+      "sku": "CAT-021",
+      "name": "折叠边几 1张",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "16800",
+      "refPriceMinor": "18144",
+      "stockQty": 27,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-022",
+      "merchantId": "B",
+      "sku": "CAT-022",
+      "name": "实木衣帽架 1个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "24700",
+      "refPriceMinor": "26676",
+      "stockQty": 28,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-023",
+      "merchantId": "A",
+      "sku": "CAT-023",
+      "name": "布艺收纳凳 1个",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12900",
+      "refPriceMinor": "13932",
+      "stockQty": 29,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-024",
+      "merchantId": "B",
+      "sku": "CAT-024",
+      "name": "床头置物架 1个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "18700",
+      "refPriceMinor": "20196",
+      "stockQty": 30,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-025",
+      "merchantId": "A",
+      "sku": "CAT-025",
+      "name": "单人床笠 1件",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "9900",
+      "refPriceMinor": "10692",
+      "stockQty": 31,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-026",
+      "merchantId": "B",
+      "sku": "CAT-026",
+      "name": "记忆棉坐垫 1个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "7700",
+      "refPriceMinor": "8316",
+      "stockQty": 32,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-027",
+      "merchantId": "A",
+      "sku": "CAT-027",
+      "name": "四层置物架 1个",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "21900",
+      "refPriceMinor": "23652",
+      "stockQty": 33,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-028",
+      "merchantId": "B",
+      "sku": "CAT-028",
+      "name": "玄关鞋架 1个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "15700",
+      "refPriceMinor": "16956",
+      "stockQty": 34,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-029",
+      "merchantId": "A",
+      "sku": "CAT-029",
+      "name": "遮光窗帘 1幅",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "18900",
+      "refPriceMinor": "20412",
+      "stockQty": 35,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-030",
+      "merchantId": "B",
+      "sku": "CAT-030",
+      "name": "懒人沙发 1个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "29700",
+      "refPriceMinor": "32076",
+      "stockQty": 36,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-031",
+      "merchantId": "A",
+      "sku": "CAT-031",
+      "name": "双人被套 1套",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "18900",
+      "refPriceMinor": "20412",
+      "stockQty": 37,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-032",
+      "merchantId": "B",
+      "sku": "CAT-032",
+      "name": "乳胶枕 1个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "15700",
+      "refPriceMinor": "16956",
+      "stockQty": 38,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-033",
+      "merchantId": "A",
+      "sku": "CAT-033",
+      "name": "短绒地毯 1块",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "22900",
+      "refPriceMinor": "24732",
+      "stockQty": 39,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-034",
+      "merchantId": "B",
+      "sku": "CAT-034",
+      "name": "全身穿衣镜 1面",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "19700",
+      "refPriceMinor": "21276",
+      "stockQty": 40,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-035",
+      "merchantId": "A",
+      "sku": "CAT-035",
+      "name": "书桌垫 1块",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "8900",
+      "refPriceMinor": "9612",
+      "stockQty": 41,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-036",
+      "merchantId": "B",
+      "sku": "CAT-036",
+      "name": "电热水壶 1700个",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 1700
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "19700",
+      "refPriceMinor": "21276",
+      "stockQty": 6,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-037",
+      "merchantId": "A",
+      "sku": "CAT-037",
+      "name": "电饭煲 1200个",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 1200
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "32900",
+      "refPriceMinor": "35532",
+      "stockQty": 7,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-038",
+      "merchantId": "B",
+      "sku": "CAT-038",
+      "name": "手持吸尘器 1台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "49700",
+      "refPriceMinor": "53676",
+      "stockQty": 8,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-039",
+      "merchantId": "A",
+      "sku": "CAT-039",
+      "name": "负离子吹风机 1台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "25900",
+      "refPriceMinor": "27972",
+      "stockQty": 9,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-040",
+      "merchantId": "B",
+      "sku": "CAT-040",
+      "name": "台式循环扇 1台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "28700",
+      "refPriceMinor": "30996",
+      "stockQty": 10,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-041",
+      "merchantId": "A",
+      "sku": "CAT-041",
+      "name": "迷你除湿机 1台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "69900",
+      "refPriceMinor": "75492",
+      "stockQty": 11,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-042",
+      "merchantId": "B",
+      "sku": "CAT-042",
+      "name": "多士炉 1台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "22700",
+      "refPriceMinor": "24516",
+      "stockQty": 12,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-043",
+      "merchantId": "A",
+      "sku": "CAT-043",
+      "name": "空气炸锅 3000台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 3000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "45900",
+      "refPriceMinor": "49572",
+      "stockQty": 13,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-044",
+      "merchantId": "B",
+      "sku": "CAT-044",
+      "name": "电蚊拍 1支",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6700",
+      "refPriceMinor": "7236",
+      "stockQty": 14,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-045",
+      "merchantId": "A",
+      "sku": "CAT-045",
+      "name": "LED 台灯 1盏",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12900",
+      "refPriceMinor": "13932",
+      "stockQty": 15,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-046",
+      "merchantId": "B",
+      "sku": "CAT-046",
+      "name": "挂烫机 1台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "39700",
+      "refPriceMinor": "42876",
+      "stockQty": 16,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-047",
+      "merchantId": "A",
+      "sku": "CAT-047",
+      "name": "电煮锅 1500个",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 1500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "18900",
+      "refPriceMinor": "20412",
+      "stockQty": 17,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-048",
+      "merchantId": "B",
+      "sku": "CAT-048",
+      "name": "超声波加湿器 2000台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "22700",
+      "refPriceMinor": "24516",
+      "stockQty": 18,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-049",
+      "merchantId": "A",
+      "sku": "CAT-049",
+      "name": "三明治机 1台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "16900",
+      "refPriceMinor": "18252",
+      "stockQty": 19,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-050",
+      "merchantId": "B",
+      "sku": "CAT-050",
+      "name": "电动牙刷 1支",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "19700",
+      "refPriceMinor": "21276",
+      "stockQty": 20,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-051",
+      "merchantId": "A",
+      "sku": "CAT-051",
+      "name": "USB-C 充电线 1条",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4900",
+      "refPriceMinor": "5292",
+      "stockQty": 21,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-052",
+      "merchantId": "B",
+      "sku": "CAT-052",
+      "name": "充电宝 1个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "14700",
+      "refPriceMinor": "15876",
+      "stockQty": 22,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-053",
+      "merchantId": "A",
+      "sku": "CAT-053",
+      "name": "无线鼠标 1个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "9900",
+      "refPriceMinor": "10692",
+      "stockQty": 23,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-054",
+      "merchantId": "B",
+      "sku": "CAT-054",
+      "name": "机械键盘 1个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "32700",
+      "refPriceMinor": "35316",
+      "stockQty": 24,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-055",
+      "merchantId": "A",
+      "sku": "CAT-055",
+      "name": "入耳式耳机 1副",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12900",
+      "refPriceMinor": "13932",
+      "stockQty": 25,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-056",
+      "merchantId": "B",
+      "sku": "CAT-056",
+      "name": "手机支架 1个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3700",
+      "refPriceMinor": "3996",
+      "stockQty": 26,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-057",
+      "merchantId": "A",
+      "sku": "CAT-057",
+      "name": "屏幕清洁套装 1套",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2900",
+      "refPriceMinor": "3132",
+      "stockQty": 27,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-058",
+      "merchantId": "B",
+      "sku": "CAT-058",
+      "name": "USB-C 读卡器 1个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5700",
+      "refPriceMinor": "6156",
+      "stockQty": 28,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-059",
+      "merchantId": "A",
+      "sku": "CAT-059",
+      "name": "蓝牙音箱 1个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "19900",
+      "refPriceMinor": "21492",
+      "stockQty": 29,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-060",
+      "merchantId": "B",
+      "sku": "CAT-060",
+      "name": "智能插座 1个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "8700",
+      "refPriceMinor": "9396",
+      "stockQty": 30,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-061",
+      "merchantId": "A",
+      "sku": "CAT-061",
+      "name": "平板支架 1个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6900",
+      "refPriceMinor": "7452",
+      "stockQty": 31,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-062",
+      "merchantId": "B",
+      "sku": "CAT-062",
+      "name": "移动硬盘盒 1个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "8700",
+      "refPriceMinor": "9396",
+      "stockQty": 32,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-063",
+      "merchantId": "A",
+      "sku": "CAT-063",
+      "name": "摄像头隐私盖 3个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 3
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1900",
+      "refPriceMinor": "2052",
+      "stockQty": 33,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-064",
+      "merchantId": "B",
+      "sku": "CAT-064",
+      "name": "HDMI 线 1条",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5700",
+      "refPriceMinor": "6156",
+      "stockQty": 34,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-065",
+      "merchantId": "A",
+      "sku": "CAT-065",
+      "name": "笔记本内胆包 1个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "9900",
+      "refPriceMinor": "10692",
+      "stockQty": 35,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-066",
+      "merchantId": "B",
+      "sku": "CAT-066",
+      "name": "茉莉香米 2000袋",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4000",
+      "refPriceMinor": "4320",
+      "stockQty": 36,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-067",
+      "merchantId": "A",
+      "sku": "CAT-067",
+      "name": "意大利直面 500包",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1800",
+      "refPriceMinor": "1944",
+      "stockQty": 37,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-068",
+      "merchantId": "B",
+      "sku": "CAT-068",
+      "name": "即食燕麦 1000袋",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3400",
+      "refPriceMinor": "3672",
+      "stockQty": 38,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-069",
+      "merchantId": "A",
+      "sku": "CAT-069",
+      "name": "特级橄榄油 500瓶",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "volumeMl": 500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6800",
+      "refPriceMinor": "7344",
+      "stockQty": 39,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-070",
+      "merchantId": "B",
+      "sku": "CAT-070",
+      "name": "生抽 500瓶",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "volumeMl": 500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1400",
+      "refPriceMinor": "1512",
+      "stockQty": 40,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-071",
+      "merchantId": "A",
+      "sku": "CAT-071",
+      "name": "天然海盐 400罐",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1200",
+      "refPriceMinor": "1296",
+      "stockQty": 41,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-072",
+      "merchantId": "B",
+      "sku": "CAT-072",
+      "name": "鸡蛋挂面 900包",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 900
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1300",
+      "refPriceMinor": "1404",
+      "stockQty": 6,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-073",
+      "merchantId": "A",
+      "sku": "CAT-073",
+      "name": "黑芝麻糊 360盒",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 360
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2800",
+      "refPriceMinor": "3024",
+      "stockQty": 7,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-074",
+      "merchantId": "B",
+      "sku": "CAT-074",
+      "name": "幼滑花生酱 340瓶",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 340
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3000",
+      "refPriceMinor": "3240",
+      "stockQty": 8,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-075",
+      "merchantId": "A",
+      "sku": "CAT-075",
+      "name": "低筋面粉 1000袋",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1900",
+      "refPriceMinor": "2052",
+      "stockQty": 9,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-076",
+      "merchantId": "B",
+      "sku": "CAT-076",
+      "name": "荞麦面 800包",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 800
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2000",
+      "refPriceMinor": "2160",
+      "stockQty": 10,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-077",
+      "merchantId": "A",
+      "sku": "CAT-077",
+      "name": "番茄酱 340瓶",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 340
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1400",
+      "refPriceMinor": "1512",
+      "stockQty": 11,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-078",
+      "merchantId": "B",
+      "sku": "CAT-078",
+      "name": "燕麦奶 1000盒",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "volumeMl": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2200",
+      "refPriceMinor": "2376",
+      "stockQty": 12,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-079",
+      "merchantId": "A",
+      "sku": "CAT-079",
+      "name": "五谷黑米 1000袋",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2800",
+      "refPriceMinor": "3024",
+      "stockQty": 13,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-080",
+      "merchantId": "B",
+      "sku": "CAT-080",
+      "name": "赤砂糖 400包",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1400",
+      "refPriceMinor": "1512",
+      "stockQty": 14,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-081",
+      "merchantId": "A",
+      "sku": "CAT-081",
+      "name": "鲜鸡蛋 12盒",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 12
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2800",
+      "refPriceMinor": "3024",
+      "stockQty": 15,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-082",
+      "merchantId": "B",
+      "sku": "CAT-082",
+      "name": "全脂牛奶 1000盒",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "volumeMl": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2000",
+      "refPriceMinor": "2160",
+      "stockQty": 16,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-083",
+      "merchantId": "A",
+      "sku": "CAT-083",
+      "name": "富士苹果 4份",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 4
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2400",
+      "refPriceMinor": "2592",
+      "stockQty": 17,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-084",
+      "merchantId": "B",
+      "sku": "CAT-084",
+      "name": "香蕉 1000把",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1400",
+      "refPriceMinor": "1512",
+      "stockQty": 18,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-085",
+      "merchantId": "A",
+      "sku": "CAT-085",
+      "name": "三文鱼柳 200份",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "weightG": 200
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6800",
+      "refPriceMinor": "7344",
+      "stockQty": 19,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-086",
+      "merchantId": "B",
+      "sku": "CAT-086",
+      "name": "嫩豆腐 300盒",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 300
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "800",
+      "refPriceMinor": "864",
+      "stockQty": 20,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-087",
+      "merchantId": "A",
+      "sku": "CAT-087",
+      "name": "罗马生菜 1棵",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1400",
+      "refPriceMinor": "1512",
+      "stockQty": 21,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-088",
+      "merchantId": "B",
+      "sku": "CAT-088",
+      "name": "冷鲜鸡胸肉 400份",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3400",
+      "refPriceMinor": "3672",
+      "stockQty": 22,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-089",
+      "merchantId": "A",
+      "sku": "CAT-089",
+      "name": "车厘子 250盒",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "weightG": 250
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4900",
+      "refPriceMinor": "5292",
+      "stockQty": 23,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-090",
+      "merchantId": "B",
+      "sku": "CAT-090",
+      "name": "希腊酸奶 400杯",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2400",
+      "refPriceMinor": "2592",
+      "stockQty": 24,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-091",
+      "merchantId": "A",
+      "sku": "CAT-091",
+      "name": "蓝莓 125盒",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "weightG": 125
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2800",
+      "refPriceMinor": "3024",
+      "stockQty": 25,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-092",
+      "merchantId": "B",
+      "sku": "CAT-092",
+      "name": "牛油果 2个",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2400",
+      "refPriceMinor": "2592",
+      "stockQty": 26,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-093",
+      "merchantId": "A",
+      "sku": "CAT-093",
+      "name": "鲜虾 300份",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "weightG": 300
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5900",
+      "refPriceMinor": "6372",
+      "stockQty": 27,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-094",
+      "merchantId": "B",
+      "sku": "CAT-094",
+      "name": "菠菜 200把",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 200
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1000",
+      "refPriceMinor": "1080",
+      "stockQty": 28,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-095",
+      "merchantId": "A",
+      "sku": "CAT-095",
+      "name": "无糖豆浆 1000瓶",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "volumeMl": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1800",
+      "refPriceMinor": "1944",
+      "stockQty": 29,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-096",
+      "merchantId": "B",
+      "sku": "CAT-096",
+      "name": "维生素 D 滴剂 60瓶",
+      "brand": "营养甲",
+      "category": "supplement",
+      "spec": {
+        "pieceCount": 60
+      },
+      "description": "商家声称日常补充；健康声称未经核实，非医疗建议。（模拟商品）",
+      "priceMinor": "8600",
+      "refPriceMinor": "9288",
+      "stockQty": 30,
+      "status": "published",
+      "riskTags": [
+        "health_claim"
+      ],
+      "imageUrl": null
+    },
+    {
+      "id": "C-CAT-097",
+      "merchantId": "C",
+      "sku": "CAT-097",
+      "name": "益生菌粉 30盒",
+      "brand": "营养乙",
+      "category": "supplement",
+      "spec": {
+        "pieceCount": 30
+      },
+      "description": "商家声称日常补充；健康声称未经核实，非医疗建议。（模拟商品）",
+      "priceMinor": "12800",
+      "refPriceMinor": "13824",
+      "stockQty": 31,
+      "status": "published",
+      "riskTags": [
+        "health_claim"
+      ],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-098",
+      "merchantId": "B",
+      "sku": "CAT-098",
+      "name": "乳清蛋白粉 400罐",
+      "brand": "营养丙",
+      "category": "supplement",
+      "spec": {
+        "weightG": 400
+      },
+      "description": "商家声称日常补充；健康声称未经核实，非医疗建议。（模拟商品）",
+      "priceMinor": "16600",
+      "refPriceMinor": "17928",
+      "stockQty": 32,
+      "status": "published",
+      "riskTags": [
+        "health_claim"
+      ],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-099",
+      "merchantId": "A",
+      "sku": "CAT-099",
+      "name": "压缩毛巾 10条",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 10
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1600",
+      "refPriceMinor": "1728",
+      "stockQty": 33,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-100",
+      "merchantId": "B",
+      "sku": "CAT-100",
+      "name": "柠檬洗碗块 20颗",
+      "brand": "清洁乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 20
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3200",
+      "refPriceMinor": "3456",
+      "stockQty": 34,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-101",
+      "merchantId": "A",
+      "sku": "CAT-101",
+      "name": "折叠晾衣架 1个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "14900",
+      "refPriceMinor": "16092",
+      "stockQty": 35,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-102",
+      "merchantId": "B",
+      "sku": "CAT-102",
+      "name": "电热饭盒 800个",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 800
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "15700",
+      "refPriceMinor": "16956",
+      "stockQty": 36,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-103",
+      "merchantId": "A",
+      "sku": "CAT-103",
+      "name": "桌面麦克风 1个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "24900",
+      "refPriceMinor": "26892",
+      "stockQty": 37,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-104",
+      "merchantId": "B",
+      "sku": "CAT-104",
+      "name": "杏仁片 200袋",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 200
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3400",
+      "refPriceMinor": "3672",
+      "stockQty": 38,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-105",
+      "merchantId": "A",
+      "sku": "CAT-105",
+      "name": "小番茄 250盒",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 250
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1800",
+      "refPriceMinor": "1944",
+      "stockQty": 39,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-106",
+      "merchantId": "B",
+      "sku": "CAT-106",
+      "name": "竹纤维洗碗巾 家庭装 6条",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 6
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3130",
+      "refPriceMinor": "3380",
+      "stockQty": 40,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-107",
+      "merchantId": "A",
+      "sku": "CAT-107",
+      "name": "不锈钢衣架 家庭装 20个",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 20
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5920",
+      "refPriceMinor": "6394",
+      "stockQty": 41,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-108",
+      "merchantId": "B",
+      "sku": "CAT-108",
+      "name": "地板除尘纸 家庭装 60张",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 60
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4240",
+      "refPriceMinor": "4579",
+      "stockQty": 6,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-109",
+      "merchantId": "A",
+      "sku": "CAT-109",
+      "name": "马桶刷套装 家庭装 2套",
+      "brand": "清洁乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5365",
+      "refPriceMinor": "5794",
+      "stockQty": 7,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-110",
+      "merchantId": "B",
+      "sku": "CAT-110",
+      "name": "香薰蜡烛 家庭装 400支",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "weightG": 400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "8125",
+      "refPriceMinor": "8775",
+      "stockQty": 8,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-111",
+      "merchantId": "A",
+      "sku": "CAT-111",
+      "name": "除湿袋 家庭装 12包",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 12
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5180",
+      "refPriceMinor": "5594",
+      "stockQty": 9,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-112",
+      "merchantId": "B",
+      "sku": "CAT-112",
+      "name": "管道疏通剂 家庭装 1000瓶",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "volumeMl": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4610",
+      "refPriceMinor": "4979",
+      "stockQty": 10,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-113",
+      "merchantId": "A",
+      "sku": "CAT-113",
+      "name": "洗衣网袋 家庭装 6个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 6
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3515",
+      "refPriceMinor": "3796",
+      "stockQty": 11,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-114",
+      "merchantId": "B",
+      "sku": "CAT-114",
+      "name": "晒衣夹 家庭装 48个",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 48
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2020",
+      "refPriceMinor": "2182",
+      "stockQty": 12,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-115",
+      "merchantId": "A",
+      "sku": "CAT-115",
+      "name": "玻璃擦 家庭装 2支",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4070",
+      "refPriceMinor": "4396",
+      "stockQty": 13,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-116",
+      "merchantId": "B",
+      "sku": "CAT-116",
+      "name": "抽真空收纳袋 家庭装 8个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 8
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "7015",
+      "refPriceMinor": "7576",
+      "stockQty": 14,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-117",
+      "merchantId": "A",
+      "sku": "CAT-117",
+      "name": "粘毛器补充装 家庭装 6卷",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 6
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3330",
+      "refPriceMinor": "3596",
+      "stockQty": 15,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-118",
+      "merchantId": "B",
+      "sku": "CAT-118",
+      "name": "厨房油污湿巾 家庭装 60片",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 60
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3685",
+      "refPriceMinor": "3980",
+      "stockQty": 16,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-119",
+      "merchantId": "A",
+      "sku": "CAT-119",
+      "name": "家用消毒液 家庭装 2000瓶",
+      "brand": "清洁乙",
+      "category": "household",
+      "spec": {
+        "volumeMl": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4625",
+      "refPriceMinor": "4995",
+      "stockQty": 17,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-120",
+      "merchantId": "B",
+      "sku": "CAT-120",
+      "name": "浴帘 家庭装 2幅",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12565",
+      "refPriceMinor": "13570",
+      "stockQty": 18,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-121",
+      "merchantId": "A",
+      "sku": "CAT-121",
+      "name": "防滑地垫 家庭装 2块",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "8325",
+      "refPriceMinor": "8991",
+      "stockQty": 19,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-122",
+      "merchantId": "B",
+      "sku": "CAT-122",
+      "name": "棉被收纳箱 家庭装 2个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "10715",
+      "refPriceMinor": "11572",
+      "stockQty": 20,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-123",
+      "merchantId": "A",
+      "sku": "CAT-123",
+      "name": "折叠雨伞 家庭装 2把",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "14615",
+      "refPriceMinor": "15784",
+      "stockQty": 21,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-124",
+      "merchantId": "B",
+      "sku": "CAT-124",
+      "name": "旅行分装瓶 家庭装 8个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 8
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5165",
+      "refPriceMinor": "5578",
+      "stockQty": 22,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-125",
+      "merchantId": "A",
+      "sku": "CAT-125",
+      "name": "针线盒 家庭装 2套",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4070",
+      "refPriceMinor": "4396",
+      "stockQty": 23,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-126",
+      "merchantId": "B",
+      "sku": "CAT-126",
+      "name": "折叠边几 家庭装 2张",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "30880",
+      "refPriceMinor": "33350",
+      "stockQty": 24,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-127",
+      "merchantId": "A",
+      "sku": "CAT-127",
+      "name": "实木衣帽架 家庭装 2个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "46065",
+      "refPriceMinor": "49750",
+      "stockQty": 25,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-128",
+      "merchantId": "B",
+      "sku": "CAT-128",
+      "name": "布艺收纳凳 家庭装 2个",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "23665",
+      "refPriceMinor": "25558",
+      "stockQty": 26,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-129",
+      "merchantId": "A",
+      "sku": "CAT-129",
+      "name": "床头置物架 家庭装 2个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "34965",
+      "refPriceMinor": "37762",
+      "stockQty": 27,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-130",
+      "merchantId": "B",
+      "sku": "CAT-130",
+      "name": "单人床笠 家庭装 2件",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "18115",
+      "refPriceMinor": "19564",
+      "stockQty": 28,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-131",
+      "merchantId": "A",
+      "sku": "CAT-131",
+      "name": "记忆棉坐垫 家庭装 2个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "14615",
+      "refPriceMinor": "15784",
+      "stockQty": 29,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-132",
+      "merchantId": "B",
+      "sku": "CAT-132",
+      "name": "四层置物架 家庭装 2个",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "40315",
+      "refPriceMinor": "43540",
+      "stockQty": 30,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-133",
+      "merchantId": "A",
+      "sku": "CAT-133",
+      "name": "玄关鞋架 家庭装 2个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "29415",
+      "refPriceMinor": "31768",
+      "stockQty": 31,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-134",
+      "merchantId": "B",
+      "sku": "CAT-134",
+      "name": "遮光窗帘 家庭装 2幅",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "34765",
+      "refPriceMinor": "37546",
+      "stockQty": 32,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-135",
+      "merchantId": "A",
+      "sku": "CAT-135",
+      "name": "懒人沙发 家庭装 2个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "55315",
+      "refPriceMinor": "59740",
+      "stockQty": 33,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-136",
+      "merchantId": "B",
+      "sku": "CAT-136",
+      "name": "双人被套 家庭装 2套",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "34765",
+      "refPriceMinor": "37546",
+      "stockQty": 34,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-137",
+      "merchantId": "A",
+      "sku": "CAT-137",
+      "name": "乳胶枕 家庭装 2个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "29415",
+      "refPriceMinor": "31768",
+      "stockQty": 35,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-138",
+      "merchantId": "B",
+      "sku": "CAT-138",
+      "name": "短绒地毯 家庭装 2块",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "42165",
+      "refPriceMinor": "45538",
+      "stockQty": 36,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-139",
+      "merchantId": "A",
+      "sku": "CAT-139",
+      "name": "全身穿衣镜 家庭装 2面",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "36815",
+      "refPriceMinor": "39760",
+      "stockQty": 37,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-140",
+      "merchantId": "B",
+      "sku": "CAT-140",
+      "name": "书桌垫 家庭装 2块",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "16265",
+      "refPriceMinor": "17566",
+      "stockQty": 38,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-141",
+      "merchantId": "A",
+      "sku": "CAT-141",
+      "name": "电热水壶 家庭装 3400个",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 3400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "36815",
+      "refPriceMinor": "39760",
+      "stockQty": 39,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-142",
+      "merchantId": "B",
+      "sku": "CAT-142",
+      "name": "电饭煲 家庭装 2400个",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 2400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "60665",
+      "refPriceMinor": "65518",
+      "stockQty": 40,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-143",
+      "merchantId": "A",
+      "sku": "CAT-143",
+      "name": "手持吸尘器 家庭装 2台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "92315",
+      "refPriceMinor": "99700",
+      "stockQty": 41,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-144",
+      "merchantId": "B",
+      "sku": "CAT-144",
+      "name": "负离子吹风机 家庭装 2台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "47715",
+      "refPriceMinor": "51532",
+      "stockQty": 6,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-145",
+      "merchantId": "A",
+      "sku": "CAT-145",
+      "name": "台式循环扇 家庭装 2台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "53465",
+      "refPriceMinor": "57742",
+      "stockQty": 7,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-146",
+      "merchantId": "B",
+      "sku": "CAT-146",
+      "name": "迷你除湿机 家庭装 2台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "129115",
+      "refPriceMinor": "139444",
+      "stockQty": 8,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-147",
+      "merchantId": "A",
+      "sku": "CAT-147",
+      "name": "多士炉 家庭装 2台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "42365",
+      "refPriceMinor": "45754",
+      "stockQty": 9,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-148",
+      "merchantId": "B",
+      "sku": "CAT-148",
+      "name": "空气炸锅 家庭装 6000台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 6000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "84715",
+      "refPriceMinor": "91492",
+      "stockQty": 10,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-149",
+      "merchantId": "A",
+      "sku": "CAT-149",
+      "name": "电蚊拍 家庭装 2支",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12765",
+      "refPriceMinor": "13786",
+      "stockQty": 11,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-150",
+      "merchantId": "B",
+      "sku": "CAT-150",
+      "name": "LED 台灯 家庭装 2盏",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "23665",
+      "refPriceMinor": "25558",
+      "stockQty": 12,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-151",
+      "merchantId": "A",
+      "sku": "CAT-151",
+      "name": "挂烫机 家庭装 2台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "73815",
+      "refPriceMinor": "79720",
+      "stockQty": 13,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-152",
+      "merchantId": "B",
+      "sku": "CAT-152",
+      "name": "电煮锅 家庭装 3000个",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 3000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "34765",
+      "refPriceMinor": "37546",
+      "stockQty": 14,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-153",
+      "merchantId": "A",
+      "sku": "CAT-153",
+      "name": "超声波加湿器 家庭装 4000台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 4000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "42365",
+      "refPriceMinor": "45754",
+      "stockQty": 15,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-154",
+      "merchantId": "B",
+      "sku": "CAT-154",
+      "name": "三明治机 家庭装 2台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "31065",
+      "refPriceMinor": "33550",
+      "stockQty": 16,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-155",
+      "merchantId": "A",
+      "sku": "CAT-155",
+      "name": "电动牙刷 家庭装 2支",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "36815",
+      "refPriceMinor": "39760",
+      "stockQty": 17,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-156",
+      "merchantId": "B",
+      "sku": "CAT-156",
+      "name": "USB-C 充电线 家庭装 2条",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "8865",
+      "refPriceMinor": "9574",
+      "stockQty": 18,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-157",
+      "merchantId": "A",
+      "sku": "CAT-157",
+      "name": "充电宝 家庭装 2个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "27565",
+      "refPriceMinor": "29770",
+      "stockQty": 19,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-158",
+      "merchantId": "B",
+      "sku": "CAT-158",
+      "name": "无线鼠标 家庭装 2个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "18115",
+      "refPriceMinor": "19564",
+      "stockQty": 20,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-159",
+      "merchantId": "A",
+      "sku": "CAT-159",
+      "name": "机械键盘 家庭装 2个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "60865",
+      "refPriceMinor": "65734",
+      "stockQty": 21,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-160",
+      "merchantId": "B",
+      "sku": "CAT-160",
+      "name": "入耳式耳机 家庭装 2副",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "23665",
+      "refPriceMinor": "25558",
+      "stockQty": 22,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-161",
+      "merchantId": "A",
+      "sku": "CAT-161",
+      "name": "手机支架 家庭装 2个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "7215",
+      "refPriceMinor": "7792",
+      "stockQty": 23,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-162",
+      "merchantId": "B",
+      "sku": "CAT-162",
+      "name": "屏幕清洁套装 家庭装 2套",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5165",
+      "refPriceMinor": "5578",
+      "stockQty": 24,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-163",
+      "merchantId": "A",
+      "sku": "CAT-163",
+      "name": "USB-C 读卡器 家庭装 2个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "10915",
+      "refPriceMinor": "11788",
+      "stockQty": 25,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-164",
+      "merchantId": "B",
+      "sku": "CAT-164",
+      "name": "蓝牙音箱 家庭装 2个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "36615",
+      "refPriceMinor": "39544",
+      "stockQty": 26,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-165",
+      "merchantId": "A",
+      "sku": "CAT-165",
+      "name": "智能插座 家庭装 2个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "16465",
+      "refPriceMinor": "17782",
+      "stockQty": 27,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-166",
+      "merchantId": "B",
+      "sku": "CAT-166",
+      "name": "平板支架 家庭装 2个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12565",
+      "refPriceMinor": "13570",
+      "stockQty": 28,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-167",
+      "merchantId": "A",
+      "sku": "CAT-167",
+      "name": "移动硬盘盒 家庭装 2个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "16465",
+      "refPriceMinor": "17782",
+      "stockQty": 29,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-168",
+      "merchantId": "B",
+      "sku": "CAT-168",
+      "name": "摄像头隐私盖 家庭装 6个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 6
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3315",
+      "refPriceMinor": "3580",
+      "stockQty": 30,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-169",
+      "merchantId": "A",
+      "sku": "CAT-169",
+      "name": "HDMI 线 家庭装 2条",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "10915",
+      "refPriceMinor": "11788",
+      "stockQty": 31,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-170",
+      "merchantId": "B",
+      "sku": "CAT-170",
+      "name": "笔记本内胆包 家庭装 2个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "18115",
+      "refPriceMinor": "19564",
+      "stockQty": 32,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-171",
+      "merchantId": "A",
+      "sku": "CAT-171",
+      "name": "茉莉香米 家庭装 4000袋",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 4000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "7770",
+      "refPriceMinor": "8392",
+      "stockQty": 33,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-172",
+      "merchantId": "B",
+      "sku": "CAT-172",
+      "name": "意大利直面 家庭装 1000包",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3130",
+      "refPriceMinor": "3380",
+      "stockQty": 34,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-173",
+      "merchantId": "A",
+      "sku": "CAT-173",
+      "name": "即食燕麦 家庭装 2000袋",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6660",
+      "refPriceMinor": "7193",
+      "stockQty": 35,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-174",
+      "merchantId": "B",
+      "sku": "CAT-174",
+      "name": "特级橄榄油 家庭装 1000瓶",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "volumeMl": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12380",
+      "refPriceMinor": "13370",
+      "stockQty": 36,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-175",
+      "merchantId": "A",
+      "sku": "CAT-175",
+      "name": "生抽 家庭装 1000瓶",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "volumeMl": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2960",
+      "refPriceMinor": "3197",
+      "stockQty": 37,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-176",
+      "merchantId": "B",
+      "sku": "CAT-176",
+      "name": "天然海盐 家庭装 800罐",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 800
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2020",
+      "refPriceMinor": "2182",
+      "stockQty": 38,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-177",
+      "merchantId": "A",
+      "sku": "CAT-177",
+      "name": "鸡蛋挂面 家庭装 1800包",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 1800
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2775",
+      "refPriceMinor": "2997",
+      "stockQty": 39,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-178",
+      "merchantId": "B",
+      "sku": "CAT-178",
+      "name": "黑芝麻糊 家庭装 720盒",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 720
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4980",
+      "refPriceMinor": "5378",
+      "stockQty": 40,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-179",
+      "merchantId": "A",
+      "sku": "CAT-179",
+      "name": "幼滑花生酱 家庭装 680瓶",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 680
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5920",
+      "refPriceMinor": "6394",
+      "stockQty": 41,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-180",
+      "merchantId": "B",
+      "sku": "CAT-180",
+      "name": "低筋面粉 家庭装 2000袋",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3315",
+      "refPriceMinor": "3580",
+      "stockQty": 6,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-181",
+      "merchantId": "A",
+      "sku": "CAT-181",
+      "name": "荞麦面 家庭装 1600包",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 1600
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4070",
+      "refPriceMinor": "4396",
+      "stockQty": 7,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-182",
+      "merchantId": "B",
+      "sku": "CAT-182",
+      "name": "番茄酱 家庭装 680瓶",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 680
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2390",
+      "refPriceMinor": "2581",
+      "stockQty": 8,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-183",
+      "merchantId": "A",
+      "sku": "CAT-183",
+      "name": "燕麦奶 家庭装 2000盒",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "volumeMl": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4440",
+      "refPriceMinor": "4795",
+      "stockQty": 9,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-184",
+      "merchantId": "B",
+      "sku": "CAT-184",
+      "name": "五谷黑米 家庭装 2000袋",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4980",
+      "refPriceMinor": "5378",
+      "stockQty": 10,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-185",
+      "merchantId": "A",
+      "sku": "CAT-185",
+      "name": "赤砂糖 家庭装 800包",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 800
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2960",
+      "refPriceMinor": "3197",
+      "stockQty": 11,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-186",
+      "merchantId": "B",
+      "sku": "CAT-186",
+      "name": "鲜鸡蛋 家庭装 24盒",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 24
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4980",
+      "refPriceMinor": "5378",
+      "stockQty": 12,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-187",
+      "merchantId": "A",
+      "sku": "CAT-187",
+      "name": "全脂牛奶 家庭装 2000盒",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "volumeMl": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4070",
+      "refPriceMinor": "4396",
+      "stockQty": 13,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-188",
+      "merchantId": "B",
+      "sku": "CAT-188",
+      "name": "富士苹果 家庭装 8份",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 8
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4240",
+      "refPriceMinor": "4579",
+      "stockQty": 14,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-189",
+      "merchantId": "A",
+      "sku": "CAT-189",
+      "name": "香蕉 家庭装 2000把",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2960",
+      "refPriceMinor": "3197",
+      "stockQty": 15,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-190",
+      "merchantId": "B",
+      "sku": "CAT-190",
+      "name": "三文鱼柳 家庭装 400份",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "weightG": 400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12380",
+      "refPriceMinor": "13370",
+      "stockQty": 16,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-191",
+      "merchantId": "A",
+      "sku": "CAT-191",
+      "name": "嫩豆腐 家庭装 600盒",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 600
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1665",
+      "refPriceMinor": "1798",
+      "stockQty": 17,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-192",
+      "merchantId": "B",
+      "sku": "CAT-192",
+      "name": "罗马生菜 家庭装 2棵",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2390",
+      "refPriceMinor": "2581",
+      "stockQty": 18,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-193",
+      "merchantId": "A",
+      "sku": "CAT-193",
+      "name": "冷鲜鸡胸肉 家庭装 800份",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 800
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6660",
+      "refPriceMinor": "7193",
+      "stockQty": 19,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-194",
+      "merchantId": "B",
+      "sku": "CAT-194",
+      "name": "车厘子 家庭装 500盒",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "weightG": 500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "8865",
+      "refPriceMinor": "9574",
+      "stockQty": 20,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-195",
+      "merchantId": "A",
+      "sku": "CAT-195",
+      "name": "希腊酸奶 家庭装 800杯",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 800
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4810",
+      "refPriceMinor": "5195",
+      "stockQty": 21,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-196",
+      "merchantId": "B",
+      "sku": "CAT-196",
+      "name": "蓝莓 家庭装 250盒",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "weightG": 250
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4980",
+      "refPriceMinor": "5378",
+      "stockQty": 22,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-197",
+      "merchantId": "A",
+      "sku": "CAT-197",
+      "name": "牛油果 家庭装 4个",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 4
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4810",
+      "refPriceMinor": "5195",
+      "stockQty": 23,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-198",
+      "merchantId": "B",
+      "sku": "CAT-198",
+      "name": "鲜虾 家庭装 600份",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "weightG": 600
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "10715",
+      "refPriceMinor": "11572",
+      "stockQty": 24,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-199",
+      "merchantId": "A",
+      "sku": "CAT-199",
+      "name": "菠菜 家庭装 400把",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2220",
+      "refPriceMinor": "2398",
+      "stockQty": 25,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-200",
+      "merchantId": "B",
+      "sku": "CAT-200",
+      "name": "无糖豆浆 家庭装 2000瓶",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "volumeMl": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3130",
+      "refPriceMinor": "3380",
+      "stockQty": 26,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-201",
+      "merchantId": "A",
+      "sku": "CAT-201",
+      "name": "维生素 D 滴剂 家庭装 120瓶",
+      "brand": "营养甲",
+      "category": "supplement",
+      "spec": {
+        "pieceCount": 120
+      },
+      "description": "商家声称日常补充；健康声称未经核实，非医疗建议。（模拟商品）",
+      "priceMinor": "16280",
+      "refPriceMinor": "17582",
+      "stockQty": 27,
+      "status": "published",
+      "riskTags": [
+        "health_claim"
+      ],
+      "imageUrl": null
+    },
+    {
+      "id": "C-CAT-202",
+      "merchantId": "C",
+      "sku": "CAT-202",
+      "name": "益生菌粉 家庭装 60盒",
+      "brand": "营养乙",
+      "category": "supplement",
+      "spec": {
+        "pieceCount": 60
+      },
+      "description": "商家声称日常补充；健康声称未经核实，非医疗建议。（模拟商品）",
+      "priceMinor": "23680",
+      "refPriceMinor": "25574",
+      "stockQty": 28,
+      "status": "published",
+      "riskTags": [
+        "health_claim"
+      ],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-203",
+      "merchantId": "A",
+      "sku": "CAT-203",
+      "name": "乳清蛋白粉 家庭装 800罐",
+      "brand": "营养丙",
+      "category": "supplement",
+      "spec": {
+        "weightG": 800
+      },
+      "description": "商家声称日常补充；健康声称未经核实，非医疗建议。（模拟商品）",
+      "priceMinor": "31080",
+      "refPriceMinor": "33566",
+      "stockQty": 29,
+      "status": "published",
+      "riskTags": [
+        "health_claim"
+      ],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-204",
+      "merchantId": "B",
+      "sku": "CAT-204",
+      "name": "压缩毛巾 家庭装 20条",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 20
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2760",
+      "refPriceMinor": "2981",
+      "stockQty": 30,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-205",
+      "merchantId": "A",
+      "sku": "CAT-205",
+      "name": "柠檬洗碗块 家庭装 40颗",
+      "brand": "清洁乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 40
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6290",
+      "refPriceMinor": "6793",
+      "stockQty": 31,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-206",
+      "merchantId": "B",
+      "sku": "CAT-206",
+      "name": "折叠晾衣架 家庭装 2个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "27365",
+      "refPriceMinor": "29554",
+      "stockQty": 32,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-207",
+      "merchantId": "A",
+      "sku": "CAT-207",
+      "name": "电热饭盒 家庭装 1600个",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 1600
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "29415",
+      "refPriceMinor": "31768",
+      "stockQty": 33,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-208",
+      "merchantId": "B",
+      "sku": "CAT-208",
+      "name": "桌面麦克风 家庭装 2个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "45865",
+      "refPriceMinor": "49534",
+      "stockQty": 34,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-209",
+      "merchantId": "A",
+      "sku": "CAT-209",
+      "name": "杏仁片 家庭装 400袋",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6660",
+      "refPriceMinor": "7193",
+      "stockQty": 35,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-210",
+      "merchantId": "B",
+      "sku": "CAT-210",
+      "name": "小番茄 家庭装 500盒",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3130",
+      "refPriceMinor": "3380",
+      "stockQty": 36,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-211",
+      "merchantId": "A",
+      "sku": "CAT-211",
+      "name": "竹纤维洗碗巾 旅行装 2条",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1170",
+      "refPriceMinor": "1264",
+      "stockQty": 37,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-212",
+      "merchantId": "B",
+      "sku": "CAT-212",
+      "name": "不锈钢衣架 旅行装 5个",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 5
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1880",
+      "refPriceMinor": "2030",
+      "stockQty": 38,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-213",
+      "merchantId": "A",
+      "sku": "CAT-213",
+      "name": "地板除尘纸 旅行装 15张",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 15
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1560",
+      "refPriceMinor": "1685",
+      "stockQty": 39,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-214",
+      "merchantId": "B",
+      "sku": "CAT-214",
+      "name": "马桶刷套装 旅行装 1套",
+      "brand": "清洁乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1685",
+      "refPriceMinor": "1820",
+      "stockQty": 40,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-215",
+      "merchantId": "A",
+      "sku": "CAT-215",
+      "name": "香薰蜡烛 旅行装 100支",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "weightG": 100
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2925",
+      "refPriceMinor": "3159",
+      "stockQty": 41,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-216",
+      "merchantId": "B",
+      "sku": "CAT-216",
+      "name": "除湿袋 旅行装 3包",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 3
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1620",
+      "refPriceMinor": "1750",
+      "stockQty": 6,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-217",
+      "merchantId": "A",
+      "sku": "CAT-217",
+      "name": "管道疏通剂 旅行装 250瓶",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "volumeMl": 250
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1690",
+      "refPriceMinor": "1825",
+      "stockQty": 7,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-218",
+      "merchantId": "B",
+      "sku": "CAT-218",
+      "name": "洗衣网袋 旅行装 2个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1035",
+      "refPriceMinor": "1118",
+      "stockQty": 8,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-219",
+      "merchantId": "A",
+      "sku": "CAT-219",
+      "name": "晒衣夹 旅行装 12个",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 12
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "800",
+      "refPriceMinor": "864",
+      "stockQty": 9,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-220",
+      "merchantId": "B",
+      "sku": "CAT-220",
+      "name": "玻璃擦 旅行装 1支",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1230",
+      "refPriceMinor": "1328",
+      "stockQty": 10,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-221",
+      "merchantId": "A",
+      "sku": "CAT-221",
+      "name": "抽真空收纳袋 旅行装 2个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2535",
+      "refPriceMinor": "2738",
+      "stockQty": 11,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-222",
+      "merchantId": "B",
+      "sku": "CAT-222",
+      "name": "粘毛器补充装 旅行装 2卷",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "970",
+      "refPriceMinor": "1048",
+      "stockQty": 12,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-223",
+      "merchantId": "A",
+      "sku": "CAT-223",
+      "name": "厨房油污湿巾 旅行装 15片",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 15
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1365",
+      "refPriceMinor": "1474",
+      "stockQty": 13,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-224",
+      "merchantId": "B",
+      "sku": "CAT-224",
+      "name": "家用消毒液 旅行装 500瓶",
+      "brand": "清洁乙",
+      "category": "household",
+      "spec": {
+        "volumeMl": 500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1425",
+      "refPriceMinor": "1539",
+      "stockQty": 14,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-225",
+      "merchantId": "A",
+      "sku": "CAT-225",
+      "name": "浴帘 旅行装 1幅",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4485",
+      "refPriceMinor": "4844",
+      "stockQty": 15,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-226",
+      "merchantId": "B",
+      "sku": "CAT-226",
+      "name": "防滑地垫 旅行装 1块",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2725",
+      "refPriceMinor": "2943",
+      "stockQty": 16,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-227",
+      "merchantId": "A",
+      "sku": "CAT-227",
+      "name": "棉被收纳箱 旅行装 1个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3835",
+      "refPriceMinor": "4142",
+      "stockQty": 17,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-228",
+      "merchantId": "B",
+      "sku": "CAT-228",
+      "name": "折叠雨伞 旅行装 1把",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4935",
+      "refPriceMinor": "5330",
+      "stockQty": 18,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-229",
+      "merchantId": "A",
+      "sku": "CAT-229",
+      "name": "旅行分装瓶 旅行装 2个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1885",
+      "refPriceMinor": "2036",
+      "stockQty": 19,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-230",
+      "merchantId": "B",
+      "sku": "CAT-230",
+      "name": "针线盒 旅行装 1套",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1230",
+      "refPriceMinor": "1328",
+      "stockQty": 20,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-231",
+      "merchantId": "A",
+      "sku": "CAT-231",
+      "name": "折叠边几 旅行装 1张",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "10920",
+      "refPriceMinor": "11794",
+      "stockQty": 21,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-232",
+      "merchantId": "B",
+      "sku": "CAT-232",
+      "name": "实木衣帽架 旅行装 1个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "15985",
+      "refPriceMinor": "17264",
+      "stockQty": 22,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-233",
+      "merchantId": "A",
+      "sku": "CAT-233",
+      "name": "布艺收纳凳 旅行装 1个",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "8385",
+      "refPriceMinor": "9056",
+      "stockQty": 23,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-234",
+      "merchantId": "B",
+      "sku": "CAT-234",
+      "name": "床头置物架 旅行装 1个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12085",
+      "refPriceMinor": "13052",
+      "stockQty": 24,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-235",
+      "merchantId": "A",
+      "sku": "CAT-235",
+      "name": "单人床笠 旅行装 1件",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6435",
+      "refPriceMinor": "6950",
+      "stockQty": 25,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-236",
+      "merchantId": "B",
+      "sku": "CAT-236",
+      "name": "记忆棉坐垫 旅行装 1个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4935",
+      "refPriceMinor": "5330",
+      "stockQty": 26,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-237",
+      "merchantId": "A",
+      "sku": "CAT-237",
+      "name": "四层置物架 旅行装 1个",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "14235",
+      "refPriceMinor": "15374",
+      "stockQty": 27,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-238",
+      "merchantId": "B",
+      "sku": "CAT-238",
+      "name": "玄关鞋架 旅行装 1个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "10135",
+      "refPriceMinor": "10946",
+      "stockQty": 28,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-239",
+      "merchantId": "A",
+      "sku": "CAT-239",
+      "name": "遮光窗帘 旅行装 1幅",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12285",
+      "refPriceMinor": "13268",
+      "stockQty": 29,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-240",
+      "merchantId": "B",
+      "sku": "CAT-240",
+      "name": "懒人沙发 旅行装 1个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "19235",
+      "refPriceMinor": "20774",
+      "stockQty": 30,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-241",
+      "merchantId": "A",
+      "sku": "CAT-241",
+      "name": "双人被套 旅行装 1套",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12285",
+      "refPriceMinor": "13268",
+      "stockQty": 31,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-242",
+      "merchantId": "B",
+      "sku": "CAT-242",
+      "name": "乳胶枕 旅行装 1个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "10135",
+      "refPriceMinor": "10946",
+      "stockQty": 32,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-243",
+      "merchantId": "A",
+      "sku": "CAT-243",
+      "name": "短绒地毯 旅行装 1块",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "14885",
+      "refPriceMinor": "16076",
+      "stockQty": 33,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-244",
+      "merchantId": "B",
+      "sku": "CAT-244",
+      "name": "全身穿衣镜 旅行装 1面",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12735",
+      "refPriceMinor": "13754",
+      "stockQty": 34,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-245",
+      "merchantId": "A",
+      "sku": "CAT-245",
+      "name": "书桌垫 旅行装 1块",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5785",
+      "refPriceMinor": "6248",
+      "stockQty": 35,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-246",
+      "merchantId": "B",
+      "sku": "CAT-246",
+      "name": "电热水壶 旅行装 850个",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 850
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12735",
+      "refPriceMinor": "13754",
+      "stockQty": 36,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-247",
+      "merchantId": "A",
+      "sku": "CAT-247",
+      "name": "电饭煲 旅行装 600个",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 600
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "21385",
+      "refPriceMinor": "23096",
+      "stockQty": 37,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-248",
+      "merchantId": "B",
+      "sku": "CAT-248",
+      "name": "手持吸尘器 旅行装 1台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "32235",
+      "refPriceMinor": "34814",
+      "stockQty": 38,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-249",
+      "merchantId": "A",
+      "sku": "CAT-249",
+      "name": "负离子吹风机 旅行装 1台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "16835",
+      "refPriceMinor": "18182",
+      "stockQty": 39,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-250",
+      "merchantId": "B",
+      "sku": "CAT-250",
+      "name": "台式循环扇 旅行装 1台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "18585",
+      "refPriceMinor": "20072",
+      "stockQty": 40,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-251",
+      "merchantId": "A",
+      "sku": "CAT-251",
+      "name": "迷你除湿机 旅行装 1台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "45435",
+      "refPriceMinor": "49070",
+      "stockQty": 41,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-252",
+      "merchantId": "B",
+      "sku": "CAT-252",
+      "name": "多士炉 旅行装 1台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "14685",
+      "refPriceMinor": "15860",
+      "stockQty": 6,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-253",
+      "merchantId": "A",
+      "sku": "CAT-253",
+      "name": "空气炸锅 旅行装 1500台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 1500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "29835",
+      "refPriceMinor": "32222",
+      "stockQty": 7,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-254",
+      "merchantId": "B",
+      "sku": "CAT-254",
+      "name": "电蚊拍 旅行装 1支",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4285",
+      "refPriceMinor": "4628",
+      "stockQty": 8,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-255",
+      "merchantId": "A",
+      "sku": "CAT-255",
+      "name": "LED 台灯 旅行装 1盏",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "8385",
+      "refPriceMinor": "9056",
+      "stockQty": 9,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-256",
+      "merchantId": "B",
+      "sku": "CAT-256",
+      "name": "挂烫机 旅行装 1台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "25735",
+      "refPriceMinor": "27794",
+      "stockQty": 10,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-257",
+      "merchantId": "A",
+      "sku": "CAT-257",
+      "name": "电煮锅 旅行装 750个",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 750
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12285",
+      "refPriceMinor": "13268",
+      "stockQty": 11,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-258",
+      "merchantId": "B",
+      "sku": "CAT-258",
+      "name": "超声波加湿器 旅行装 1000台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "14685",
+      "refPriceMinor": "15860",
+      "stockQty": 12,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-259",
+      "merchantId": "A",
+      "sku": "CAT-259",
+      "name": "三明治机 旅行装 1台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "10985",
+      "refPriceMinor": "11864",
+      "stockQty": 13,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-260",
+      "merchantId": "B",
+      "sku": "CAT-260",
+      "name": "电动牙刷 旅行装 1支",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12735",
+      "refPriceMinor": "13754",
+      "stockQty": 14,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-261",
+      "merchantId": "A",
+      "sku": "CAT-261",
+      "name": "USB-C 充电线 旅行装 1条",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3185",
+      "refPriceMinor": "3440",
+      "stockQty": 15,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-262",
+      "merchantId": "B",
+      "sku": "CAT-262",
+      "name": "充电宝 旅行装 1个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "9485",
+      "refPriceMinor": "10244",
+      "stockQty": 16,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-263",
+      "merchantId": "A",
+      "sku": "CAT-263",
+      "name": "无线鼠标 旅行装 1个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6435",
+      "refPriceMinor": "6950",
+      "stockQty": 17,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-264",
+      "merchantId": "B",
+      "sku": "CAT-264",
+      "name": "机械键盘 旅行装 1个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "21185",
+      "refPriceMinor": "22880",
+      "stockQty": 18,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-265",
+      "merchantId": "A",
+      "sku": "CAT-265",
+      "name": "入耳式耳机 旅行装 1副",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "8385",
+      "refPriceMinor": "9056",
+      "stockQty": 19,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-266",
+      "merchantId": "B",
+      "sku": "CAT-266",
+      "name": "手机支架 旅行装 1个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2335",
+      "refPriceMinor": "2522",
+      "stockQty": 20,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-267",
+      "merchantId": "A",
+      "sku": "CAT-267",
+      "name": "屏幕清洁套装 旅行装 1套",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1885",
+      "refPriceMinor": "2036",
+      "stockQty": 21,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-268",
+      "merchantId": "B",
+      "sku": "CAT-268",
+      "name": "USB-C 读卡器 旅行装 1个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3635",
+      "refPriceMinor": "3926",
+      "stockQty": 22,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-269",
+      "merchantId": "A",
+      "sku": "CAT-269",
+      "name": "蓝牙音箱 旅行装 1个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12935",
+      "refPriceMinor": "13970",
+      "stockQty": 23,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-270",
+      "merchantId": "B",
+      "sku": "CAT-270",
+      "name": "智能插座 旅行装 1个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5585",
+      "refPriceMinor": "6032",
+      "stockQty": 24,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-271",
+      "merchantId": "A",
+      "sku": "CAT-271",
+      "name": "平板支架 旅行装 1个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4485",
+      "refPriceMinor": "4844",
+      "stockQty": 25,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-272",
+      "merchantId": "B",
+      "sku": "CAT-272",
+      "name": "移动硬盘盒 旅行装 1个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5585",
+      "refPriceMinor": "6032",
+      "stockQty": 26,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-273",
+      "merchantId": "A",
+      "sku": "CAT-273",
+      "name": "摄像头隐私盖 旅行装 2个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1235",
+      "refPriceMinor": "1334",
+      "stockQty": 27,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-274",
+      "merchantId": "B",
+      "sku": "CAT-274",
+      "name": "HDMI 线 旅行装 1条",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3635",
+      "refPriceMinor": "3926",
+      "stockQty": 28,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-275",
+      "merchantId": "A",
+      "sku": "CAT-275",
+      "name": "笔记本内胆包 旅行装 1个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6435",
+      "refPriceMinor": "6950",
+      "stockQty": 29,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-276",
+      "merchantId": "B",
+      "sku": "CAT-276",
+      "name": "茉莉香米 旅行装 1000袋",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2530",
+      "refPriceMinor": "2732",
+      "stockQty": 30,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-277",
+      "merchantId": "A",
+      "sku": "CAT-277",
+      "name": "意大利直面 旅行装 250包",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 250
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1170",
+      "refPriceMinor": "1264",
+      "stockQty": 31,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-278",
+      "merchantId": "B",
+      "sku": "CAT-278",
+      "name": "即食燕麦 旅行装 500袋",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2140",
+      "refPriceMinor": "2311",
+      "stockQty": 32,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-279",
+      "merchantId": "A",
+      "sku": "CAT-279",
+      "name": "特级橄榄油 旅行装 250瓶",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "volumeMl": 250
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4420",
+      "refPriceMinor": "4774",
+      "stockQty": 33,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-280",
+      "merchantId": "B",
+      "sku": "CAT-280",
+      "name": "生抽 旅行装 250瓶",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "volumeMl": 250
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "840",
+      "refPriceMinor": "907",
+      "stockQty": 34,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-281",
+      "merchantId": "A",
+      "sku": "CAT-281",
+      "name": "天然海盐 旅行装 200罐",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 200
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "800",
+      "refPriceMinor": "864",
+      "stockQty": 35,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-282",
+      "merchantId": "B",
+      "sku": "CAT-282",
+      "name": "鸡蛋挂面 旅行装 450包",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 450
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "800",
+      "refPriceMinor": "864",
+      "stockQty": 36,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-283",
+      "merchantId": "A",
+      "sku": "CAT-283",
+      "name": "黑芝麻糊 旅行装 180盒",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 180
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1820",
+      "refPriceMinor": "1966",
+      "stockQty": 37,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-284",
+      "merchantId": "B",
+      "sku": "CAT-284",
+      "name": "幼滑花生酱 旅行装 170瓶",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 170
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1880",
+      "refPriceMinor": "2030",
+      "stockQty": 38,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-285",
+      "merchantId": "A",
+      "sku": "CAT-285",
+      "name": "低筋面粉 旅行装 500袋",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1235",
+      "refPriceMinor": "1334",
+      "stockQty": 39,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-286",
+      "merchantId": "B",
+      "sku": "CAT-286",
+      "name": "荞麦面 旅行装 400包",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1230",
+      "refPriceMinor": "1328",
+      "stockQty": 40,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-287",
+      "merchantId": "A",
+      "sku": "CAT-287",
+      "name": "番茄酱 旅行装 170瓶",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 170
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "910",
+      "refPriceMinor": "983",
+      "stockQty": 41,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-288",
+      "merchantId": "B",
+      "sku": "CAT-288",
+      "name": "燕麦奶 旅行装 500盒",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "volumeMl": 500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1360",
+      "refPriceMinor": "1469",
+      "stockQty": 6,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-289",
+      "merchantId": "A",
+      "sku": "CAT-289",
+      "name": "五谷黑米 旅行装 500袋",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1820",
+      "refPriceMinor": "1966",
+      "stockQty": 7,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-290",
+      "merchantId": "B",
+      "sku": "CAT-290",
+      "name": "赤砂糖 旅行装 200包",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 200
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "840",
+      "refPriceMinor": "907",
+      "stockQty": 8,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-291",
+      "merchantId": "A",
+      "sku": "CAT-291",
+      "name": "鲜鸡蛋 旅行装 6盒",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 6
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1820",
+      "refPriceMinor": "1966",
+      "stockQty": 9,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-292",
+      "merchantId": "B",
+      "sku": "CAT-292",
+      "name": "全脂牛奶 旅行装 500盒",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "volumeMl": 500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1230",
+      "refPriceMinor": "1328",
+      "stockQty": 10,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-293",
+      "merchantId": "A",
+      "sku": "CAT-293",
+      "name": "富士苹果 旅行装 2份",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1560",
+      "refPriceMinor": "1685",
+      "stockQty": 11,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-294",
+      "merchantId": "B",
+      "sku": "CAT-294",
+      "name": "香蕉 旅行装 500把",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "840",
+      "refPriceMinor": "907",
+      "stockQty": 12,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-295",
+      "merchantId": "A",
+      "sku": "CAT-295",
+      "name": "三文鱼柳 旅行装 100份",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "weightG": 100
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4420",
+      "refPriceMinor": "4774",
+      "stockQty": 13,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-296",
+      "merchantId": "B",
+      "sku": "CAT-296",
+      "name": "嫩豆腐 旅行装 150盒",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 150
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "800",
+      "refPriceMinor": "864",
+      "stockQty": 14,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-297",
+      "merchantId": "A",
+      "sku": "CAT-297",
+      "name": "罗马生菜 旅行装 1棵",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "910",
+      "refPriceMinor": "983",
+      "stockQty": 15,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-298",
+      "merchantId": "B",
+      "sku": "CAT-298",
+      "name": "冷鲜鸡胸肉 旅行装 200份",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 200
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2140",
+      "refPriceMinor": "2311",
+      "stockQty": 16,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-299",
+      "merchantId": "A",
+      "sku": "CAT-299",
+      "name": "车厘子 旅行装 125盒",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "weightG": 125
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3185",
+      "refPriceMinor": "3440",
+      "stockQty": 17,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-300",
+      "merchantId": "B",
+      "sku": "CAT-300",
+      "name": "希腊酸奶 旅行装 200杯",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 200
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1490",
+      "refPriceMinor": "1609",
+      "stockQty": 18,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-301",
+      "merchantId": "A",
+      "sku": "CAT-301",
+      "name": "蓝莓 旅行装 63盒",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "weightG": 63
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1820",
+      "refPriceMinor": "1966",
+      "stockQty": 19,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-302",
+      "merchantId": "B",
+      "sku": "CAT-302",
+      "name": "牛油果 旅行装 1个",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1490",
+      "refPriceMinor": "1609",
+      "stockQty": 20,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-303",
+      "merchantId": "A",
+      "sku": "CAT-303",
+      "name": "鲜虾 旅行装 150份",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "weightG": 150
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3835",
+      "refPriceMinor": "4142",
+      "stockQty": 21,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-304",
+      "merchantId": "B",
+      "sku": "CAT-304",
+      "name": "菠菜 旅行装 100把",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 100
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "800",
+      "refPriceMinor": "864",
+      "stockQty": 22,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-305",
+      "merchantId": "A",
+      "sku": "CAT-305",
+      "name": "无糖豆浆 旅行装 500瓶",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "volumeMl": 500
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1170",
+      "refPriceMinor": "1264",
+      "stockQty": 23,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-306",
+      "merchantId": "B",
+      "sku": "CAT-306",
+      "name": "维生素 D 滴剂 旅行装 30瓶",
+      "brand": "营养甲",
+      "category": "supplement",
+      "spec": {
+        "pieceCount": 30
+      },
+      "description": "商家声称日常补充；健康声称未经核实，非医疗建议。（模拟商品）",
+      "priceMinor": "5520",
+      "refPriceMinor": "5962",
+      "stockQty": 24,
+      "status": "published",
+      "riskTags": [
+        "health_claim"
+      ],
+      "imageUrl": null
+    },
+    {
+      "id": "C-CAT-307",
+      "merchantId": "C",
+      "sku": "CAT-307",
+      "name": "益生菌粉 旅行装 15盒",
+      "brand": "营养乙",
+      "category": "supplement",
+      "spec": {
+        "pieceCount": 15
+      },
+      "description": "商家声称日常补充；健康声称未经核实，非医疗建议。（模拟商品）",
+      "priceMinor": "8320",
+      "refPriceMinor": "8986",
+      "stockQty": 25,
+      "status": "published",
+      "riskTags": [
+        "health_claim"
+      ],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-308",
+      "merchantId": "B",
+      "sku": "CAT-308",
+      "name": "乳清蛋白粉 旅行装 200罐",
+      "brand": "营养丙",
+      "category": "supplement",
+      "spec": {
+        "weightG": 200
+      },
+      "description": "商家声称日常补充；健康声称未经核实，非医疗建议。（模拟商品）",
+      "priceMinor": "10720",
+      "refPriceMinor": "11578",
+      "stockQty": 26,
+      "status": "published",
+      "riskTags": [
+        "health_claim"
+      ],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-309",
+      "merchantId": "A",
+      "sku": "CAT-309",
+      "name": "压缩毛巾 旅行装 5条",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 5
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1040",
+      "refPriceMinor": "1123",
+      "stockQty": 27,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-310",
+      "merchantId": "B",
+      "sku": "CAT-310",
+      "name": "柠檬洗碗块 旅行装 10颗",
+      "brand": "清洁乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 10
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2010",
+      "refPriceMinor": "2171",
+      "stockQty": 28,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-311",
+      "merchantId": "A",
+      "sku": "CAT-311",
+      "name": "折叠晾衣架 旅行装 1个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "9685",
+      "refPriceMinor": "10460",
+      "stockQty": 29,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-312",
+      "merchantId": "B",
+      "sku": "CAT-312",
+      "name": "电热饭盒 旅行装 400个",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "10135",
+      "refPriceMinor": "10946",
+      "stockQty": 30,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-313",
+      "merchantId": "A",
+      "sku": "CAT-313",
+      "name": "桌面麦克风 旅行装 1个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 1
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "16185",
+      "refPriceMinor": "17480",
+      "stockQty": 31,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-314",
+      "merchantId": "B",
+      "sku": "CAT-314",
+      "name": "杏仁片 旅行装 100袋",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 100
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2140",
+      "refPriceMinor": "2311",
+      "stockQty": 32,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-315",
+      "merchantId": "A",
+      "sku": "CAT-315",
+      "name": "小番茄 旅行装 125盒",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 125
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1170",
+      "refPriceMinor": "1264",
+      "stockQty": 33,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-316",
+      "merchantId": "B",
+      "sku": "CAT-316",
+      "name": "竹纤维洗碗巾 两件装 6条",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 6
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3220",
+      "refPriceMinor": "3478",
+      "stockQty": 34,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-317",
+      "merchantId": "A",
+      "sku": "CAT-317",
+      "name": "不锈钢衣架 两件装 20个",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 20
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6080",
+      "refPriceMinor": "6566",
+      "stockQty": 35,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-318",
+      "merchantId": "B",
+      "sku": "CAT-318",
+      "name": "地板除尘纸 两件装 60张",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 60
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4360",
+      "refPriceMinor": "4709",
+      "stockQty": 36,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-319",
+      "merchantId": "A",
+      "sku": "CAT-319",
+      "name": "马桶刷套装 两件装 2套",
+      "brand": "清洁乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5510",
+      "refPriceMinor": "5951",
+      "stockQty": 37,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-320",
+      "merchantId": "B",
+      "sku": "CAT-320",
+      "name": "香薰蜡烛 两件装 400支",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "weightG": 400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "8350",
+      "refPriceMinor": "9018",
+      "stockQty": 38,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-321",
+      "merchantId": "A",
+      "sku": "CAT-321",
+      "name": "除湿袋 两件装 12包",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 12
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5320",
+      "refPriceMinor": "5746",
+      "stockQty": 39,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-322",
+      "merchantId": "B",
+      "sku": "CAT-322",
+      "name": "管道疏通剂 两件装 1000瓶",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "volumeMl": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4740",
+      "refPriceMinor": "5119",
+      "stockQty": 40,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-323",
+      "merchantId": "A",
+      "sku": "CAT-323",
+      "name": "洗衣网袋 两件装 6个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 6
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3610",
+      "refPriceMinor": "3899",
+      "stockQty": 41,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-324",
+      "merchantId": "B",
+      "sku": "CAT-324",
+      "name": "晒衣夹 两件装 48个",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 48
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2080",
+      "refPriceMinor": "2246",
+      "stockQty": 6,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-325",
+      "merchantId": "A",
+      "sku": "CAT-325",
+      "name": "玻璃擦 两件装 2支",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4180",
+      "refPriceMinor": "4514",
+      "stockQty": 7,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-326",
+      "merchantId": "B",
+      "sku": "CAT-326",
+      "name": "抽真空收纳袋 两件装 8个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 8
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "7210",
+      "refPriceMinor": "7787",
+      "stockQty": 8,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-327",
+      "merchantId": "A",
+      "sku": "CAT-327",
+      "name": "粘毛器补充装 两件装 6卷",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 6
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3420",
+      "refPriceMinor": "3694",
+      "stockQty": 9,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-328",
+      "merchantId": "B",
+      "sku": "CAT-328",
+      "name": "厨房油污湿巾 两件装 60片",
+      "brand": "清洁甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 60
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3790",
+      "refPriceMinor": "4093",
+      "stockQty": 10,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-329",
+      "merchantId": "A",
+      "sku": "CAT-329",
+      "name": "家用消毒液 两件装 2000瓶",
+      "brand": "清洁乙",
+      "category": "household",
+      "spec": {
+        "volumeMl": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4750",
+      "refPriceMinor": "5130",
+      "stockQty": 11,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-330",
+      "merchantId": "B",
+      "sku": "CAT-330",
+      "name": "浴帘 两件装 2幅",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12910",
+      "refPriceMinor": "13943",
+      "stockQty": 12,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-331",
+      "merchantId": "A",
+      "sku": "CAT-331",
+      "name": "防滑地垫 两件装 2块",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "8550",
+      "refPriceMinor": "9234",
+      "stockQty": 13,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-332",
+      "merchantId": "B",
+      "sku": "CAT-332",
+      "name": "棉被收纳箱 两件装 2个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "11010",
+      "refPriceMinor": "11891",
+      "stockQty": 14,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-333",
+      "merchantId": "A",
+      "sku": "CAT-333",
+      "name": "折叠雨伞 两件装 2把",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "15010",
+      "refPriceMinor": "16211",
+      "stockQty": 15,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-334",
+      "merchantId": "B",
+      "sku": "CAT-334",
+      "name": "旅行分装瓶 两件装 8个",
+      "brand": "日用甲",
+      "category": "household",
+      "spec": {
+        "pieceCount": 8
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5310",
+      "refPriceMinor": "5735",
+      "stockQty": 16,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-335",
+      "merchantId": "A",
+      "sku": "CAT-335",
+      "name": "针线盒 两件装 2套",
+      "brand": "日用乙",
+      "category": "household",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4180",
+      "refPriceMinor": "4514",
+      "stockQty": 17,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-336",
+      "merchantId": "B",
+      "sku": "CAT-336",
+      "name": "折叠边几 两件装 2张",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "31720",
+      "refPriceMinor": "34258",
+      "stockQty": 18,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-337",
+      "merchantId": "A",
+      "sku": "CAT-337",
+      "name": "实木衣帽架 两件装 2个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "47310",
+      "refPriceMinor": "51095",
+      "stockQty": 19,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-338",
+      "merchantId": "B",
+      "sku": "CAT-338",
+      "name": "布艺收纳凳 两件装 2个",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "24310",
+      "refPriceMinor": "26255",
+      "stockQty": 20,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-339",
+      "merchantId": "A",
+      "sku": "CAT-339",
+      "name": "床头置物架 两件装 2个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "35910",
+      "refPriceMinor": "38783",
+      "stockQty": 21,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-340",
+      "merchantId": "B",
+      "sku": "CAT-340",
+      "name": "单人床笠 两件装 2件",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "18610",
+      "refPriceMinor": "20099",
+      "stockQty": 22,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-341",
+      "merchantId": "A",
+      "sku": "CAT-341",
+      "name": "记忆棉坐垫 两件装 2个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "15010",
+      "refPriceMinor": "16211",
+      "stockQty": 23,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-342",
+      "merchantId": "B",
+      "sku": "CAT-342",
+      "name": "四层置物架 两件装 2个",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "41410",
+      "refPriceMinor": "44723",
+      "stockQty": 24,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-343",
+      "merchantId": "A",
+      "sku": "CAT-343",
+      "name": "玄关鞋架 两件装 2个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "30210",
+      "refPriceMinor": "32627",
+      "stockQty": 25,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-344",
+      "merchantId": "B",
+      "sku": "CAT-344",
+      "name": "遮光窗帘 两件装 2幅",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "35710",
+      "refPriceMinor": "38567",
+      "stockQty": 26,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-345",
+      "merchantId": "A",
+      "sku": "CAT-345",
+      "name": "懒人沙发 两件装 2个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "56810",
+      "refPriceMinor": "61355",
+      "stockQty": 27,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-346",
+      "merchantId": "B",
+      "sku": "CAT-346",
+      "name": "双人被套 两件装 2套",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "35710",
+      "refPriceMinor": "38567",
+      "stockQty": 28,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-347",
+      "merchantId": "A",
+      "sku": "CAT-347",
+      "name": "乳胶枕 两件装 2个",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "30210",
+      "refPriceMinor": "32627",
+      "stockQty": 29,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-348",
+      "merchantId": "B",
+      "sku": "CAT-348",
+      "name": "短绒地毯 两件装 2块",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "43310",
+      "refPriceMinor": "46775",
+      "stockQty": 30,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-349",
+      "merchantId": "A",
+      "sku": "CAT-349",
+      "name": "全身穿衣镜 两件装 2面",
+      "brand": "居家乙",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "37810",
+      "refPriceMinor": "40835",
+      "stockQty": 31,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-350",
+      "merchantId": "B",
+      "sku": "CAT-350",
+      "name": "书桌垫 两件装 2块",
+      "brand": "居家甲",
+      "category": "furniture",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "16710",
+      "refPriceMinor": "18047",
+      "stockQty": 32,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-351",
+      "merchantId": "A",
+      "sku": "CAT-351",
+      "name": "电热水壶 两件装 3400个",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 3400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "37810",
+      "refPriceMinor": "40835",
+      "stockQty": 33,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-352",
+      "merchantId": "B",
+      "sku": "CAT-352",
+      "name": "电饭煲 两件装 2400个",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 2400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "62310",
+      "refPriceMinor": "67295",
+      "stockQty": 34,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-353",
+      "merchantId": "A",
+      "sku": "CAT-353",
+      "name": "手持吸尘器 两件装 2台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "94810",
+      "refPriceMinor": "102395",
+      "stockQty": 35,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-354",
+      "merchantId": "B",
+      "sku": "CAT-354",
+      "name": "负离子吹风机 两件装 2台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "49010",
+      "refPriceMinor": "52931",
+      "stockQty": 36,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-355",
+      "merchantId": "A",
+      "sku": "CAT-355",
+      "name": "台式循环扇 两件装 2台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "54910",
+      "refPriceMinor": "59303",
+      "stockQty": 37,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-356",
+      "merchantId": "B",
+      "sku": "CAT-356",
+      "name": "迷你除湿机 两件装 2台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "132610",
+      "refPriceMinor": "143219",
+      "stockQty": 38,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-357",
+      "merchantId": "A",
+      "sku": "CAT-357",
+      "name": "多士炉 两件装 2台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "43510",
+      "refPriceMinor": "46991",
+      "stockQty": 39,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-358",
+      "merchantId": "B",
+      "sku": "CAT-358",
+      "name": "空气炸锅 两件装 6000台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 6000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "87010",
+      "refPriceMinor": "93971",
+      "stockQty": 40,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-359",
+      "merchantId": "A",
+      "sku": "CAT-359",
+      "name": "电蚊拍 两件装 2支",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "13110",
+      "refPriceMinor": "14159",
+      "stockQty": 41,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-360",
+      "merchantId": "B",
+      "sku": "CAT-360",
+      "name": "LED 台灯 两件装 2盏",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "24310",
+      "refPriceMinor": "26255",
+      "stockQty": 6,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-361",
+      "merchantId": "A",
+      "sku": "CAT-361",
+      "name": "挂烫机 两件装 2台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "75810",
+      "refPriceMinor": "81875",
+      "stockQty": 7,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-362",
+      "merchantId": "B",
+      "sku": "CAT-362",
+      "name": "电煮锅 两件装 3000个",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 3000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "35710",
+      "refPriceMinor": "38567",
+      "stockQty": 8,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-363",
+      "merchantId": "A",
+      "sku": "CAT-363",
+      "name": "超声波加湿器 两件装 4000台",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "volumeMl": 4000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "43510",
+      "refPriceMinor": "46991",
+      "stockQty": 9,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-364",
+      "merchantId": "B",
+      "sku": "CAT-364",
+      "name": "三明治机 两件装 2台",
+      "brand": "家电乙",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "31910",
+      "refPriceMinor": "34463",
+      "stockQty": 10,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-365",
+      "merchantId": "A",
+      "sku": "CAT-365",
+      "name": "电动牙刷 两件装 2支",
+      "brand": "家电甲",
+      "category": "appliance",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "37810",
+      "refPriceMinor": "40835",
+      "stockQty": 11,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-366",
+      "merchantId": "B",
+      "sku": "CAT-366",
+      "name": "USB-C 充电线 两件装 2条",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "9110",
+      "refPriceMinor": "9839",
+      "stockQty": 12,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-367",
+      "merchantId": "A",
+      "sku": "CAT-367",
+      "name": "充电宝 两件装 2个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "28310",
+      "refPriceMinor": "30575",
+      "stockQty": 13,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-368",
+      "merchantId": "B",
+      "sku": "CAT-368",
+      "name": "无线鼠标 两件装 2个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "18610",
+      "refPriceMinor": "20099",
+      "stockQty": 14,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-369",
+      "merchantId": "A",
+      "sku": "CAT-369",
+      "name": "机械键盘 两件装 2个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "62510",
+      "refPriceMinor": "67511",
+      "stockQty": 15,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-370",
+      "merchantId": "B",
+      "sku": "CAT-370",
+      "name": "入耳式耳机 两件装 2副",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "24310",
+      "refPriceMinor": "26255",
+      "stockQty": 16,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-371",
+      "merchantId": "A",
+      "sku": "CAT-371",
+      "name": "手机支架 两件装 2个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "7410",
+      "refPriceMinor": "8003",
+      "stockQty": 17,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-372",
+      "merchantId": "B",
+      "sku": "CAT-372",
+      "name": "屏幕清洁套装 两件装 2套",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5310",
+      "refPriceMinor": "5735",
+      "stockQty": 18,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-373",
+      "merchantId": "A",
+      "sku": "CAT-373",
+      "name": "USB-C 读卡器 两件装 2个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "11210",
+      "refPriceMinor": "12107",
+      "stockQty": 19,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-374",
+      "merchantId": "B",
+      "sku": "CAT-374",
+      "name": "蓝牙音箱 两件装 2个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "37610",
+      "refPriceMinor": "40619",
+      "stockQty": 20,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-375",
+      "merchantId": "A",
+      "sku": "CAT-375",
+      "name": "智能插座 两件装 2个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "16910",
+      "refPriceMinor": "18263",
+      "stockQty": 21,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-376",
+      "merchantId": "B",
+      "sku": "CAT-376",
+      "name": "平板支架 两件装 2个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12910",
+      "refPriceMinor": "13943",
+      "stockQty": 22,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-377",
+      "merchantId": "A",
+      "sku": "CAT-377",
+      "name": "移动硬盘盒 两件装 2个",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "16910",
+      "refPriceMinor": "18263",
+      "stockQty": 23,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-378",
+      "merchantId": "B",
+      "sku": "CAT-378",
+      "name": "摄像头隐私盖 两件装 6个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 6
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3410",
+      "refPriceMinor": "3683",
+      "stockQty": 24,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-379",
+      "merchantId": "A",
+      "sku": "CAT-379",
+      "name": "HDMI 线 两件装 2条",
+      "brand": "数码乙",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "11210",
+      "refPriceMinor": "12107",
+      "stockQty": 25,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-380",
+      "merchantId": "B",
+      "sku": "CAT-380",
+      "name": "笔记本内胆包 两件装 2个",
+      "brand": "数码甲",
+      "category": "digital",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "18610",
+      "refPriceMinor": "20099",
+      "stockQty": 26,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-381",
+      "merchantId": "A",
+      "sku": "CAT-381",
+      "name": "茉莉香米 两件装 4000袋",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 4000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "7980",
+      "refPriceMinor": "8618",
+      "stockQty": 27,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-382",
+      "merchantId": "B",
+      "sku": "CAT-382",
+      "name": "意大利直面 两件装 1000包",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3220",
+      "refPriceMinor": "3478",
+      "stockQty": 28,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-383",
+      "merchantId": "A",
+      "sku": "CAT-383",
+      "name": "即食燕麦 两件装 2000袋",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6840",
+      "refPriceMinor": "7387",
+      "stockQty": 29,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-384",
+      "merchantId": "B",
+      "sku": "CAT-384",
+      "name": "特级橄榄油 两件装 1000瓶",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "volumeMl": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12720",
+      "refPriceMinor": "13738",
+      "stockQty": 30,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-385",
+      "merchantId": "A",
+      "sku": "CAT-385",
+      "name": "生抽 两件装 1000瓶",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "volumeMl": 1000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3040",
+      "refPriceMinor": "3283",
+      "stockQty": 31,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-386",
+      "merchantId": "B",
+      "sku": "CAT-386",
+      "name": "天然海盐 两件装 800罐",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 800
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2080",
+      "refPriceMinor": "2246",
+      "stockQty": 32,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-387",
+      "merchantId": "A",
+      "sku": "CAT-387",
+      "name": "鸡蛋挂面 两件装 1800包",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 1800
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2850",
+      "refPriceMinor": "3078",
+      "stockQty": 33,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-388",
+      "merchantId": "B",
+      "sku": "CAT-388",
+      "name": "黑芝麻糊 两件装 720盒",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 720
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5120",
+      "refPriceMinor": "5530",
+      "stockQty": 34,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-389",
+      "merchantId": "A",
+      "sku": "CAT-389",
+      "name": "幼滑花生酱 两件装 680瓶",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 680
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "6080",
+      "refPriceMinor": "6566",
+      "stockQty": 35,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-390",
+      "merchantId": "B",
+      "sku": "CAT-390",
+      "name": "低筋面粉 两件装 2000袋",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3410",
+      "refPriceMinor": "3683",
+      "stockQty": 36,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-391",
+      "merchantId": "A",
+      "sku": "CAT-391",
+      "name": "荞麦面 两件装 1600包",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 1600
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4180",
+      "refPriceMinor": "4514",
+      "stockQty": 37,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-392",
+      "merchantId": "B",
+      "sku": "CAT-392",
+      "name": "番茄酱 两件装 680瓶",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 680
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2460",
+      "refPriceMinor": "2657",
+      "stockQty": 38,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-393",
+      "merchantId": "A",
+      "sku": "CAT-393",
+      "name": "燕麦奶 两件装 2000盒",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "volumeMl": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4560",
+      "refPriceMinor": "4925",
+      "stockQty": 39,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-394",
+      "merchantId": "B",
+      "sku": "CAT-394",
+      "name": "五谷黑米 两件装 2000袋",
+      "brand": "粮油乙",
+      "category": "grocery",
+      "spec": {
+        "weightG": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5120",
+      "refPriceMinor": "5530",
+      "stockQty": 40,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-395",
+      "merchantId": "A",
+      "sku": "CAT-395",
+      "name": "赤砂糖 两件装 800包",
+      "brand": "粮油甲",
+      "category": "grocery",
+      "spec": {
+        "weightG": 800
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3040",
+      "refPriceMinor": "3283",
+      "stockQty": 41,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-396",
+      "merchantId": "B",
+      "sku": "CAT-396",
+      "name": "鲜鸡蛋 两件装 24盒",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 24
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "5120",
+      "refPriceMinor": "5530",
+      "stockQty": 6,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-397",
+      "merchantId": "A",
+      "sku": "CAT-397",
+      "name": "全脂牛奶 两件装 2000盒",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "volumeMl": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4180",
+      "refPriceMinor": "4514",
+      "stockQty": 7,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-398",
+      "merchantId": "B",
+      "sku": "CAT-398",
+      "name": "富士苹果 两件装 8份",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 8
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "4360",
+      "refPriceMinor": "4709",
+      "stockQty": 8,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-399",
+      "merchantId": "A",
+      "sku": "CAT-399",
+      "name": "香蕉 两件装 2000把",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 2000
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "3040",
+      "refPriceMinor": "3283",
+      "stockQty": 9,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-400",
+      "merchantId": "B",
+      "sku": "CAT-400",
+      "name": "三文鱼柳 两件装 400份",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "weightG": 400
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "12720",
+      "refPriceMinor": "13738",
+      "stockQty": 10,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "A-CAT-401",
+      "merchantId": "A",
+      "sku": "CAT-401",
+      "name": "嫩豆腐 两件装 600盒",
+      "brand": "鲜食乙",
+      "category": "fresh",
+      "spec": {
+        "weightG": 600
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "1710",
+      "refPriceMinor": "1847",
+      "stockQty": 11,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
+    },
+    {
+      "id": "B-CAT-402",
+      "merchantId": "B",
+      "sku": "CAT-402",
+      "name": "罗马生菜 两件装 2棵",
+      "brand": "鲜食甲",
+      "category": "fresh",
+      "spec": {
+        "pieceCount": 2
+      },
+      "description": "演示用模拟商品，价格为整数分，不是采集价。",
+      "priceMinor": "2460",
+      "refPriceMinor": "2657",
+      "stockQty": 12,
+      "status": "published",
+      "riskTags": [],
+      "imageUrl": null
     }
   ]
 }
