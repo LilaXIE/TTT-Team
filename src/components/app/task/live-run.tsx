@@ -145,13 +145,14 @@ export function LiveRun({ taskId }: { taskId: string }) {
   const steps = data.run?.steps ?? [];
 
   return (
-    <div className="grid gap-4">
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,720px)_300px]">
+      <div className="grid min-w-0 gap-4">
       <div className="flex justify-end">
         <div className="max-w-[80%] rounded-[18px] rounded-br-md bg-ink px-4 py-2.5 text-[14px] text-white">{data.task.input_text}</div>
       </div>
       <div className="flex items-start gap-3">
         <ZevAvatar />
-        <Panel className="flex-1">
+        <Panel className="min-w-0 flex-1">
           <p className="text-[14px] text-soft">
             {t("下面是演示目录里的商品。能不能买由规则引擎决定，不是模型决定。", "These are demo-catalogue items. The rules decide, not the model.")}
           </p>
@@ -195,17 +196,6 @@ export function LiveRun({ taskId }: { taskId: string }) {
           )}
           {picked?.outcome === "DENY" && <p className="mt-4 text-[14px] text-no">{t("已拦住。拒绝不能被确认绕过。", "Stopped. A refusal cannot be confirmed away.")}</p>}
           {payNote && <p className="mt-3 text-[14px]">{payNote}</p>}
-          {steps.length > 0 && (
-            <ol className="mt-5 space-y-2 border-t border-line pt-4">
-              <li className="text-[12px] text-soft">{t("Zev 的工作记录", "Zev's work log")}</li>
-              {steps.map((step, i) => (
-                <li key={`${step.tool}-${i}`} className="text-[13px]">
-                  <div>{workStepTitle(step.tool, lang)}</div>
-                  {step.outputSummary && <div className="text-[12px] text-soft">{step.outputSummary}</div>}
-                </li>
-              ))}
-            </ol>
-          )}
         </Panel>
       </div>
       <form
@@ -232,6 +222,22 @@ export function LiveRun({ taskId }: { taskId: string }) {
           <NeedGuide onApply={(text) => void refine(text)} />
         </div>
       )}
+      </div>
+      <Panel className="p-5 lg:sticky lg:top-24">
+        <h2 className="font-heading text-[17px]">{t("Zev 的工作记录", "Zev's work log")}</h2>
+        {steps.length === 0 ? (
+          <p className="mt-3 text-[13px] text-soft">{t("还没有开始。", "Nothing yet.")}</p>
+        ) : (
+          <ol className="mt-4 space-y-3">
+            {steps.map((step, i) => (
+              <li key={`${step.tool}-${i}`} className="text-[13px]">
+                <div>{workStepTitle(step.tool, lang)}</div>
+                {step.outputSummary && <div className="text-[12px] text-soft">{step.outputSummary}</div>}
+              </li>
+            ))}
+          </ol>
+        )}
+      </Panel>
     </div>
   );
 }

@@ -186,7 +186,7 @@ function MockTaskView({ taskId }: { taskId: string }) {
   };
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
+    <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,720px)_300px]">
       <div className="min-w-0">
         <div className="mb-6 flex flex-wrap items-center gap-3">
           <Link href="/" className="grid size-9 place-items-center rounded-full border border-line bg-white text-soft hover:text-ink" aria-label={t("返回", "Back")}>
