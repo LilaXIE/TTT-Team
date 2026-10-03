@@ -16,13 +16,13 @@ from email.utils import formataddr
 from datetime import datetime, timezone
 from openai import OpenAI
 
-# 顶部替换
+# Top-level secrets
 DEEPSEEK_API_KEY   = st.secrets["DEEPSEEK_API_KEY"]
 TENCENT_SECRET_ID  = st.secrets["TENCENT_SECRET_ID"]
 TENCENT_SECRET_KEY = st.secrets["TENCENT_SECRET_KEY"]
 
 # ==========================================
-# 0. API 配置
+# 0. API Configuration
 # ==========================================
 client = OpenAI(
     api_key=DEEPSEEK_API_KEY,
@@ -30,7 +30,7 @@ client = OpenAI(
 )
 
 # ==========================================
-# 0.0 腾讯云联网搜索 API（WSA）配置
+# 0.0 Tencent Cloud Web Search API (WSA) Configuration
 # ==========================================
 WSA_SERVICE = "wsa"
 WSA_HOST    = "wsa.tencentcloudapi.com"
@@ -38,19 +38,18 @@ WSA_ACTION  = "SearchPro"
 WSA_VERSION = "2025-05-08"
 
 # ==========================================
-# 只允许这 5 个官方平台
+# Only these 5 official platforms are allowed
 # ==========================================
 ALLOWED_PLATFORMS = {
-    "淘宝":   ["taobao.com", "m.tb.cn", "tb.cn"],
-    "天猫":   ["tmall.com"],
-    "京东":   ["jd.com", "3.cn", "jd.hk"],
-    "拼多多": ["pinduoduo.com", "yangkeduo.com"],
-    "唯品会": ["vip.com"],
+    "Taobao":   ["taobao.com", "m.tb.cn", "tb.cn"],
+    "Tmall":    ["tmall.com"],
+    "JD":       ["jd.com", "3.cn", "jd.hk"],
+    "Pinduoduo":["pinduoduo.com", "yangkeduo.com"],
+    "VIP.com":  ["vip.com"],
 }
 
 
 def _detect_platform(url: str):
-    """返回 url 属于哪个允许的平台；不属于则返回 None"""
     if not url:
         return None
     url_l = url.lower()
@@ -65,7 +64,7 @@ def _is_allowed_url(url: str) -> bool:
     return _detect_platform(url) is not None
 
 
-# ---------- 商品详情页判定 ----------
+# ---------- Product detail page detection ----------
 _PRODUCT_DETAIL_PATTERNS = [
     re.compile(r"item\.jd\.com/\d+\.html", re.I),
     re.compile(r"item\.m\.jd\.com/product/\d+\.html", re.I),
@@ -93,7 +92,7 @@ def _is_product_detail_url(url: str) -> bool:
 
 
 # ==========================================
-# 0.1 邮件发送
+# 0.1 Email sending
 # ==========================================
 SMTP_PRESETS = {
     "gmail.com":      ("smtp.gmail.com",        465, True),
@@ -154,21 +153,21 @@ def send_email_code(
     smtp_user: str,
     smtp_pass: str,
     use_ssl: bool = True,
-    sender_name: str = "AI 智能代购 Agent",
-    subject: str = "【AI 智能代购 Agent】注册验证码",
+    sender_name: str = "AI Shopping Agent",
+    subject: str = "[AI Shopping Agent] Registration Verification Code",
     body_html: str = None,
 ):
     if body_html is None:
         body_html = f"""
         <div style="font-family: Arial, 'Microsoft YaHei', sans-serif; padding: 20px;">
-            <h2 style="color:#1488CC;">🛍️ AI 智能代购 Agent</h2>
-            <p>您正在注册账户，本次验证码为：</p>
+            <h2 style="color:#1488CC;">🛍️ AI Shopping Agent</h2>
+            <p>You are registering an account. Your verification code is:</p>
             <h1 style="color:#FF4B4B; letter-spacing: 5px;">{code}</h1>
-            <p>验证码 <b>5 分钟内有效</b>，请勿泄露给他人。</p>
+            <p>The code is valid for <b>5 minutes</b>. Please do not share it with anyone.</p>
             <hr>
             <p style="color:#888; font-size:12px;">
-                若您本人未进行此操作，请忽略本邮件。<br>
-                本邮件由系统自动发送，请勿回复。
+                If you did not initiate this action, please ignore this email.<br>
+                This email was sent automatically. Please do not reply.
             </p>
         </div>
         """
@@ -193,30 +192,30 @@ def send_email_code(
                 server.sendmail(smtp_user, [to_email], msg.as_string())
         return True, ""
     except smtplib.SMTPAuthenticationError as e:
-        return False, f"SMTP 认证失败：请检查发件邮箱与授权码/应用专用密码。（{e.smtp_code}）"
+        return False, f"SMTP authentication failed. Please check the sender email and app password. ({e.smtp_code})"
     except smtplib.SMTPConnectError:
-        return False, f"无法连接 {smtp_host}:{smtp_port}，请检查网络或端口是否被拦截。"
+        return False, f"Cannot connect to {smtp_host}:{smtp_port}. Please check your network or port."
     except Exception as e:
-        return False, f"发送失败：{type(e).__name__} - {e}"
+        return False, f"Send failed: {type(e).__name__} - {e}"
 
 
 def send_payment_code_email(to_email: str, code: str, order: dict):
     body = f"""
     <div style="font-family: Arial, 'Microsoft YaHei', sans-serif; padding: 20px;">
-        <h2 style="color:#1488CC;">🛍️ AI 智能代购 Agent · 支付确认</h2>
-        <p>您正在为以下订单付款，请使用下方一次性密码完成验证：</p>
+        <h2 style="color:#1488CC;">🛍️ AI Shopping Agent · Payment Confirmation</h2>
+        <p>You are paying for the following order. Please use the one-time password below to verify:</p>
         <table style="border-collapse:collapse; margin: 10px 0;">
-            <tr><td style="padding:4px 8px;"><b>订单号</b></td><td style="padding:4px 8px;">{order.get('order_id','')}</td></tr>
-            <tr><td style="padding:4px 8px;"><b>商品</b></td><td style="padding:4px 8px;">{order.get('title','')}</td></tr>
-            <tr><td style="padding:4px 8px;"><b>金额</b></td><td style="padding:4px 8px; color:#FF4B4B;"><b>￥{order.get('final_price', 0)}</b></td></tr>
+            <tr><td style="padding:4px 8px;"><b>Order ID</b></td><td style="padding:4px 8px;">{order.get('order_id','')}</td></tr>
+            <tr><td style="padding:4px 8px;"><b>Product</b></td><td style="padding:4px 8px;">{order.get('title','')}</td></tr>
+            <tr><td style="padding:4px 8px;"><b>Amount</b></td><td style="padding:4px 8px; color:#FF4B4B;"><b>${order.get('final_price', 0)}</b></td></tr>
         </table>
-        <p>本次一次性支付密码：</p>
+        <p>Your one-time payment password:</p>
         <h1 style="color:#FF4B4B; letter-spacing: 4px; font-family: monospace;">{code}</h1>
-        <p>密码 <b>10 分钟内有效</b>，且仅可使用一次。请勿泄露给他人。</p>
+        <p>The password is valid for <b>10 minutes</b> and can be used only once. Please do not share it with anyone.</p>
         <hr>
         <p style="color:#888; font-size:12px;">
-            若您本人未进行此操作，请忽略本邮件。<br>
-            本邮件由系统自动发送，请勿回复。
+            If you did not initiate this action, please ignore this email.<br>
+            This email was sent automatically. Please do not reply.
         </p>
     </div>
     """
@@ -228,32 +227,33 @@ def send_payment_code_email(to_email: str, code: str, order: dict):
         smtp_user=st.session_state.smtp_user,
         smtp_pass=st.session_state.smtp_pass,
         use_ssl=st.session_state.smtp_use_ssl,
-        subject="【AI 智能代购 Agent】一次性支付密码",
+        subject="[AI Shopping Agent] One-Time Payment Password",
         body_html=body,
     )
 
 
 # ==========================================
-# ★ 支付成功后的收据邮件（商户 → 买家）
+# ★ Receipt email after successful payment (Merchant → Buyer)
 # ==========================================
 def send_receipt_email(to_email: str, order: dict, paid_at: str) -> tuple:
-    platform = order.get("platform", "") or "官方平台"
+    platform = order.get("platform", "") or "the platform"
     title = order.get("title", "")
     price = order.get("final_price", 0)
     try:
-        price_str = f"￥{float(price):.2f}"
+        price_str = f"${float(price):.2f}"
     except Exception:
-        price_str = f"￥{price}"
+        price_str = f"${price}"
 
     body_html = f"""
     <div style="font-family: Arial, 'Microsoft YaHei', sans-serif; padding: 20px; line-height:1.8;">
         <p style="font-size:15px;">
-            <b>【{platform}】</b>尊敬的用户您好，我们已于 <b>{paid_at}</b> 收到您在我平台购买
-            <b>“{title}”</b> 所支付的 <b style="color:#FF4B4B;">{price_str}</b>，此为收据，请不要回复。
+            <b>[{platform}]</b> Dear user, we received on <b>{paid_at}</b> your payment of
+            <b style="color:#FF4B4B;">{price_str}</b> for purchasing <b>"{title}"</b> on our platform.
+            This is your receipt. Please do not reply.
         </p>
         <hr>
         <p style="color:#888; font-size:12px;">
-            本邮件由【{platform}】系统自动发送，请勿回复。
+            This email was sent automatically by [{platform}]. Please do not reply.
         </p>
     </div>
     """
@@ -266,17 +266,17 @@ def send_receipt_email(to_email: str, order: dict, paid_at: str) -> tuple:
         smtp_user=st.session_state.smtp_user,
         smtp_pass=st.session_state.smtp_pass,
         use_ssl=st.session_state.smtp_use_ssl,
-        sender_name=f"{platform} 商户",
-        subject=f"【{platform}】您的付款收据",
+        sender_name=f"{platform} Merchant",
+        subject=f"[{platform}] Your Payment Receipt",
         body_html=body_html,
     )
 
 
 # ==========================================
-# 1. 页面配置与 CSS
+# 1. Page configuration and CSS
 # ==========================================
 st.set_page_config(
-    page_title="AI 智能代购与自动付款 Agent",
+    page_title="AI Shopping Agent with Auto Payment",
     page_icon="🛍",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -343,7 +343,7 @@ st.markdown("""
 
 
 # ==========================================
-# 2. Session State 初始化
+# 2. Session State initialization
 # ==========================================
 if "users_db" not in st.session_state:
     st.session_state.users_db = {
@@ -375,11 +375,11 @@ if "chat_sessions" not in st.session_state:
     st.session_state.chat_sessions = [
         {
             "session_id": "CS-001",
-            "title": "首次代购咨询",
+            "title": "First Shopping Consultation",
             "created_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
             "messages": [
                 {"role": "assistant",
-                 "content": "👋 你好！我是你的 **全网 AI 智能代购 Agent**。\n\n请告诉你想买什么商品（例如：*“帮我买一个 20000 毫安快充充电宝”*），我会为你全网比价、智能推荐并完成自动下单！\n\n💡 也可以直接说出更具体的要求，例如：*“我想买一个一千块钱左右的黑色相机”*，我会直接为你精选符合条件的商品。\n\n🛒 目前支持：**淘宝 / 天猫 / 京东 / 拼多多 / 唯品会** 五大平台。"}
+                 "content": "👋 Hi! I'm your **AI Shopping Agent across the whole web**.\n\nTell me what you'd like to buy (e.g., *\"Help me buy a 20,000 mAh fast-charging power bank\"*), and I'll compare prices, recommend items, and place the order for you!\n\n💡 You can also describe your needs precisely, e.g., *\"I want a black camera around $1000\"*. I'll shortlist matching products for you.\n\n🛒 Supported platforms: **Taobao / Tmall / JD / Pinduoduo / VIP.com**."}
             ]
         }
     ]
@@ -436,6 +436,7 @@ if "current_price_range" not in st.session_state:
 if "current_detail_req" not in st.session_state:
     st.session_state.current_detail_req = ""
 
+# Placeholders — will be filled by _load_smtp_from_secrets()
 if "smtp_user" not in st.session_state:
     st.session_state.smtp_user = ""
 if "smtp_host" not in st.session_state:
@@ -449,7 +450,59 @@ if "smtp_pass" not in st.session_state:
 
 
 # ==========================================
-# 3. 辅助函数
+# 2.1 Auto-load SMTP config from st.secrets (invisible to end users)
+# ==========================================
+def _load_smtp_from_secrets():
+    """
+    Load SMTP configuration once from st.secrets so it never appears in the UI.
+    Configure the following keys in .streamlit/secrets.toml (or via your deployment
+    platform's Secrets manager):
+
+        SMTP_USER    = "you@gmail.com"
+        SMTP_PASS    = "your-app-password"
+        SMTP_HOST    = "smtp.gmail.com"   # optional, auto-detected if omitted
+        SMTP_PORT    = 465                # optional, auto-detected if omitted
+        SMTP_USE_SSL = true               # optional, auto-detected if omitted
+    """
+    try:
+        secrets = st.secrets
+    except Exception:
+        return
+
+    smtp_user = secrets.get("SMTP_USER", "")
+    smtp_pass = secrets.get("SMTP_PASS", "")
+    if not smtp_user or not smtp_pass:
+        return
+
+    host = secrets.get("SMTP_HOST", "")
+    port = secrets.get("SMTP_PORT", None)
+    use_ssl = secrets.get("SMTP_USE_SSL", None)
+
+    # Fall back to auto-detection based on the sender's domain.
+    if not host or port is None or use_ssl is None:
+        auto = resolve_smtp_config(smtp_user)
+        if auto:
+            a_host, a_port, a_ssl = auto
+            host = host or a_host
+            port = a_port if port is None else int(port)
+            use_ssl = a_ssl if use_ssl is None else bool(use_ssl)
+        else:
+            host = host or ""
+            port = 465 if port is None else int(port)
+            use_ssl = True if use_ssl is None else bool(use_ssl)
+
+    st.session_state.smtp_user    = smtp_user.strip()
+    st.session_state.smtp_pass    = smtp_pass
+    st.session_state.smtp_host    = host.strip()
+    st.session_state.smtp_port    = int(port)
+    st.session_state.smtp_use_ssl = bool(use_ssl)
+
+
+_load_smtp_from_secrets()
+
+
+# ==========================================
+# 3. Helper functions
 # ==========================================
 def generate_12digit_code():
     chars = string.ascii_uppercase + string.digits
@@ -458,11 +511,11 @@ def generate_12digit_code():
 
 def validate_password(pwd: str):
     if not pwd or len(pwd) < 8:
-        return False, "密码长度不能少于 8 位"
+        return False, "Password must be at least 8 characters long."
     if not re.search(r"[A-Za-z]", pwd):
-        return False, "密码必须包含至少一个字母"
+        return False, "Password must contain at least one letter."
     if not re.search(r"\d", pwd):
-        return False, "密码必须包含至少一个数字"
+        return False, "Password must contain at least one digit."
     return True, ""
 
 
@@ -472,13 +525,13 @@ def _hmac_sha256(key: bytes, msg: str) -> bytes:
 
 def _sign_tencent_cloud(secret_id: str, secret_key: str, payload: dict):
     if not secret_id or not secret_key:
-        raise ValueError("腾讯云 SecretId / SecretKey 未配置！")
+        raise ValueError("Tencent Cloud SecretId / SecretKey is not configured!")
     try:
         secret_id.encode("ascii")
         secret_key.encode("ascii")
     except UnicodeEncodeError:
         raise ValueError(
-            f"⚠️ 腾讯云密钥包含非 ASCII 字符（如中文），请检查是否仍是占位符！\n"
+            f"⚠️ Tencent Cloud key contains non-ASCII characters. Please check whether it is still a placeholder.\n"
             f"SecretId = {secret_id!r}"
         )
 
@@ -559,7 +612,7 @@ def _search_web_raw(query: str, search_source: str = "standard") -> list:
         response_body = data.get("Response", {})
         if "Error" in response_body:
             err = response_body["Error"]
-            print(f"[WSA 错误] {err.get('Code')}: {err.get('Message')}")
+            print(f"[WSA Error] {err.get('Code')}: {err.get('Message')}")
             return []
 
         pages_raw = response_body.get("Pages", []) or []
@@ -572,7 +625,7 @@ def _search_web_raw(query: str, search_source: str = "standard") -> list:
                 platform = _detect_platform(url)
                 if platform is None:
                     continue
-                title = page.get("title", "") or page.get("Title", "") or "无标题"
+                title = page.get("title", "") or page.get("Title", "") or "Untitled"
                 site  = page.get("site", "") or page.get("Site", "") or platform
                 date_ = page.get("date", "") or page.get("Date", "")
                 passage = (
@@ -590,13 +643,13 @@ def _search_web_raw(query: str, search_source: str = "standard") -> list:
                     "is_detail": _is_product_detail_url(url),
                 })
             except Exception as e:
-                print(f"[WSA 解析单条失败] {e}")
+                print(f"[WSA parse error] {e}")
                 continue
 
         results.sort(key=lambda r: (not r["is_detail"],))
 
     except Exception as e:
-        print(f"[WSA 调用失败] {type(e).__name__}: {e}")
+        print(f"[WSA call failed] {type(e).__name__}: {e}")
 
     st.session_state.search_cache[cache_key] = results
     return results
@@ -605,15 +658,15 @@ def _search_web_raw(query: str, search_source: str = "standard") -> list:
 def search_web(query: str, search_source: str = "standard") -> str:
     results = _search_web_raw(query, search_source)
     if not results:
-        return "[搜索服务暂时不可用，将基于模型知识生成推荐]"
+        return "[Search service temporarily unavailable. Will rely on model knowledge.]"
 
     summaries = []
     for i, r in enumerate(results, 1):
         block = (
-            f"[{i}] 【{r['title']}】({r['site']} {r['date']}) 平台：{r.get('platform','')}"
-            f"{' [商品详情页]' if r.get('is_detail') else ''}\n"
+            f"[{i}] [{r['title']}] ({r['site']} {r['date']}) Platform: {r.get('platform','')}"
+            f"{' [Product detail page]' if r.get('is_detail') else ''}\n"
             f"{r['passage']}\n"
-            f"URL：{r['url']}"
+            f"URL: {r['url']}"
         )
         summaries.append(block)
     return "\n\n".join(summaries)
@@ -692,7 +745,7 @@ def _attach_real_urls(data, raw_results: list, item_category: str = ""):
 
 
 def estimate_price_range(item_category: str) -> tuple:
-    raw_results = _search_web_raw(f"{item_category} 价格 多少钱 市场价", "standard")
+    raw_results = _search_web_raw(f"{item_category} price market price", "standard")
 
     prices = []
     if raw_results:
@@ -701,8 +754,9 @@ def estimate_price_range(item_category: str) -> tuple:
             for r in raw_results
         )
         for m in re.findall(
-            r"(?:¥|￥|价格[：: ]*)?\s*(\d{1,3}(?:,\d{3})*(?:\.\d+)?)\s*元?",
+            r"(?:¥|\$|price[:\s]*)?\s*(\d{1,3}(?:,\d{3})*(?:\.\d+)?)",
             text_blob,
+            flags=re.I
         ):
             try:
                 v = float(m.replace(",", ""))
@@ -725,9 +779,9 @@ def estimate_price_range(item_category: str) -> tuple:
             model="deepseek-chat",
             messages=[
                 {"role": "system",
-                 "content": f"用户想买【{item_category}】。请只输出一行 JSON："
-                            f'{{"min": 最低合理价格, "max": 最高合理价格}}，单位元。只输出 JSON。'},
-                {"role": "user", "content": f"请给出【{item_category}】的合理价格区间。"}
+                 "content": f"The user wants to buy [{item_category}]. Output only one line of JSON: "
+                            f'{{"min": lowest reasonable price, "max": highest reasonable price}} in CNY. Output only JSON.'},
+                {"role": "user", "content": f"Please give a reasonable price range for [{item_category}]."}
             ],
             stream=False
         )
@@ -744,29 +798,29 @@ def estimate_price_range(item_category: str) -> tuple:
 
 
 def parse_user_intent(user_input: str, current_category: str = "") -> dict:
-    prompt = f"""你是一个电商购物意图解析器。请从用户输入中提取以下信息，并以纯 JSON 返回：
+    prompt = f"""You are a shopping intent parser for e-commerce. Extract the following from the user's input and return pure JSON:
 {{
-  "category": "商品品类（简短，如：相机、充电宝、笔记本电脑）",
-  "min_price": 数字或 null,
-  "max_price": 数字或 null,
-  "attributes": ["颜色/品牌/容量等具体属性"],
+  "category": "product category (short, e.g., camera, power bank, laptop)",
+  "min_price": number or null,
+  "max_price": number or null,
+  "attributes": ["color/brand/capacity and other specific attributes"],
   "changed": true/false
 }}
 
-规则：
-- 如果用户说"一千块钱左右"，min_price=800, max_price=1200（±20%）。
-- 如果用户说"1000元以内"，min_price=null, max_price=1000。
-- 如果用户说"至少2000"，min_price=2000, max_price=null。
-- 如果用户说"1000到2000元"，min_price=1000, max_price=2000。
-- 如果用户没说价格，min_price 和 max_price 都为 null。
-- attributes 是用户明确要求的属性（如"黑色"、"华为"、"20000毫安"、"快充"）。
-- changed 表示用户这次说的品类是否与当前品类不同。
-- 当前品类是：【{current_category or "（无）"}】
-- 如果用户只是在确认/拒绝/继续（如"满意"、"换一批"），category 留空字符串。
+Rules:
+- If the user says "around 1000", min_price=800, max_price=1200 (±20%).
+- If the user says "under 1000", min_price=null, max_price=1000.
+- If the user says "at least 2000", min_price=2000, max_price=null.
+- If the user says "between 1000 and 2000", min_price=1000, max_price=2000.
+- If no price is mentioned, both min_price and max_price are null.
+- attributes are what the user explicitly requires (e.g., "black", "Huawei", "20000mAh", "fast charging").
+- changed indicates whether the category the user just mentioned is different from the current category.
+- Current category: [{current_category or "(none)"}]
+- If the user is just confirming/rejecting/continuing (e.g., "satisfied", "another batch"), set category to an empty string.
 
-用户输入："{user_input}"
+User input: "{user_input}"
 
-只输出 JSON，不要 markdown。"""
+Output JSON only, no markdown."""
 
     try:
         resp = client.chat.completions.create(
@@ -786,7 +840,7 @@ def parse_user_intent(user_input: str, current_category: str = "") -> dict:
             obj["attributes"] = []
         return obj
     except Exception as e:
-        print(f"[意图解析失败] {e}")
+        print(f"[Intent parsing failed] {e}")
         return {
             "category": user_input,
             "min_price": None,
@@ -796,21 +850,21 @@ def parse_user_intent(user_input: str, current_category: str = "") -> dict:
         }
 
 
-_TITLE_RULES = """【商品标题要求 — 极其重要】
-- "title" 必须是该商品的**完整具体名称**，直接抄录电商平台商品页上的标题，包含品牌、型号、容量、颜色、卖点等全部信息。
-- 示例（正确）：
-  "小米自带线充电宝10000 口袋版小巧便携 移动电源随身充 双向快充安卓苹果通用 安全耐用 浅咖色"
-  "啄木鸟帽子女士秋冬季八角帽中老年妈妈时尚百搭帽秋冬季保暖贝雷帽"
-  "Apple iPhone 16 Pro 256GB 原色钛金属 5G双卡双待"
-- 反例（错误，绝对禁止）：
-  "小米充电宝"  "充电宝推荐"  "高性价比充电宝"  "【定制精选1】相机特别款"
-- 不允许用任何占位符或自造标题。
+_TITLE_RULES = """[Product title rules — extremely important]
+- "title" must be the **full, specific name** of the product, copied directly from the product page on the e-commerce site, including brand, model, capacity, color, selling points, etc.
+- Correct examples:
+  "Xiaomi Built-in Cable Power Bank 10000 Pocket Edition Compact Portable Mobile Power Bank Two-way Fast Charging for Android & Apple Durable Light Brown"
+  "Woodpecker Women's Autumn Winter Octagonal Hat Middle-aged Mom Fashion Versatile Warm Beret"
+  "Apple iPhone 16 Pro 256GB Natural Titanium 5G Dual SIM Dual Standby"
+- Wrong examples (strictly prohibited):
+  "Xiaomi power bank"  "Power bank recommendation"  "High cost-performance power bank"  "[Custom Selection 1] Camera Special Edition"
+- Do NOT use any placeholders or invented titles.
 """
 
-_URL_RULES = """【链接要求 — 极其重要】
-- 你**只通过 search_ref**引用搜索结果，不要自己编造任何 URL。
-- 程序会从联网搜索结果里挑选"商品详情页 URL"（如 https://item.jd.com/10076490523190.html）。
-- 如果搜索结果里**没有**该商品的详情页，程序会把它标为无链接，你不要勉强凑一个搜索页。
+_URL_RULES = """[Link rules — extremely important]
+- You **only reference search results through search_ref**. Never invent any URL.
+- The program will pick a "product detail page URL" from the web search results (e.g., https://item.jd.com/10076490523190.html).
+- If the search results contain **no** detail page for the product, the program will mark it as having no link. Do not force a search page.
 """
 
 
@@ -828,23 +882,23 @@ def call_deepseek_recommend_engine(step: int, item_category: str,
 
     price_q = ""
     if min_price_c is not None and max_price_c is not None:
-        price_q = f"{int(min_price_c)}到{int(max_price_c)}元"
+        price_q = f"{int(min_price_c)}-{int(max_price_c)} CNY"
     elif min_price_c is not None:
-        price_q = f"{int(min_price_c)}元以上"
+        price_q = f"above {int(min_price_c)} CNY"
     elif max_price_c is not None:
-        price_q = f"{int(max_price_c)}元以内"
+        price_q = f"under {int(max_price_c)} CNY"
 
-    platform_q = "淘宝 天猫 京东 拼多多 唯品会"
+    platform_q = "Taobao Tmall JD Pinduoduo VIP.com"
 
     if step in [1, 2, 3, 4]:
         if step == 1:
-            search_query = f"{item_category} {attr_q} 最新价格 用户评价 推荐 {platform_q}"
+            search_query = f"{item_category} {attr_q} latest price user reviews recommendation {platform_q}"
         elif step == 2:
-            search_query = f"{item_category} {attr_q} 价格 评价 销量 {platform_q}"
+            search_query = f"{item_category} {attr_q} price reviews sales {platform_q}"
         elif step == 3:
             p_min = extra_constraints.get("min_price", 0) or 0
             p_max = extra_constraints.get("max_price", 10000) or 10000
-            search_query = f"{item_category} {attr_q} {p_min}到{p_max}元 {platform_q}"
+            search_query = f"{item_category} {attr_q} {p_min}-{p_max} CNY {platform_q}"
         else:
             user_detail = extra_constraints.get("detail_req", "")
             search_query = f"{item_category} {attr_q} {price_q} {user_detail} {platform_q}"
@@ -853,152 +907,152 @@ def call_deepseek_recommend_engine(step: int, item_category: str,
         if raw_results:
             summaries = []
             for i, r in enumerate(raw_results, 1):
-                flag = " [商品详情页]" if r.get("is_detail") else ""
+                flag = " [Product detail page]" if r.get("is_detail") else ""
                 block = (
-                    f"[{i}] 【{r['title']}】({r['site']} {r['date']}) 平台：{r.get('platform','')}{flag}\n"
+                    f"[{i}] [{r['title']}] ({r['site']} {r['date']}) Platform: {r.get('platform','')}{flag}\n"
                     f"{r['passage']}\n"
-                    f"URL：{r['url']}"
+                    f"URL: {r['url']}"
                 )
                 summaries.append(block)
             search_context = "\n\n".join(summaries)
         else:
-            search_context = "[搜索服务暂时不可用，将基于模型知识生成推荐]"
+            search_context = "[Search service temporarily unavailable. Will rely on model knowledge.]"
 
     base_instructions = (
-        f"用户想要购买的核心商品品类是：【{item_category}】。"
-        f"你必须 STRICTLY 推荐该品类下的商品，绝对不能更换为其他物品类型！\n"
-        f"【平台限制】只能推荐来自 淘宝、天猫、京东、拼多多、唯品会 这五个平台的商品，"
-        f"不能推荐其他任何平台（如亚马逊、苏宁、抖音、小红书等一律禁止）。\n"
+        f"The user wants to buy the core product category: [{item_category}]. "
+        f"You MUST STRICTLY recommend products within this category. Never switch to a different item type!\n"
+        f"[Platform restriction] Only recommend products from Taobao, Tmall, JD, Pinduoduo, VIP.com. "
+        f"Do not recommend any other platform (Amazon, Suning, Douyin, Xiaohongshu, etc. are all forbidden).\n"
         + _TITLE_RULES
         + _URL_RULES
     )
 
     constraint_lines = []
     if attrs:
-        constraint_lines.append(f"用户明确要求的属性：{'、'.join(attrs)}（所有推荐必须满足）。")
+        constraint_lines.append(f"Attributes the user explicitly requires: {', '.join(attrs)} (all recommendations must satisfy them).")
     if min_price_c is not None or max_price_c is not None:
         if min_price_c is not None and max_price_c is not None:
-            constraint_lines.append(f"用户要求价格区间：{int(min_price_c)} ~ {int(max_price_c)} 元（所有推荐必须落在此区间）。")
+            constraint_lines.append(f"User price range: {int(min_price_c)} - {int(max_price_c)} CNY (all recommendations must fall in this range).")
         elif min_price_c is not None:
-            constraint_lines.append(f"用户要求价格不低于 {int(min_price_c)} 元。")
+            constraint_lines.append(f"User requires price >= {int(min_price_c)} CNY.")
         else:
-            constraint_lines.append(f"用户要求价格不超过 {int(max_price_c)} 元。")
+            constraint_lines.append(f"User requires price <= {int(max_price_c)} CNY.")
     if constraint_lines:
         base_instructions += "\n" + "\n".join(constraint_lines)
 
-    if search_context and "[搜索服务暂时不可用" not in search_context:
+    if search_context and "[Search service temporarily unavailable" not in search_context:
         base_instructions += f"""
 
-以下是来自联网搜索的最新商品信息（**只包含淘宝/天猫/京东/拼多多/唯品会**）：
---- 联网搜索结果开始 ---
+Below is the latest product information from the web search (**only Taobao / Tmall / JD / Pinduoduo / VIP.com**):
+--- Web search results begin ---
 {search_context}
---- 联网搜索结果结束 ---
+--- Web search results end ---
 
-特别重要：
-- 不允许你自己编造任何 URL！
-- 你只需在返回 JSON 的 "search_ref" 字段里填你参考的搜索结果序号。
-- 程序会自动根据 search_ref 把真实的电商 URL 补充到返回结果里。
-- "platform" 字段请填【淘宝/天猫/京东/拼多多/唯品会】之一。
-- 如果没有任何搜索结果可参考，search_ref 填 0。
-- "title" 请直接抄录搜索结果里的商品标题，不要自己改写或缩写。"""
+Especially important:
+- Do NOT invent any URL!
+- Only fill in the "search_ref" field of the returned JSON with the index of the search result you referenced.
+- The program will automatically attach the real e-commerce URL based on search_ref.
+- The "platform" field must be one of [Taobao / Tmall / JD / Pinduoduo / VIP.com].
+- If no search result is usable, set search_ref to 0.
+- For "title", copy the product title from the search result directly. Do not rewrite or abbreviate."""
 
     if step == 1:
         system_prompt = f"""{base_instructions}
-请全网比价并推荐 1 个综合排名最高的选择。
-必须以 JSON 输出，格式如下：
+Compare prices across the web and recommend 1 top overall choice.
+You must output JSON in the format:
 {{
-  "title": "该商品在电商平台上的完整具体标题",
-  "platform": "淘宝/天猫/京东/拼多多/唯品会 之一",
+  "title": "full specific product title on the e-commerce platform",
+  "platform": "one of Taobao/Tmall/JD/Pinduoduo/VIP.com",
   "original_price": 200.0,
   "coupon": 20.0,
   "final_price": 180.0,
   "search_ref": 1,
-  "reason": "综合排名最高的推荐理由"
+  "reason": "reason for being the top overall choice"
 }}
-仅返回纯 JSON 代码，不要带 markdown。"""
+Return pure JSON only, no markdown."""
     elif step == 2:
         system_prompt = f"""{base_instructions}
-请针对该品类分别从【价格最低】、【用户评价最高】、【销量最高】三个维度推荐 3 个不同优势的选项。
-必须以 JSON 数组形式输出（含 3 个对象）：
+For this category, recommend 3 options with different advantages from [Lowest Price], [Best Reviews], [Best Sales].
+Output as a JSON array (3 objects):
 [
   {{
-    "dimension": "价格最佳选择",
-    "title": "该商品在电商平台上的完整具体标题",
-    "platform": "淘宝/天猫/京东/拼多多/唯品会 之一",
+    "dimension": "Best price choice",
+    "title": "full specific product title on the e-commerce platform",
+    "platform": "one of Taobao/Tmall/JD/Pinduoduo/VIP.com",
     "original_price": 150.0,
     "coupon": 10.0,
     "final_price": 140.0,
     "search_ref": 1,
-    "reason": "极具性价比，价格全网最低"
+    "reason": "Great value, lowest price across the web"
   }},
   {{
-    "dimension": "用户评价最高",
-    "title": "该商品在电商平台上的完整具体标题",
-    "platform": "淘宝/天猫/京东/拼多多/唯品会 之一",
+    "dimension": "Best reviews",
+    "title": "full specific product title on the e-commerce platform",
+    "platform": "one of Taobao/Tmall/JD/Pinduoduo/VIP.com",
     "original_price": 250.0,
     "coupon": 20.0,
     "final_price": 230.0,
     "search_ref": 2,
-    "reason": "好评率 99.8%，口碑极佳"
+    "reason": "99.8% positive rate, excellent reputation"
   }},
   {{
-    "dimension": "销量最高推荐",
-    "title": "该商品在电商平台上的完整具体标题",
-    "platform": "淘宝/天猫/京东/拼多多/唯品会 之一",
+    "dimension": "Best seller",
+    "title": "full specific product title on the e-commerce platform",
+    "platform": "one of Taobao/Tmall/JD/Pinduoduo/VIP.com",
     "original_price": 200.0,
     "coupon": 15.0,
     "final_price": 185.0,
     "search_ref": 3,
-    "reason": "全网爆款，月销 10万+"
+    "reason": "Best seller across the web, 100k+ monthly sales"
   }}
 ]
-仅返回纯 JSON 代码，不要带 markdown。"""
+Return pure JSON only, no markdown."""
     elif step == 3:
         p_min = extra_constraints.get("min_price", 0)
         p_max = extra_constraints.get("max_price", 10000)
         system_prompt = f"""{base_instructions}
-用户筛选条件：价格范围为 {p_min} 元至 {p_max} 元之间。
-请结合上述价格约束，推荐 1 个最符合要求的商品。
-必须以 JSON 输出，格式如下：
+User filter: price range between {p_min} and {p_max} CNY.
+Recommend 1 product that best fits the above price constraint.
+You must output JSON in the format:
 {{
-  "title": "该商品在电商平台上的完整具体标题",
-  "platform": "淘宝/天猫/京东/拼多多/唯品会 之一",
+  "title": "full specific product title on the e-commerce platform",
+  "platform": "one of Taobao/Tmall/JD/Pinduoduo/VIP.com",
   "original_price": 190.0,
   "coupon": 10.0,
   "final_price": 180.0,
   "search_ref": 1,
-  "reason": "精准满足预算区间"
+  "reason": "accurately matches the budget range"
 }}
-仅返回纯 JSON 代码，不要带 markdown。"""
+Return pure JSON only, no markdown."""
     elif step == 4:
         user_detail = extra_constraints.get("detail_req", "")
         system_prompt = f"""{base_instructions}
-用户补充的详细要求为：“{user_detail}”。
-请根据该品类及历史要求，精选 5 个符合条件的具体商品供用户挑选。
-**所有推荐必须严格满足上述属性与价格约束（如果有的话）。**
-**"title" 必须是每个商品在电商平台上真实存在的完整标题。**
-必须以 JSON 数组形式输出（含 5 个对象）：
+The user's additional detailed request: "{user_detail}".
+Based on this category and previous requirements, choose 5 specific products that meet the conditions for the user to pick.
+**All recommendations must strictly satisfy the above attribute and price constraints (if any).**
+**"title" must be the real, complete title of each product on the e-commerce platform.**
+Output as a JSON array (5 objects):
 [
   {{
     "option_id": 1,
-    "title": "该商品在电商平台上的完整具体标题",
-    "platform": "淘宝/天猫/京东/拼多多/唯品会 之一",
+    "title": "full specific product title on the e-commerce platform",
+    "platform": "one of Taobao/Tmall/JD/Pinduoduo/VIP.com",
     "original_price": 200.0,
     "coupon": 20.0,
     "final_price": 180.0,
     "search_ref": 1,
-    "reason": "推荐特点说明"
+    "reason": "explanation of why it is recommended"
   }},
-  ...共5个
+  ... 5 in total
 ]
-仅返回纯 JSON 代码，不要带 markdown。"""
+Return pure JSON only, no markdown."""
 
     try:
         response = client.chat.completions.create(
             model="deepseek-chat",
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"请结合历史对话为我生成符合第 {step} 阶段的商品方案。"}
+                {"role": "user", "content": f"Please combine the conversation history and generate the product options for stage {step}."}
             ],
             stream=False
         )
@@ -1018,13 +1072,13 @@ def call_deepseek_recommend_engine(step: int, item_category: str,
                 item["order_id"] = f"AGENT-ORD-{random.randint(100000, 999999)}"
         return data
     except Exception as e:
-        print(f"[推荐引擎失败] step={step}, {type(e).__name__}: {e}")
+        print(f"[Recommendation engine failed] step={step}, {type(e).__name__}: {e}")
         if step in [1, 3]:
             base_p = round(random.uniform(100, 500), 2)
-            plat = "京东"
+            plat = "JD"
             return {
                 "order_id": f"AGENT-ORD-{random.randint(100000, 999999)}",
-                "title": f"{item_category} 精选方案",
+                "title": f"{item_category} Featured Option",
                 "platform": plat,
                 "original_price": base_p,
                 "coupon": 10.0,
@@ -1032,35 +1086,35 @@ def call_deepseek_recommend_engine(step: int, item_category: str,
                 "search_ref": 0,
                 "source_url": "",
                 "source_site": plat,
-                "reason": f"符合对【{item_category}】特定要求的精选方案（未找到商品详情页）。"
+                "reason": f"A curated option that matches the specific requirements for [{item_category}] (no product detail page found)."
             }
         elif step == 2:
             res = []
-            plats = ["拼多多", "天猫", "京东"]
+            plats = ["Pinduoduo", "Tmall", "JD"]
             for i in range(3):
                 p = plats[i]
                 res.append({
-                    "dimension": ["价格最佳选择", "用户评价最高", "销量最高推荐"][i],
+                    "dimension": ["Best price choice", "Best reviews", "Best seller"][i],
                     "order_id": f"ORD-S2-{i+1}",
-                    "title": f"{item_category} 精选方案 {i+1}",
+                    "title": f"{item_category} Featured Option {i+1}",
                     "platform": p,
                     "original_price": 199.0, "coupon": 20.0, "final_price": 179.0,
                     "search_ref": 0,
                     "source_url": "",
                     "source_site": p,
-                    "reason": "由搜索结果精选（未找到商品详情页）"
+                    "reason": "Curated from search results (no product detail page found)."
                 })
             return res
         elif step == 4:
             res = []
-            plats = ["京东", "天猫", "淘宝", "拼多多", "唯品会"]
+            plats = ["JD", "Tmall", "Taobao", "Pinduoduo", "VIP.com"]
             for i in range(1, 6):
                 bp = 100 + i * 30
                 p = plats[(i - 1) % len(plats)]
                 res.append({
                     "option_id": i,
                     "order_id": f"ORD-S4-{i}",
-                    "title": f"{item_category} 精选款 {i}",
+                    "title": f"{item_category} Featured Item {i}",
                     "platform": p,
                     "original_price": bp,
                     "coupon": 10.0,
@@ -1068,7 +1122,7 @@ def call_deepseek_recommend_engine(step: int, item_category: str,
                     "search_ref": 0,
                     "source_url": "",
                     "source_site": p,
-                    "reason": f"根据您的详细定制要求而甄选的第 {i} 种款式（未找到商品详情页）"
+                    "reason": f"Option {i} selected based on your detailed requirements (no product detail page found)."
                 })
             return res
 
@@ -1099,109 +1153,31 @@ def check_order_limits(order: dict) -> tuple:
 
     if price > single_limit:
         return True, (
-            f"对不起，您选择的商品（￥{price:.2f}）超过了您规定的**单笔付款限额**（￥{single_limit:.2f}），"
-            f"请在个人中心修改限额或另外选择限额内的商品进行购买。"
+            f"Sorry, the product you selected (${price:.2f}) exceeds your **single-transaction payment limit** (${single_limit:.2f}). "
+            f"Please update the limit in your profile or choose a product within the limit."
         )
     if today_after > daily_limit:
         return True, (
-            f"对不起，您选择的商品（￥{price:.2f}）加上今日已用（￥{today_used:.2f}）"
-            f"将超过您规定的**单日累计付款限额**（￥{daily_limit:.2f}），"
-            f"请在个人中心修改限额或另外选择限额内的商品进行购买。"
+            f"Sorry, the product you selected (${price:.2f}) plus today's spending (${today_used:.2f}) "
+            f"would exceed your **daily cumulative payment limit** (${daily_limit:.2f}). "
+            f"Please update the limit in your profile or choose a product within the limit."
         )
     return False, ""
 
 
 # ==========================================
-# 3.1 SMTP 侧边栏
+# 3.1 (Removed) SMTP sidebar was removed; SMTP is now loaded from st.secrets.
 # ==========================================
-def render_smtp_sidebar():
-    with st.sidebar:
-        st.markdown("## 📧 邮件发件配置")
-        st.caption("用于向注册用户发送真实验证码邮件")
-
-        default_user = st.session_state.get("smtp_user", "")
-        default_host = st.session_state.get("smtp_host", "")
-        default_port = st.session_state.get("smtp_port", 465)
-        default_ssl = st.session_state.get("smtp_use_ssl", True)
-
-        smtp_user = st.text_input(
-            "发件邮箱地址",
-            value=default_user,
-            placeholder="you@gmail.com / you@qq.com / you@company.com"
-        )
-
-        auto_cfg = resolve_smtp_config(smtp_user) if smtp_user and "@" in smtp_user else None
-
-        with st.expander("⚙️ SMTP 服务器设置（默认自动匹配）", expanded=not auto_cfg):
-            if auto_cfg:
-                auto_host, auto_port, auto_ssl = auto_cfg
-                st.caption(
-                    f"✅ 已自动识别：`{auto_host}:{auto_port}` "
-                    f"({'SSL' if auto_ssl else 'STARTTLS'})"
-                )
-                smtp_host = st.text_input("SMTP 主机", value=default_host or auto_host)
-                smtp_port = st.number_input(
-                    "端口", value=int(default_port or auto_port), step=1
-                )
-                smtp_use_ssl = st.checkbox(
-                    "使用 SSL（465 勾选；587 不勾）",
-                    value=default_ssl if default_host else auto_ssl
-                )
-            else:
-                st.caption("⚠️ 未自动识别，请手动填写 SMTP 主机和端口")
-                smtp_host = st.text_input("SMTP 主机", value=default_host,
-                                          placeholder="smtp.example.com")
-                smtp_port = st.number_input("端口", value=int(default_port or 465), step=1)
-                smtp_use_ssl = st.checkbox("使用 SSL", value=default_ssl)
-
-        smtp_pass = st.text_input(
-            "SMTP 授权码 / 应用专用密码",
-            type="password",
-            help="Gmail/Outlook 需用「应用专用密码」，QQ/163 使用「授权码」，非登录密码。"
-        )
-
-        if st.button("💾 保存发件配置", use_container_width=True):
-            if not smtp_user or "@" not in smtp_user:
-                st.error("发件邮箱格式不正确")
-            elif not smtp_host or not smtp_pass:
-                st.error("SMTP 主机和授权码不能为空")
-            else:
-                st.session_state.smtp_user = smtp_user.strip()
-                st.session_state.smtp_host = smtp_host.strip()
-                st.session_state.smtp_port = int(smtp_port)
-                st.session_state.smtp_use_ssl = bool(smtp_use_ssl)
-                st.session_state.smtp_pass = smtp_pass
-                st.success("✅ 已保存")
-
-        if st.button("🧪 发送测试邮件到本机发件箱", use_container_width=True):
-            if not st.session_state.get("smtp_user"):
-                st.warning("请先保存配置")
-            else:
-                ok, err = send_email_code(
-                    to_email=st.session_state.smtp_user,
-                    code="000000",
-                    smtp_host=st.session_state.smtp_host,
-                    smtp_port=st.session_state.smtp_port,
-                    smtp_user=st.session_state.smtp_user,
-                    smtp_pass=st.session_state.smtp_pass,
-                    use_ssl=st.session_state.smtp_use_ssl,
-                )
-                if ok:
-                    st.success("🎉 测试邮件已发送，请查收发件箱")
-                else:
-                    st.error(err)
 
 
 # ==========================================
-# 4. 登录 / 注册
+# 4. Sign up / Log in
 # ==========================================
 def render_welcome_page():
-    render_smtp_sidebar()
-
-    st.markdown("<h1 style='text-align: center;'>🛍️ 欢迎体验 AI 智能代购 Agent</h1>",
+    st.markdown("<h1 style='text-align: center;'>🛍️ Welcome to the AI Shopping Agent</h1>",
                 unsafe_allow_html=True)
     st.markdown(
-        "<p style='text-align: center; color: #888;'>DeepSeek 驱动 · 联网实时比价 · 四阶精准推荐 · 自动领券 · 极速代付款</p>",
+        "<p style='text-align: center; color: #888;'>Powered by DeepSeek · Real-time web price comparison · 4-stage refined recommendations · Auto coupons · Instant payment</p>",
         unsafe_allow_html=True
     )
     st.divider()
@@ -1209,28 +1185,28 @@ def render_welcome_page():
     col_left, col_main, col_right = st.columns([1, 2, 1])
 
     with col_main:
-        auth_mode = st.radio("选择操作方式",
-                             ["注册新账户 (Sign Up)", "登录账户 (Log In)"],
+        auth_mode = st.radio("Choose an action",
+                             ["Sign Up", "Log In"],
                              horizontal=True)
 
-        if auth_mode == "注册新账户 (Sign Up)":
-            st.subheader("📝 注册新账户")
+        if auth_mode == "Sign Up":
+            st.subheader("📝 Sign Up")
 
-            email = st.text_input("电子邮箱", placeholder="example@domain.com")
+            email = st.text_input("Email", placeholder="example@domain.com")
 
             code_col1, code_col2 = st.columns([2, 1])
             with code_col1:
-                verify_code = st.text_input("验证码", placeholder="输入 6 位验证码", max_chars=6)
+                verify_code = st.text_input("Verification code", placeholder="Enter the 6-digit code", max_chars=6)
             with code_col2:
                 st.write("")
-                if st.button("发送验证码", use_container_width=True):
+                if st.button("Send code", use_container_width=True):
                     if not email or "@" not in email:
-                        st.error("❌ 请先填写正确的邮箱地址！")
+                        st.error("❌ Please enter a valid email address first!")
                     elif not st.session_state.get("smtp_user"):
-                        st.error("❌ 管理员尚未在侧边栏配置发件邮箱，无法发送邮件。")
+                        st.error("❌ The administrator has not configured a sender email. Cannot send email.")
                     else:
                         code = str(random.randint(100000, 999999))
-                        with st.spinner("正在发送验证码邮件..."):
+                        with st.spinner("Sending verification code email..."):
                             ok, err = send_email_code(
                                 to_email=email.strip().lower(),
                                 code=code,
@@ -1243,41 +1219,41 @@ def render_welcome_page():
                         if ok:
                             st.session_state.simulated_code = code
                             st.session_state.code_sent_at = time.time()
-                            st.success(f"📩 验证码已发送至 {email}，5 分钟内有效")
+                            st.success(f"📩 Verification code sent to {email}. Valid for 5 minutes.")
                         else:
-                            st.error(f"❌ 邮件发送失败：{err}")
+                            st.error(f"❌ Failed to send email: {err}")
 
-            password = st.text_input("设置登录密码", type="password",
-                                     placeholder="至少 8 位，必须同时包含字母和数字")
-            confirm_password = st.text_input("确认登录密码", type="password",
-                                             placeholder="再次输入密码")
+            password = st.text_input("Set login password", type="password",
+                                     placeholder="At least 8 characters, must include letters and digits")
+            confirm_password = st.text_input("Confirm login password", type="password",
+                                             placeholder="Re-enter password")
 
             st.markdown("---")
             agree_terms = st.checkbox(
-                "我已阅读并同意 [《AI代购Agent用户服务协议》](#) 与 [《隐私保护政策》](#)"
+                "I have read and agree to the [AI Shopping Agent Terms of Service](#) and [Privacy Policy](#)"
             )
 
-            if st.button("🚀 注册账户", type="primary", use_container_width=True):
+            if st.button("🚀 Sign Up", type="primary", use_container_width=True):
                 clean_email = email.strip().lower()
                 pwd_ok, pwd_err = validate_password(password)
 
                 if not agree_terms:
-                    st.error("❌ 必须勾选同意法律协议方可注册！")
+                    st.error("❌ You must agree to the legal agreements before signing up!")
                 elif not clean_email:
-                    st.error("❌ 请填写邮箱！")
+                    st.error("❌ Please enter your email!")
                 elif clean_email in st.session_state.users_db:
-                    st.error("❌ 该邮箱已被注册，请直接选择【登录账户】！")
+                    st.error("❌ This email is already registered. Please use Log In instead!")
                 elif not st.session_state.simulated_code:
-                    st.error("❌ 请先点击【发送验证码】！")
+                    st.error("❌ Please click Send code first!")
                 elif (st.session_state.code_sent_at is None
                       or time.time() - st.session_state.code_sent_at > 300):
-                    st.error("❌ 验证码已过期（超过 5 分钟），请重新发送！")
+                    st.error("❌ Verification code expired (>5 minutes). Please resend!")
                 elif not verify_code or verify_code != st.session_state.simulated_code:
-                    st.error("❌ 验证码不正确！")
+                    st.error("❌ Incorrect verification code!")
                 elif not pwd_ok:
                     st.error(f"❌ {pwd_err}")
                 elif password != confirm_password:
-                    st.error("❌ 两次输入的密码不一致！")
+                    st.error("❌ Passwords do not match!")
                 else:
                     user_data = {
                         "email": clean_email,
@@ -1288,32 +1264,32 @@ def render_welcome_page():
                     st.session_state.simulated_code = None
                     st.session_state.code_sent_at = None
 
-                    st.success("🎉 注册成功！自动为你完成登录...")
+                    st.success("🎉 Sign-up successful! Logging you in automatically...")
                     st.session_state.authenticated = True
                     st.session_state.user_info = user_data
                     time.sleep(1.2)
                     st.rerun()
 
         else:
-            st.subheader("🔑 账户登录")
-            st.caption("提示：快捷测试账号：`test@example.com` / 密码：`password123`")
+            st.subheader("🔑 Log In")
+            st.caption("Quick test account: `test@example.com` / password: `password123`")
 
-            login_email = st.text_input("邮箱",
-                                        placeholder="输入注册时使用的邮箱").strip().lower()
-            login_password = st.text_input("密码", type="password", placeholder="输入登录密码")
+            login_email = st.text_input("Email",
+                                        placeholder="Enter your registered email").strip().lower()
+            login_password = st.text_input("Password", type="password", placeholder="Enter password")
 
-            if st.button("🔓 登录系统", type="primary", use_container_width=True):
+            if st.button("🔓 Log In", type="primary", use_container_width=True):
                 if not login_email or not login_password:
-                    st.error("❌ 请输入邮箱与密码！")
+                    st.error("❌ Please enter your email and password!")
                 elif login_email not in st.session_state.users_db:
-                    st.error("❌ 该邮箱未注册，请先选择【注册新账户】！")
+                    st.error("❌ This email is not registered. Please Sign Up first!")
                 else:
                     user_data = st.session_state.users_db[login_email].copy()
                     if user_data["password"] != login_password:
-                        st.error("❌ 登录密码错误，请重新输入！")
+                        st.error("❌ Incorrect password. Please try again!")
                     else:
                         user_data["login_type"] = "email"
-                        st.success("✅ 登录验证通过！正在跳转...")
+                        st.success("✅ Login verified! Redirecting...")
                         st.session_state.authenticated = True
                         st.session_state.user_info = user_data
                         time.sleep(1)
@@ -1321,55 +1297,55 @@ def render_welcome_page():
 
 
 # ==========================================
-# 5. “我的” 中心
+# 5. “My” center
 # ==========================================
 def render_profile_navigation_home():
-    st.title("👤 个人中心")
-    st.caption("请选择您要管理的项目")
+    st.title("👤 My Profile")
+    st.caption("Choose a section to manage")
     st.divider()
 
     c1, c2 = st.columns(2)
     with c1:
         st.markdown("""
         <div class="nav-card">
-            <h3>💳 支付设置</h3>
-            <p style="color:#aaa;">管理绑定的银行账户与交易限额额度</p>
+            <h3>💳 Payment Settings</h3>
+            <p style="color:#aaa;">Manage bound bank accounts and transaction limits</p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("进入支付设置 ➔", key="btn_go_pay_settings", use_container_width=True):
+        if st.button("Go to Payment Settings ➔", key="btn_go_pay_settings", use_container_width=True):
             st.session_state.nav_location = "pay_settings"
             st.rerun()
 
         st.write("")
         st.markdown("""
         <div class="nav-card">
-            <h3>📍 我的地址</h3>
-            <p style="color:#aaa;">管理代购商品默认收货地址</p>
+            <h3>📍 My Addresses</h3>
+            <p style="color:#aaa;">Manage shipping addresses for your orders</p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("进入地址管理 ➔", key="btn_go_address", use_container_width=True):
+        if st.button("Go to Address Book ➔", key="btn_go_address", use_container_width=True):
             st.session_state.nav_location = "address"
             st.rerun()
 
     with c2:
         st.markdown("""
         <div class="nav-card">
-            <h3>👛 我的钱包</h3>
-            <p style="color:#aaa;">余额充值与小额免密代扣管理</p>
+            <h3>👛 My Wallet</h3>
+            <p style="color:#aaa;">Top-up balance and passwordless auto-debit management</p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("进入我的钱包 ➔", key="btn_go_wallet", use_container_width=True):
+        if st.button("Go to My Wallet ➔", key="btn_go_wallet", use_container_width=True):
             st.session_state.nav_location = "wallet"
             st.rerun()
 
         st.write("")
         st.markdown("""
         <div class="nav-card">
-            <h3>📜 我的记录</h3>
-            <p style="color:#aaa;">查看历史对话与已完成代购订单</p>
+            <h3>📜 My History</h3>
+            <p style="color:#aaa;">View past chats and completed orders</p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("进入我的记录 ➔", key="btn_go_records", use_container_width=True):
+        if st.button("Go to My History ➔", key="btn_go_records", use_container_width=True):
             st.session_state.nav_location = "records"
             st.rerun()
 
@@ -1378,15 +1354,15 @@ def _card_display_name(card: dict) -> str:
     tail = card.get("tail", "")
     ctype = card.get("type", "")
     if tail:
-        return f"{card['bank']} (尾号 {tail}) · {ctype}"
+        return f"{card['bank']} (ending {tail}) · {ctype}"
     return f"{card['bank']} · {ctype}"
 
 
 def render_bank_cards_section():
-    st.subheader("💳 已绑定的银行账户 / 快捷卡")
+    st.subheader("💳 Bound Bank Accounts / Cards")
 
     if not st.session_state.bank_cards:
-        st.info("📭 您还没有绑定任何银行账户，请在下方添加您的第一张银行卡。")
+        st.info("📭 You haven't linked any bank account yet. Please add your first card below.")
 
     for card in list(st.session_state.bank_cards):
         editing = (st.session_state.editing_card_id == card["id"])
@@ -1394,51 +1370,51 @@ def render_bank_cards_section():
         with st.container():
             c1, c2, c3 = st.columns([6, 1, 1])
             with c1:
-                st.write(f"🏦 **{card['bank']}** (尾号 {card.get('tail','')}) · {card['type']}")
+                st.write(f"🏦 **{card['bank']}** (ending {card.get('tail','')}) · {card['type']}")
             with c2:
-                if st.button("✏️ 编辑", key=f"edit_card_{card['id']}",
+                if st.button("✏️ Edit", key=f"edit_card_{card['id']}",
                              use_container_width=True):
                     st.session_state.editing_card_id = card["id"]
                     st.rerun()
             with c3:
-                if st.button("🗑️ 删除", key=f"del_card_{card['id']}",
+                if st.button("🗑️ Delete", key=f"del_card_{card['id']}",
                              use_container_width=True):
                     st.session_state.bank_cards = [
                         x for x in st.session_state.bank_cards if x["id"] != card["id"]
                     ]
                     if st.session_state.editing_card_id == card["id"]:
                         st.session_state.editing_card_id = None
-                    st.success("已删除该银行卡")
+                    st.success("Bank card deleted.")
                     time.sleep(0.5)
                     st.rerun()
 
             if editing:
-                st.markdown("**✏️ 编辑此银行卡**")
+                st.markdown("**✏️ Edit this bank card**")
                 with st.form(key=f"edit_card_form_{card['id']}"):
-                    new_bank = st.text_input("银行名称", value=card["bank"],
-                                             placeholder="如：中国银行")
+                    new_bank = st.text_input("Bank name", value=card["bank"],
+                                             placeholder="e.g., Bank of China")
                     new_type = st.selectbox(
-                        "卡类型", ["储蓄卡", "信用卡"],
-                        index=0 if card["type"] == "储蓄卡" else 1
+                        "Card type", ["Debit Card", "Credit Card"],
+                        index=0 if card["type"] == "Debit Card" else 1
                     )
                     new_tail = st.text_input(
-                        "卡号尾号 (4 位)",
+                        "Last 4 digits of card number",
                         value=card.get("tail", ""),
                         max_chars=4,
-                        placeholder="如：1234",
+                        placeholder="e.g., 1234",
                     )
                     sub_c1, sub_c2 = st.columns(2)
                     with sub_c1:
-                        save = st.form_submit_button("💾 保存", type="primary",
+                        save = st.form_submit_button("💾 Save", type="primary",
                                                      use_container_width=True)
                     with sub_c2:
-                        cancel = st.form_submit_button("✖️ 取消",
+                        cancel = st.form_submit_button("✖️ Cancel",
                                                        use_container_width=True)
                     if save:
                         if not new_bank.strip():
-                            st.error("银行名称不能为空")
+                            st.error("Bank name cannot be empty.")
                         elif not new_tail.strip() or not new_tail.strip().isdigit() or len(new_tail.strip()) != 4:
-                            st.error("卡号尾号必须为 4 位数字")
+                            st.error("Last 4 digits must be exactly 4 numeric digits.")
                         else:
                             for x in st.session_state.bank_cards:
                                 if x["id"] == card["id"]:
@@ -1446,7 +1422,7 @@ def render_bank_cards_section():
                                     x["type"] = new_type
                                     x["tail"] = new_tail.strip()
                             st.session_state.editing_card_id = None
-                            st.success("✅ 修改成功")
+                            st.success("✅ Updated.")
                             time.sleep(0.6)
                             st.rerun()
                     if cancel:
@@ -1455,18 +1431,18 @@ def render_bank_cards_section():
 
             st.divider()
 
-    with st.expander("➕ 新增一张银行卡", expanded=not st.session_state.bank_cards):
+    with st.expander("➕ Add a new bank card", expanded=not st.session_state.bank_cards):
         with st.form("add_card_form"):
-            nb = st.text_input("银行名称", placeholder="如：中国银行")
-            nt = st.selectbox("卡类型", ["储蓄卡", "信用卡"])
-            ntail = st.text_input("卡号尾号 (4 位)", max_chars=4, placeholder="如：1234")
-            submit_add = st.form_submit_button("➕ 添加", type="primary",
+            nb = st.text_input("Bank name", placeholder="e.g., Bank of China")
+            nt = st.selectbox("Card type", ["Debit Card", "Credit Card"])
+            ntail = st.text_input("Last 4 digits of card number", max_chars=4, placeholder="e.g., 1234")
+            submit_add = st.form_submit_button("➕ Add", type="primary",
                                                use_container_width=True)
             if submit_add:
                 if not nb.strip():
-                    st.error("银行名称不能为空")
+                    st.error("Bank name cannot be empty.")
                 elif not ntail.strip() or not ntail.strip().isdigit() or len(ntail.strip()) != 4:
-                    st.error("卡号尾号必须为 4 位数字")
+                    st.error("Last 4 digits must be exactly 4 numeric digits.")
                 else:
                     new_id = max([c["id"] for c in st.session_state.bank_cards], default=0) + 1
                     st.session_state.bank_cards.append({
@@ -1475,18 +1451,18 @@ def render_bank_cards_section():
                         "type": nt,
                         "tail": ntail.strip(),
                     })
-                    st.success("✅ 已添加")
+                    st.success("✅ Added.")
                     time.sleep(0.6)
                     st.rerun()
 
-    st.info("💡 银行账户用于**大额代购直扣**及为**我的钱包充值**。")
+    st.info("💡 Bank accounts are used for **large order direct debit** and for **topping up your wallet**.")
 
 
 def render_addresses_section():
-    st.subheader("📦 代购收货地址管理")
+    st.subheader("📦 Shipping Address Book")
 
     if not st.session_state.address_list:
-        st.info("📭 您还没有添加任何收货地址，请在下方添加您的第一个地址。")
+        st.info("📭 You haven't added any shipping address yet. Please add your first one below.")
 
     for addr in list(st.session_state.address_list):
         editing = (st.session_state.editing_address_id == addr["id"])
@@ -1494,50 +1470,50 @@ def render_addresses_section():
         with st.container():
             col_a, col_b, col_c, col_d = st.columns([4, 1, 1, 1])
             with col_a:
-                default_tag = " :red[[默认地址]]" if addr["is_default"] else ""
+                default_tag = " :red[[Default]]" if addr["is_default"] else ""
                 st.write(f"👤 **{addr['name']}** ({addr['phone']}){default_tag}")
                 st.write(f"🏠 {addr['address']}")
             with col_b:
                 if not addr["is_default"]:
-                    if st.button("设默认", key=f"def_{addr['id']}",
+                    if st.button("Set default", key=f"def_{addr['id']}",
                                  use_container_width=True):
                         for a in st.session_state.address_list:
                             a["is_default"] = (a["id"] == addr["id"])
                         st.rerun()
             with col_c:
-                if st.button("✏️ 编辑", key=f"edit_addr_{addr['id']}",
+                if st.button("✏️ Edit", key=f"edit_addr_{addr['id']}",
                              use_container_width=True):
                     st.session_state.editing_address_id = addr["id"]
                     st.rerun()
             with col_d:
-                if st.button("🗑️ 删除", key=f"del_addr_{addr['id']}",
+                if st.button("🗑️ Delete", key=f"del_addr_{addr['id']}",
                              use_container_width=True):
                     st.session_state.address_list = [
                         a for a in st.session_state.address_list if a["id"] != addr["id"]
                     ]
                     if st.session_state.editing_address_id == addr["id"]:
                         st.session_state.editing_address_id = None
-                    st.success("已删除该地址")
+                    st.success("Address deleted.")
                     time.sleep(0.5)
                     st.rerun()
 
             if editing:
-                st.markdown("**✏️ 编辑此地址**")
+                st.markdown("**✏️ Edit this address**")
                 with st.form(key=f"edit_addr_form_{addr['id']}"):
-                    n_name = st.text_input("收货人姓名", value=addr["name"])
-                    n_phone = st.text_input("手机号", value=addr["phone"])
-                    n_addr = st.text_area("详细地址", value=addr["address"])
-                    n_def = st.checkbox("设为默认地址", value=addr["is_default"])
+                    n_name = st.text_input("Recipient name", value=addr["name"])
+                    n_phone = st.text_input("Phone number", value=addr["phone"])
+                    n_addr = st.text_area("Detailed address", value=addr["address"])
+                    n_def = st.checkbox("Set as default address", value=addr["is_default"])
                     sc1, sc2 = st.columns(2)
                     with sc1:
-                        save = st.form_submit_button("💾 保存", type="primary",
+                        save = st.form_submit_button("💾 Save", type="primary",
                                                      use_container_width=True)
                     with sc2:
-                        cancel = st.form_submit_button("✖️ 取消",
+                        cancel = st.form_submit_button("✖️ Cancel",
                                                        use_container_width=True)
                     if save:
                         if not n_name.strip() or not n_phone.strip() or not n_addr.strip():
-                            st.error("姓名、手机号、地址均不能为空")
+                            st.error("Name, phone and address cannot be empty.")
                         else:
                             for a in st.session_state.address_list:
                                 if a["id"] == addr["id"]:
@@ -1550,7 +1526,7 @@ def render_addresses_section():
                                     if a["id"] != addr["id"]:
                                         a["is_default"] = False
                             st.session_state.editing_address_id = None
-                            st.success("✅ 修改成功")
+                            st.success("✅ Updated.")
                             time.sleep(0.6)
                             st.rerun()
                     if cancel:
@@ -1559,17 +1535,17 @@ def render_addresses_section():
 
             st.divider()
 
-    with st.expander("➕ 新增收货地址", expanded=not st.session_state.address_list):
+    with st.expander("➕ Add a new shipping address", expanded=not st.session_state.address_list):
         with st.form("add_addr_form"):
-            n_name = st.text_input("收货人姓名")
-            n_phone = st.text_input("手机号")
-            n_addr = st.text_area("详细地址")
-            n_def = st.checkbox("设为默认地址", value=not st.session_state.address_list)
-            sub = st.form_submit_button("➕ 添加", type="primary",
+            n_name = st.text_input("Recipient name")
+            n_phone = st.text_input("Phone number")
+            n_addr = st.text_area("Detailed address")
+            n_def = st.checkbox("Set as default address", value=not st.session_state.address_list)
+            sub = st.form_submit_button("➕ Add", type="primary",
                                         use_container_width=True)
             if sub:
                 if not n_name.strip() or not n_phone.strip() or not n_addr.strip():
-                    st.error("姓名、手机号、地址均不能为空")
+                    st.error("Name, phone and address cannot be empty.")
                 else:
                     new_id = max([a["id"] for a in st.session_state.address_list],
                                  default=0) + 1
@@ -1584,7 +1560,7 @@ def render_addresses_section():
                         "address": n_addr.strip(),
                         "is_default": bool(n_def),
                     })
-                    st.success("✅ 已添加")
+                    st.success("✅ Added.")
                     time.sleep(0.6)
                     st.rerun()
 
@@ -1594,7 +1570,7 @@ def render_profile_sub_page():
 
     nav_cols = st.columns([1, 5])
     with nav_cols[0]:
-        if st.button("⬅️ 返回个人中心"):
+        if st.button("⬅️ Back to My Profile"):
             st.session_state.nav_location = "profile_home"
             st.session_state.editing_address_id = None
             st.session_state.editing_card_id = None
@@ -1603,74 +1579,74 @@ def render_profile_sub_page():
     st.divider()
 
     if current_loc == "pay_settings":
-        st.title("💳 支付设置")
-        st.caption("在此统一管理银行账户以及代购交易限额配置")
+        st.title("💳 Payment Settings")
+        st.caption("Manage bank accounts and purchase transaction limits here.")
 
-        tab_bank, tab_limits = st.tabs(["🏦 银行账户", "⚙ 交易限额设置"])
+        tab_bank, tab_limits = st.tabs(["🏦 Bank Accounts", "⚙ Transaction Limits"])
 
         with tab_bank:
             render_bank_cards_section()
 
         with tab_limits:
-            st.subheader("⚙ 调整交易限额")
+            st.subheader("⚙ Adjust transaction limits")
             lim_c1, lim_c2 = st.columns(2)
             with lim_c1:
                 new_single = st.number_input(
-                    "单笔限额 (元)", min_value=100.0, max_value=10000.0,
+                    "Single transaction limit ($)", min_value=100.0, max_value=10000.0,
                     value=float(st.session_state.single_limit), step=500.0
                 )
             with lim_c2:
                 new_daily = st.number_input(
-                    "单日累计支付总额 (元)", min_value=1000.0, max_value=50000.0,
+                    "Daily cumulative payment limit ($)", min_value=1000.0, max_value=50000.0,
                     value=float(st.session_state.daily_limit), step=1000.0
                 )
 
             st.divider()
-            verify_pwd = st.text_input("请输入登录密码以确认修改", type="password")
+            verify_pwd = st.text_input("Enter your login password to confirm changes", type="password")
 
-            if st.button("💾 保存限额设置", type="primary"):
+            if st.button("💾 Save Limits", type="primary"):
                 current_user_pwd = (
                     st.session_state.user_info.get("password")
                     if st.session_state.user_info else None
                 )
                 if not verify_pwd or verify_pwd != current_user_pwd:
-                    st.error("❌ 登录密码验证失败，无法修改！")
+                    st.error("❌ Login password verification failed. Cannot modify!")
                 elif new_single > new_daily:
-                    st.error("❌ 单笔限额不能高于单日总额！")
+                    st.error("❌ Single-transaction limit cannot be higher than the daily limit!")
                 else:
                     st.session_state.single_limit = new_single
                     st.session_state.daily_limit = new_daily
-                    st.success("✅ 修改成功！")
+                    st.success("✅ Updated!")
                     time.sleep(1)
                     st.rerun()
 
     elif current_loc == "wallet":
         st.markdown(f"""
         <div class="wallet-card">
-            <h3>👛 代购专属电子钱包</h3>
-            <h1 style="margin: 10px 0;">￥{st.session_state.wallet_balance:,.2f}</h1>
+            <h3>👛 Shopping E-Wallet</h3>
+            <h1 style="margin: 10px 0;">${st.session_state.wallet_balance:,.2f}</h1>
         </div>
         """, unsafe_allow_html=True)
 
-        st.subheader("💵 钱包充值")
+        st.subheader("💵 Wallet top-up")
         if not st.session_state.bank_cards:
-            st.info("📭 您还没有绑定任何银行账户，请先前往【支付设置 → 银行账户】添加银行卡后再充值。")
+            st.info("📭 You haven't linked any bank account yet. Please go to [Payment Settings → Bank Accounts] to add a card before topping up.")
         else:
             recharge_col1, recharge_col2 = st.columns([2, 1])
             with recharge_col1:
                 select_bank = st.selectbox(
-                    "选择付款银行卡",
+                    "Select a bank card for payment",
                     [_card_display_name(card) for card in st.session_state.bank_cards],
                 )
                 recharge_amount = st.number_input(
-                    "充值金额 (元)", min_value=10, max_value=10000, value=200, step=50
+                    "Top-up amount ($)", min_value=10, max_value=10000, value=200, step=50
                 )
             with recharge_col2:
                 st.write("")
                 st.write("")
-                if st.button("🚀 立即充值", type="primary", use_container_width=True):
+                if st.button("🚀 Top up now", type="primary", use_container_width=True):
                     st.session_state.wallet_balance += recharge_amount
-                    st.success(f"🎉 从【{select_bank}】向钱包充值 ￥{recharge_amount:.2f}！")
+                    st.success(f"🎉 Topped up ${recharge_amount:.2f} from [{select_bank}] to your wallet!")
                     time.sleep(1)
                     st.rerun()
 
@@ -1678,17 +1654,17 @@ def render_profile_sub_page():
         render_addresses_section()
 
     elif current_loc == "records":
-        rec_tab1, rec_tab2 = st.tabs(["💬 聊天记录", "🛍 购买记录"])
+        rec_tab1, rec_tab2 = st.tabs(["💬 Chat History", "🛍 Purchase History"])
         with rec_tab1:
-            if st.button("➕ 开启新对话", type="primary"):
+            if st.button("➕ Start a new conversation", type="primary"):
                 new_idx = len(st.session_state.chat_sessions) + 1
                 st.session_state.chat_sessions.append({
                     "session_id": f"CS-{new_idx:03d}",
-                    "title": "新代购咨询",
+                    "title": "New Shopping Chat",
                     "created_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
                     "messages": [
                         {"role": "assistant",
-                         "content": "👋 你好！我是你的 **全网 AI 智能代购 Agent**。\n\n请告诉我想买什么商品，我会为你全网比价并下单！"}
+                         "content": "👋 Hi! I'm your **AI Shopping Agent across the whole web**.\n\nTell me what you'd like to buy, and I'll compare prices and place the order!"}
                     ]
                 })
                 st.session_state.current_session_index = len(st.session_state.chat_sessions) - 1
@@ -1707,9 +1683,9 @@ def render_profile_sub_page():
                 st.session_state.current_detail_req = ""
                 st.rerun()
 
-            st.markdown("##### 💬 历史对话")
+            st.markdown("##### 💬 Past conversations")
             for s_idx, session in enumerate(st.session_state.chat_sessions):
-                title = session.get("title", "未命名对话")
+                title = session.get("title", "Untitled")
                 created_at = session.get("created_at", "")
                 head_c1, head_c2 = st.columns([5, 2])
                 with head_c1:
@@ -1719,73 +1695,72 @@ def render_profile_sub_page():
                         f'<div class="chat-meta" style="text-align:right;">🕒 {created_at}</div>',
                         unsafe_allow_html=True
                     )
-                with st.expander(f"展开查看对话内容（{session['session_id']}）", expanded=False):
+                with st.expander(f"Show contents ({session['session_id']})", expanded=False):
                     for msg in session["messages"]:
                         st.write(f"**{msg['role'].upper()}**: {msg['content']}")
                 st.divider()
 
         with rec_tab2:
             if not st.session_state.orders_history:
-                st.info("暂无已付款的代购记录。")
+                st.info("No paid orders yet.")
             else:
                 for ord_item in st.session_state.orders_history:
                     st.markdown(f"""
                     <div class="order-card">
                         <h4>{ord_item['title']}</h4>
-                        <p>🏷️ <b>平台</b>：{ord_item['platform']} | 🆔 <b>订单号</b>：<code>{ord_item['order_id']}</code></p>
-                        <p>💰 <b>实付金额</b>：<span style="color:#FF4B4B; font-weight:bold;">￥{ord_item['final_price']}</span></p>
-                        <p>📦 <b>配送地址</b>：{ord_item.get('shipping_address', '默认地址')}</p>
-                        <p>💳 <b>支付方式</b>：{ord_item.get('payment_method', '未知')}</p>
-                        <p>🕒 <b>支付时间</b>：{ord_item.get('paid_at', '未知')}</p>
+                        <p>🏷️ <b>Platform</b>: {ord_item['platform']} | 🆔 <b>Order ID</b>: <code>{ord_item['order_id']}</code></p>
+                        <p>💰 <b>Paid</b>: <span style="color:#FF4B4B; font-weight:bold;">${ord_item['final_price']}</span></p>
+                        <p>📦 <b>Ship to</b>: {ord_item.get('shipping_address', 'Default address')}</p>
+                        <p>💳 <b>Payment method</b>: {ord_item.get('payment_method', 'Unknown')}</p>
+                        <p>🕒 <b>Paid at</b>: {ord_item.get('paid_at', 'Unknown')}</p>
                     </div>
                     """, unsafe_allow_html=True)
                     if ord_item.get("source_url"):
-                        st.markdown(f"🔗 [查看原商品页面]({ord_item['source_url']})")
+                        st.markdown(f"🔗 [View original product page]({ord_item['source_url']})")
 
 
 # ==========================================
-# 6. 主聊天界面
+# 6. Main chat interface
 # ==========================================
 def render_order_card(order: dict, key_prefix: str = ""):
-    st.subheader(order.get("title", "未命名商品"))
-    st.write(f"🏷️ **推荐平台**：{order.get('platform', '未知')}")
-    st.write(f"🆔 **订单编号**：`{order.get('order_id', '')}`")
+    st.subheader(order.get("title", "Untitled product"))
+    st.write(f"🏷️ **Recommended platform**: {order.get('platform', 'Unknown')}")
+    st.write(f"🆔 **Order ID**: `{order.get('order_id', '')}`")
     if order.get("reason"):
-        st.write(f"💡 **推荐理由**：{order['reason']}")
-    st.markdown(f"### 券后价格：:red[￥{order.get('final_price', 0)}]")
+        st.write(f"💡 **Reason**: {order['reason']}")
+    st.markdown(f"### Price after coupon: :red[${order.get('final_price', 0)}]")
 
     src = order.get("source_url", "")
     site = order.get("source_site", "")
     platform = order.get("platform", "")
 
     if src and _is_product_detail_url(src):
-        st.markdown(f"🔗 **来源站点**：{site or platform or '官方平台'}")
-        st.markdown(f"👉 [点击跳转商品详情页]({src})")
+        st.markdown(f"🔗 **Source site**: {site or platform or 'Official platform'}")
+        st.markdown(f"👉 [Open product detail page]({src})")
         st.text_input(
-            "📋 复制链接（点右侧图标或全选复制）",
+            "📋 Copy link (click the icon on the right or select all to copy)",
             value=src,
             key=f"copy_{key_prefix}_{order.get('order_id', random.random())}",
         )
-    # ★ 若没有商品详情页链接，静默不显示任何提示
 
 
 def render_address_selection():
     st.divider()
-    st.subheader("📍 选择收货地址")
+    st.subheader("📍 Choose a shipping address")
 
     if not st.session_state.address_list:
-        st.info("📭 您还没有收货地址，请先填写一个新的收货地址：")
-        new_name = st.text_input("收货人姓名", key="only_new_addr_name")
-        new_phone = st.text_input("收货人手机号", key="only_new_addr_phone")
+        st.info("📭 You don't have any shipping address yet. Please fill in a new one:")
+        new_name = st.text_input("Recipient name", key="only_new_addr_name")
+        new_phone = st.text_input("Recipient phone number", key="only_new_addr_phone")
         new_addr = st.text_area(
-            "详细收货地址",
+            "Detailed address",
             key="only_new_addr_detail",
-            placeholder="例如：上海市浦东新区世纪大道 100 号 xx 小区 5 号楼 302 室",
+            placeholder="e.g., Room 302, Building 5, XX Community, 100 Century Avenue, Pudong New Area, Shanghai",
         )
-        if st.button("➡️ 保存地址并进入支付", type="primary",
+        if st.button("➡️ Save address and proceed to payment", type="primary",
                      use_container_width=True, key="only_new_addr_confirm"):
             if not new_name.strip() or not new_phone.strip() or not new_addr.strip():
-                st.error("❌ 请完整填写姓名、手机号和详细地址！")
+                st.error("❌ Please fill in name, phone and detailed address completely!")
             else:
                 addr_obj = {
                     "id": 1,
@@ -1804,37 +1779,37 @@ def render_address_selection():
 
     addr_options = []
     for a in st.session_state.address_list:
-        tag = " [默认]" if a["is_default"] else ""
+        tag = " [Default]" if a["is_default"] else ""
         addr_options.append(f"{a['name']} - {a['phone']} - {a['address']}{tag}")
-    addr_options.append("➕ 输入一个新地址作为本次收货地址")
+    addr_options.append("➕ Enter a new address for this order")
 
     default_idx = next(
         (i for i, a in enumerate(st.session_state.address_list) if a["is_default"]), 0
     )
 
     selected_idx = st.radio(
-        "请选择收货地址",
+        "Select a shipping address",
         range(len(addr_options)),
         format_func=lambda i: addr_options[i],
         index=default_idx,
         key="addr_radio",
     )
 
-    st.markdown('<div class="addr-tip">没有目标地址？请告诉我新地址</div>',
+    st.markdown('<div class="addr-tip">Don\'t see your address? Tell me a new one.</div>',
                 unsafe_allow_html=True)
 
     is_new_address = (selected_idx == len(st.session_state.address_list))
 
     if is_new_address:
-        new_name = st.text_input("收货人姓名", key="new_addr_name")
-        new_phone = st.text_input("收货人手机号", key="new_addr_phone")
-        new_addr = st.text_area("详细收货地址", key="new_addr_detail",
-                                placeholder="例如：上海市浦东新区世纪大道 100 号 xx 小区 5 号楼 302 室")
+        new_name = st.text_input("Recipient name", key="new_addr_name")
+        new_phone = st.text_input("Recipient phone number", key="new_addr_phone")
+        new_addr = st.text_area("Detailed address", key="new_addr_detail",
+                                placeholder="e.g., Room 302, Building 5, XX Community, 100 Century Avenue, Pudong New Area, Shanghai")
 
-        if st.button("➡️ 保存并使用这个新地址，进入支付", type="primary",
+        if st.button("➡️ Save and use this new address, proceed to payment", type="primary",
                      use_container_width=True, key="new_addr_confirm"):
             if not new_name.strip() or not new_phone.strip() or not new_addr.strip():
-                st.error("❌ 请完整填写姓名、手机号和详细地址！")
+                st.error("❌ Please fill in name, phone and detailed address completely!")
             else:
                 new_id = max([a["id"] for a in st.session_state.address_list], default=0) + 1
                 addr_obj = {
@@ -1852,9 +1827,9 @@ def render_address_selection():
                 st.rerun()
     else:
         chosen = st.session_state.address_list[selected_idx]
-        st.caption(f"已选择：{chosen['name']} · {chosen['phone']} · {chosen['address']}")
+        st.caption(f"Selected: {chosen['name']} · {chosen['phone']} · {chosen['address']}")
 
-        if st.button("➡️ 确认地址，进入支付", type="primary",
+        if st.button("➡️ Confirm address, proceed to payment", type="primary",
                      use_container_width=True, key="addr_confirm"):
             st.session_state.selected_address_for_order = chosen
             st.session_state.buy_stage = "payment"
@@ -1864,19 +1839,19 @@ def render_address_selection():
 
 
 def _render_inline_add_bank_form(form_key: str = "inline_add_bank"):
-    st.markdown("**➕ 新增一张银行卡**")
+    st.markdown("**➕ Add a new bank card**")
     with st.form(key=form_key):
-        nb = st.text_input("银行名称", placeholder="如：中国银行")
-        nt = st.selectbox("卡类型", ["储蓄卡", "信用卡"])
-        ntail = st.text_input("卡号尾号 (4 位)", max_chars=4, placeholder="如：1234")
-        sub = st.form_submit_button("➕ 添加并使用这张卡", type="primary",
+        nb = st.text_input("Bank name", placeholder="e.g., Bank of China")
+        nt = st.selectbox("Card type", ["Debit Card", "Credit Card"])
+        ntail = st.text_input("Last 4 digits of card number", max_chars=4, placeholder="e.g., 1234")
+        sub = st.form_submit_button("➕ Add and use this card", type="primary",
                                     use_container_width=True)
         if sub:
             if not nb.strip():
-                st.error("银行名称不能为空")
+                st.error("Bank name cannot be empty.")
                 return None
             if not ntail.strip() or not ntail.strip().isdigit() or len(ntail.strip()) != 4:
-                st.error("卡号尾号必须为 4 位数字")
+                st.error("Last 4 digits must be exactly 4 numeric digits.")
                 return None
             new_id = max([c["id"] for c in st.session_state.bank_cards], default=0) + 1
             new_card = {
@@ -1886,7 +1861,7 @@ def _render_inline_add_bank_form(form_key: str = "inline_add_bank"):
                 "tail": ntail.strip(),
             }
             st.session_state.bank_cards.append(new_card)
-            st.success("✅ 已添加银行卡")
+            st.success("✅ Bank card added.")
             return new_card
     return None
 
@@ -1895,41 +1870,41 @@ def render_payment_section():
     order = st.session_state.pending_order
     final_price = float(order["final_price"])
 
-    st.subheader("💳 订单支付")
+    st.subheader("💳 Order Payment")
     render_order_card(order, key_prefix="pay")
-    st.markdown(f"### 应付金额：:red[￥{final_price:.2f}]")
+    st.markdown(f"### Amount due: :red[${final_price:.2f}]")
 
     addr = st.session_state.selected_address_for_order
     if addr:
-        st.info(f"📦 收货地址：**{addr['name']}** · {addr['phone']} · {addr['address']}")
+        st.info(f"📦 Shipping address: **{addr['name']}** · {addr['phone']} · {addr['address']}")
 
     wallet_balance = st.session_state.wallet_balance
     if wallet_balance >= final_price:
-        default_method = "👛 钱包余额（优先）"
-        st.success(f"✅ 当前钱包余额 ￥{wallet_balance:.2f} 足够支付本单，将**优先从钱包扣款**。")
+        default_method = "👛 Wallet balance (preferred)"
+        st.success(f"✅ Your wallet balance (${wallet_balance:.2f}) is enough for this order. It will be **deducted from the wallet first**.")
     else:
-        default_method = "🏦 银行卡直扣"
+        default_method = "🏦 Direct bank debit"
         st.warning(
-            f"⚠️ 钱包余额 ￥{wallet_balance:.2f} 不足支付 ￥{final_price:.2f}，"
-            f"将使用**银行卡直扣**（需登录密码二次认证）。"
+            f"⚠️ Your wallet balance (${wallet_balance:.2f}) is insufficient for ${final_price:.2f}. "
+            f"**Direct bank debit** will be used (requires login password re-authentication)."
         )
 
     pay_method = st.radio(
-        "选择支付方式",
-        ["👛 钱包余额（优先）", "🏦 银行卡直扣"],
-        index=0 if "👛 钱包余额（优先）" == default_method else 1,
+        "Choose payment method",
+        ["👛 Wallet balance (preferred)", "🏦 Direct bank debit"],
+        index=0 if "👛 Wallet balance (preferred)" == default_method else 1,
         horizontal=True,
         key="pay_method_radio",
     )
 
-    if pay_method == "👛 钱包余额（优先）" and wallet_balance < final_price:
-        st.error("❌ 钱包余额不足，请改选银行卡直扣。")
+    if pay_method == "👛 Wallet balance (preferred)" and wallet_balance < final_price:
+        st.error("❌ Wallet balance is not enough. Please choose direct bank debit.")
         return
 
     selected_card = None
-    if pay_method == "🏦 银行卡直扣":
+    if pay_method == "🏦 Direct bank debit":
         if not st.session_state.bank_cards:
-            st.info("📭 您还没有绑定任何银行账户，请先添加一张银行卡用于本次扣款：")
+            st.info("📭 You haven't linked any bank account yet. Please add a card for this payment:")
             new_card = _render_inline_add_bank_form("pay_inline_add_bank")
             if new_card is not None:
                 selected_card = _card_display_name(new_card)
@@ -1939,13 +1914,13 @@ def render_payment_section():
         else:
             options = [_card_display_name(c) for c in st.session_state.bank_cards]
             selected_card = st.selectbox(
-                "选择扣款的银行账户",
+                "Select the bank account to debit",
                 options,
                 key="pay_bank_select",
             )
 
     st.divider()
-    st.markdown("### 🔐 一次性支付密码验证")
+    st.markdown("### 🔐 One-time payment password verification")
 
     order_id = order["order_id"]
     if (
@@ -1959,49 +1934,49 @@ def render_payment_section():
 
         user_email = st.session_state.user_info.get("email") if st.session_state.user_info else ""
         if user_email and st.session_state.get("smtp_user"):
-            with st.spinner("正在发送一次性支付密码到您的邮箱..."):
+            with st.spinner("Sending the one-time payment password to your email..."):
                 ok, err = send_payment_code_email(user_email, code, order)
             if ok:
-                st.success(f"📩 一次性支付密码已发送至 {user_email}，10 分钟内有效")
+                st.success(f"📩 One-time payment password sent to {user_email}. Valid for 10 minutes.")
             else:
-                st.error(f"❌ 邮件发送失败：{err}")
+                st.error(f"❌ Failed to send email: {err}")
         else:
-            st.warning("⚠️ 未配置发件邮箱或未获取到用户邮箱，无法发送。")
+            st.warning("⚠️ Sender email not configured or user email not available. Cannot send.")
 
     user_pay_code = st.text_input(
-        "请输入邮箱里收到的一次性支付密码（12 位字母数字）",
+        "Enter the one-time payment password you received by email (12 alphanumeric characters)",
         type="password",
         max_chars=12,
         key="user_pay_code_input",
     )
 
-    need_login_pwd_verify = (pay_method == "🏦 银行卡直扣")
+    need_login_pwd_verify = (pay_method == "🏦 Direct bank debit")
     user_login_pwd = None
     if need_login_pwd_verify:
         if final_price > st.session_state.max_limit:
             st.warning(
-                f"🔐 银行卡大额交易 ￥{final_price:.2f} 超过免密额度 "
-                f"￥{st.session_state.max_limit:.2f}，需输入**登录密码**二次认证。"
+                f"🔐 This bank card transaction of ${final_price:.2f} exceeds the password-free threshold "
+                f"of ${st.session_state.max_limit:.2f}. You must enter your **login password** to re-authenticate."
             )
         else:
-            st.info("🔐 使用银行卡支付，需输入**登录密码**进行二次认证。")
+            st.info("🔐 Bank card payment requires your **login password** for re-authentication.")
         user_login_pwd = st.text_input(
-            "请输入登录密码以完成银行卡认证",
+            "Enter your login password to complete bank card authentication",
             type="password",
             key="bank_login_pwd",
         )
 
-    if st.button("✅ 确认支付", type="primary", use_container_width=True,
+    if st.button("✅ Confirm payment", type="primary", use_container_width=True,
                  key="final_pay_confirm"):
         if not user_pay_code:
-            st.error("❌ 请输入邮箱里收到的一次性支付密码！")
+            st.error("❌ Please enter the one-time payment password you received by email!")
             st.stop()
         if user_pay_code != st.session_state.payment_code:
-            st.error("❌ 一次性支付密码错误！")
+            st.error("❌ Incorrect one-time payment password!")
             st.stop()
         if (st.session_state.payment_code_sent_at is None
                 or time.time() - st.session_state.payment_code_sent_at > 600):
-            st.error("❌ 一次性支付密码已过期（超过 10 分钟），请重新发送！")
+            st.error("❌ The one-time payment password has expired (>10 minutes). Please resend!")
             st.stop()
 
         if need_login_pwd_verify:
@@ -2010,19 +1985,19 @@ def render_payment_section():
                 if st.session_state.user_info else None
             )
             if not user_login_pwd:
-                st.error("❌ 请输入登录密码！")
+                st.error("❌ Please enter your login password!")
                 st.stop()
             if user_login_pwd != current_pwd:
-                st.error("❌ 登录密码错误，认证未通过！")
+                st.error("❌ Incorrect login password. Authentication failed!")
                 st.stop()
             if not st.session_state.bank_cards:
-                st.error("❌ 请先添加一张银行卡再支付！")
+                st.error("❌ Please add a bank card before paying!")
                 st.stop()
 
         payment_method_text = ""
-        if pay_method == "👛 钱包余额（优先）":
+        if pay_method == "👛 Wallet balance (preferred)":
             st.session_state.wallet_balance -= final_price
-            payment_method_text = "👛 钱包余额"
+            payment_method_text = "👛 Wallet balance"
         else:
             payment_method_text = f"🏦 {selected_card or _card_display_name(st.session_state.bank_cards[0])}"
 
@@ -2034,7 +2009,7 @@ def render_payment_section():
             "title": order["title"],
             "platform": order["platform"],
             "final_price": final_price,
-            "shipping_address": f"{addr['name']} · {addr['phone']} · {addr['address']}" if addr else "默认地址",
+            "shipping_address": f"{addr['name']} · {addr['phone']} · {addr['address']}" if addr else "Default address",
             "payment_method": payment_method_text,
             "source_url": order.get("source_url", ""),
             "paid_at": paid_at_str,
@@ -2042,16 +2017,16 @@ def render_payment_section():
 
         user_email = st.session_state.user_info.get("email") if st.session_state.user_info else ""
         if user_email and st.session_state.get("smtp_user"):
-            with st.spinner("支付成功，商户正在发送收据邮件..."):
+            with st.spinner("Payment succeeded. The merchant is sending the receipt email..."):
                 ok, err = send_receipt_email(user_email, order, paid_at_str)
             if ok:
-                st.success(f"📧 收据邮件已发送至 {user_email}")
+                st.success(f"📧 Receipt email sent to {user_email}")
             else:
-                st.warning(f"⚠️ 收据邮件发送失败：{err}")
+                st.warning(f"⚠️ Failed to send receipt email: {err}")
         else:
-            st.info("ℹ️ 未配置发件邮箱，跳过收据邮件发送。")
+            st.info("ℹ️ Sender email not configured. Skipping receipt email.")
 
-        end_conversation(reason=f"🎉 支付成功！方式：{payment_method_text}，金额：￥{final_price:.2f}")
+        end_conversation(reason=f"🎉 Payment successful! Method: {payment_method_text}, amount: ${final_price:.2f}")
 
 
 def end_conversation(reason: str = ""):
@@ -2059,17 +2034,17 @@ def end_conversation(reason: str = ""):
     current_session["messages"].append({
         "role": "assistant",
         "content": (reason + "\n\n" if reason else "") +
-                   "本次购物流程已结束，为您开启新的对话窗口。"
+                   "This shopping session has ended. A new chat window has been started for you."
     })
 
     new_idx = len(st.session_state.chat_sessions) + 1
     st.session_state.chat_sessions.append({
         "session_id": f"CS-{new_idx:03d}",
-        "title": "新代购咨询",
+        "title": "New Shopping Chat",
         "created_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "messages": [
             {"role": "assistant",
-             "content": "👋 新的对话开始啦！请告诉我想购买的商品，我会为你联网比价、智能推荐并完成代购。"}
+             "content": "👋 A new conversation has started! Tell me what you'd like to buy, and I'll compare prices, recommend products and complete the purchase for you."}
         ]
     })
     st.session_state.current_session_index = len(st.session_state.chat_sessions) - 1
@@ -2120,7 +2095,7 @@ def _update_current_session_title(product_category: str):
     if not product_category:
         return
     current_session = st.session_state.chat_sessions[st.session_state.current_session_index]
-    if current_session.get("title") in ("首次代购咨询", "新代购咨询", "", None):
+    if current_session.get("title") in ("First Shopping Consultation", "New Shopping Chat", "", None):
         title = product_category.strip()
         if len(title) > 12:
             title = title[:12] + "..."
@@ -2142,14 +2117,14 @@ def _generate_constrained_options(item_category, detail_req, attributes, min_pri
 
 
 def render_chat_agent():
-    st.title("🤖 自动付款 AI 购物 Agent")
-    st.caption("DeepSeek 驱动 · 腾讯云联网实时比价 · 锁定需求品类 · 智能识别价格与属性 · 仅限淘宝/天猫/京东/拼多多/唯品会")
+    st.title("🤖 Auto-Payment AI Shopping Agent")
+    st.caption("Powered by DeepSeek · Tencent Cloud real-time web price comparison · Lock the required category · Smart attributes & price detection · Taobao / Tmall / JD / Pinduoduo / VIP.com only")
 
     col1, col2 = st.columns(2)
     with col1:
-        st.metric("我的钱包余额", f"￥{st.session_state.wallet_balance:.2f}")
+        st.metric("My wallet balance", f"${st.session_state.wallet_balance:.2f}")
     with col2:
-        st.metric("已成功代购", f"{len(st.session_state.orders_history)} 笔")
+        st.metric("Completed purchases", f"{len(st.session_state.orders_history)} order(s)")
 
     st.divider()
 
@@ -2161,18 +2136,18 @@ def render_chat_agent():
     if st.session_state.buy_stage in ("confirm_product", "select_address", "payment"):
         tags = []
         if st.session_state.target_product_category:
-            tags.append(f"🎯 品类：{st.session_state.target_product_category}")
+            tags.append(f"🎯 Category: {st.session_state.target_product_category}")
         for a in st.session_state.current_attributes:
             tags.append(f"🎨 {a}")
         pmin, pmax = st.session_state.current_price_range
         if pmin is not None or pmax is not None:
             if pmin is not None and pmax is not None:
-                tags.append(f"💰 ￥{pmin}~￥{pmax}")
+                tags.append(f"💰 ${pmin}~${pmax}")
             elif pmin is not None:
-                tags.append(f"💰 ≥￥{pmin}")
+                tags.append(f"💰 ≥${pmin}")
             else:
-                tags.append(f"💰 ≤￥{pmax}")
-        tags.append("🛒 平台：淘宝/天猫/京东/拼多多/唯品会")
+                tags.append(f"💰 ≤${pmax}")
+        tags.append("🛒 Platform: Taobao/Tmall/JD/Pinduoduo/VIP.com")
         if tags:
             st.markdown(
                 "".join(f'<span class="intent-tag">{t}</span>' for t in tags),
@@ -2183,8 +2158,8 @@ def render_chat_agent():
     if st.session_state.limit_exceeded and st.session_state.limit_exceeded_order:
         st.markdown(
             '<div class="limit-tip">'
-            '对不起，您选择的商品超过了您规定的付款限额，'
-            '请在个人中心修改限额或另外选择限额内的商品进行购买。'
+            'Sorry, the product you selected exceeds your configured payment limit. '
+            'Please update the limit in your profile or choose a product within the limit.'
             '</div>',
             unsafe_allow_html=True
         )
@@ -2193,13 +2168,13 @@ def render_chat_agent():
 
         lc1, lc2 = st.columns(2)
         with lc1:
-            if st.button("⚙️ 去个人中心修改限额", type="primary",
+            if st.button("⚙️ Go to profile to update the limit", type="primary",
                          use_container_width=True, key="limit_go_settings"):
-                end_conversation(reason="已为您结束本次对话，请前往个人中心修改限额。")
+                end_conversation(reason="The session has ended. Please update the limit in your profile.")
                 st.session_state.nav_location = "pay_settings"
                 st.rerun()
         with lc2:
-            if st.button("🔁 另外选择限额内的商品", use_container_width=True,
+            if st.button("🔁 Choose another product within the limit", use_container_width=True,
                          key="limit_reselect"):
                 st.session_state.limit_exceeded = False
                 st.session_state.limit_exceeded_order = None
@@ -2208,7 +2183,7 @@ def render_chat_agent():
                 st.session_state.recommend_step = 1
                 st.session_state.candidate_options = []
 
-                with st.spinner("正在为您重新联网比价..."):
+                with st.spinner("Comparing prices online again..."):
                     result = call_deepseek_recommend_engine(
                         step=1,
                         item_category=st.session_state.target_product_category,
@@ -2219,12 +2194,12 @@ def render_chat_agent():
 
     elif st.session_state.buy_stage == "confirm_product" and st.session_state.recommend_step == 1:
         order = st.session_state.pending_order
-        st.warning("已为您匹配到综合排名最高的选择：")
+        st.warning("Here is the top overall match for you:")
         render_order_card(order, key_prefix="s1")
 
         btn_c1, btn_c2, _ = st.columns([1, 1, 2])
         with btn_c1:
-            if st.button("✅ 满意 (选定此商品)", type="primary", use_container_width=True,
+            if st.button("✅ Satisfied (choose this product)", type="primary", use_container_width=True,
                          key="s1_ok"):
                 exceeded, msg = check_order_limits(order)
                 if exceeded:
@@ -2238,13 +2213,13 @@ def render_chat_agent():
                 else:
                     st.session_state.buy_stage = "select_address"
                     st.session_state.selected_address_for_order = None
-                    current_session["messages"].append({"role": "user", "content": "满意，就选这个。"})
+                    current_session["messages"].append({"role": "user", "content": "Satisfied. Let's go with this one."})
                     st.rerun()
         with btn_c2:
-            if st.button("❌ 不满意 (换一批)", use_container_width=True, key="s1_no"):
+            if st.button("❌ Not satisfied (show another batch)", use_container_width=True, key="s1_no"):
                 st.session_state.recommend_step = 2
                 st.session_state.candidate_options = []
-                with st.spinner("正在分别从【价格】、【评价】、【销量】三个维度搜寻最佳选择..."):
+                with st.spinner("Searching best options by [price], [reviews] and [sales]..."):
                     c_options = call_deepseek_recommend_engine(
                         step=2,
                         item_category=st.session_state.target_product_category,
@@ -2259,13 +2234,13 @@ def render_chat_agent():
                 st.rerun()
 
     elif st.session_state.buy_stage == "confirm_product" and st.session_state.recommend_step == 2:
-        st.info("以下是从三个不同维度为您精选的方案")
+        st.info("Below are three options picked from three different dimensions")
         options = st.session_state.candidate_options
         for idx, opt in enumerate(options):
             with st.container():
-                st.markdown(f"### 🔹 {opt.get('dimension', f'选项 {idx+1}')}")
+                st.markdown(f"### 🔹 {opt.get('dimension', f'Option {idx+1}')}")
                 render_order_card(opt, key_prefix=f"s2_{idx}")
-                if st.button(f"选择此方案 ({idx+1})", key=f"pick_s2_{idx}",
+                if st.button(f"Choose this option ({idx+1})", key=f"pick_s2_{idx}",
                              type="primary", use_container_width=True):
                     exceeded, msg = check_order_limits(opt)
                     if exceeded:
@@ -2280,42 +2255,42 @@ def render_chat_agent():
                         st.session_state.buy_stage = "select_address"
                         st.session_state.selected_address_for_order = None
                         current_session["messages"].append({
-                            "role": "user", "content": f"我选择方案：{opt['title']}"
+                            "role": "user", "content": f"I choose option: {opt['title']}"
                         })
                         st.rerun()
                 st.divider()
 
-        if st.button("🔍 都不满意，按预算筛选", key="s2_go3"):
+        if st.button("🔍 None of them. Filter by budget instead", key="s2_go3"):
             st.session_state.recommend_step = 3
             st.session_state.candidate_options = []
-            with st.spinner("正在根据联网市场价为该商品估算合理价格区间..."):
+            with st.spinner("Estimating a reasonable price range for this product based on online market prices..."):
                 lo, hi = estimate_price_range(st.session_state.target_product_category)
             st.session_state.stage3_price_range = (lo, hi)
             st.rerun()
 
     elif st.session_state.buy_stage == "confirm_product" and st.session_state.recommend_step == 3:
-        st.info("请设置您的预算区间，Agent 将精准匹配：")
+        st.info("Please set your budget range. The Agent will match precisely:")
 
         if st.session_state.stage3_price_range is None:
-            with st.spinner("正在根据联网市场价为该商品估算合理价格区间..."):
+            with st.spinner("Estimating a reasonable price range for this product based on online market prices..."):
                 lo, hi = estimate_price_range(st.session_state.target_product_category)
             st.session_state.stage3_price_range = (lo, hi)
 
         lo, hi = st.session_state.stage3_price_range
-        st.caption(f"💡 根据全网市场价，【{st.session_state.target_product_category}】的合理价格约为 ￥{lo} ~ ￥{hi}")
+        st.caption(f"💡 Based on online market prices, the reasonable price for [{st.session_state.target_product_category}] is about ${lo} ~ ${hi}")
 
         price_range = st.slider(
-            "预算区间（元）",
+            "Budget range ($)",
             min_value=int(lo),
             max_value=int(hi),
             value=(int(lo), int(hi)),
             step=10,
-            format="￥%d"
+            format="$%d"
         )
 
-        if st.button("🎯 开始精准匹配", type="primary", use_container_width=True,
+        if st.button("🎯 Start precise matching", type="primary", use_container_width=True,
                      key="s3_match"):
-            with st.spinner("正在按您的预算筛选..."):
+            with st.spinner("Filtering by your budget..."):
                 result = call_deepseek_recommend_engine(
                     step=3,
                     item_category=st.session_state.target_product_category,
@@ -2331,10 +2306,10 @@ def render_chat_agent():
 
         if st.session_state.pending_order and st.session_state.recommend_step == 3:
             order = st.session_state.pending_order
-            st.success("✅ **精准匹配完成**")
+            st.success("✅ **Precise matching complete**")
             render_order_card(order, key_prefix="s3")
 
-            if st.button("✅ 选定此商品", type="primary", use_container_width=True,
+            if st.button("✅ Choose this product", type="primary", use_container_width=True,
                          key="s3_ok"):
                 exceeded, msg = check_order_limits(order)
                 if exceeded:
@@ -2350,7 +2325,7 @@ def render_chat_agent():
                     st.session_state.selected_address_for_order = None
                     st.rerun()
 
-            if st.button("🔍 仍不满意，补充详细要求", key="s3_go4"):
+            if st.button("🔍 Still not satisfied. Add more detailed requirements", key="s3_go4"):
                 st.session_state.recommend_step = 4
                 st.session_state.candidate_options = []
                 st.session_state.pending_order = None
@@ -2361,22 +2336,22 @@ def render_chat_agent():
         if st.session_state.stage4_no_match:
             st.markdown(
                 '<div class="no-more-tip">'
-                '😔 不好意思，更精确的产品购买渠道请浏览电商平台。'
+                "😔 Sorry, for more specific products please browse the e-commerce platforms directly."
                 '</div>',
                 unsafe_allow_html=True
             )
-            st.markdown("请选择接下来的操作：")
+            st.markdown("Please choose what to do next:")
             c1, c2, c3 = st.columns(3)
             with c1:
-                if st.button("🔚 结束本次对话", type="primary", use_container_width=True,
+                if st.button("🔚 End this conversation", type="primary", use_container_width=True,
                              key="s4_end"):
-                    end_conversation(reason="感谢您的使用！")
+                    end_conversation(reason="Thank you for using the service!")
             with c2:
-                if st.button("🔙 回到前面选过的商品", use_container_width=True,
+                if st.button("🔙 Back to previously recommended products", use_container_width=True,
                              key="s4_back"):
                     st.session_state.stage4_no_match = False
                     st.session_state.recommend_step = 2
-                    with st.spinner("正在为您重新展示前面推荐过的商品..."):
+                    with st.spinner("Reloading previously recommended products..."):
                         c_options = call_deepseek_recommend_engine(
                             step=2,
                             item_category=st.session_state.target_product_category,
@@ -2390,31 +2365,31 @@ def render_chat_agent():
                         st.session_state.candidate_options = c_options
                     st.rerun()
             with c3:
-                if st.button("🆕 另外购买别的产品", use_container_width=True,
+                if st.button("🆕 Shop for something else", use_container_width=True,
                              key="s4_new"):
                     reset_current_conversation()
                     current_session["messages"].append({
                         "role": "assistant",
-                        "content": "好的！请告诉我您这次想买什么商品，我会为您重新联网比价。"
+                        "content": "Sure! Tell me what you want to buy this time and I'll compare prices online."
                     })
                     st.rerun()
         else:
-            st.info("请补充您的详细要求，Agent 将为您精挑细选 5 款商品：")
+            st.info("Please add more detailed requirements. The Agent will select 5 products for you:")
             detail_req = st.text_area(
-                "详细要求",
+                "Detailed requirements",
                 value=st.session_state.current_detail_req,
-                placeholder="例如：要黑色、支持快充、有品牌售后、需要发票、容量不低于 20000mAh..."
+                placeholder="e.g., black color, fast charging, brand warranty, invoice needed, capacity >= 20000mAh..."
             )
 
             col_a, col_b = st.columns([1, 1])
             with col_a:
-                if st.button("🔎 生成 5 款精选商品", type="primary",
+                if st.button("🔎 Generate 5 curated products", type="primary",
                              use_container_width=True, key="s4_gen"):
                     if not detail_req.strip():
-                        st.error("请填写详细要求！")
+                        st.error("Please fill in your detailed requirements!")
                     else:
                         st.session_state.current_detail_req = detail_req
-                        with st.spinner("正在为您精选 5 款最符合要求的商品..."):
+                        with st.spinner("Curating 5 products that best match your requirements..."):
                             options = _generate_constrained_options(
                                 item_category=st.session_state.target_product_category,
                                 detail_req=detail_req,
@@ -2428,7 +2403,7 @@ def render_chat_agent():
                                 st.session_state.stage4_no_match = True
                                 st.session_state.candidate_options = []
             with col_b:
-                if st.button("🙅 还是不满意，我要再想想", use_container_width=True,
+                if st.button("🙅 Still not satisfied. Let me think", use_container_width=True,
                              key="s4_reject"):
                     st.session_state.stage4_no_match = True
                     st.session_state.candidate_options = []
@@ -2439,7 +2414,7 @@ def render_chat_agent():
                     opt_uid = opt.get("option_id", idx)
                     with st.container():
                         render_order_card(opt, key_prefix=f"s4_{opt_uid}")
-                        if st.button("选定这款", key=f"pick_s4_{opt_uid}",
+                        if st.button("Choose this one", key=f"pick_s4_{opt_uid}",
                                      type="primary", use_container_width=True):
                             exceeded, msg = check_order_limits(opt)
                             if exceeded:
@@ -2457,7 +2432,7 @@ def render_chat_agent():
                         st.divider()
 
     elif st.session_state.buy_stage == "select_address":
-        st.success("🎉 **已选定商品！请确认收货地址：**")
+        st.success("🎉 **Product selected! Please confirm the shipping address:**")
         order = st.session_state.pending_order
         render_order_card(order, key_prefix="addr")
         render_address_selection()
@@ -2465,12 +2440,12 @@ def render_chat_agent():
     elif st.session_state.buy_stage == "payment":
         render_payment_section()
 
-    user_input = st.chat_input("请告诉我你想购买的商品，例如：帮我买一个 20000 毫安快充充电宝 / 一千块钱左右的黑色相机")
+    user_input = st.chat_input("Tell me what you'd like to buy, e.g., Help me buy a 20000mAh fast-charging power bank / a black camera around $1000")
 
     if user_input:
         current_session["messages"].append({"role": "user", "content": user_input})
 
-        with st.spinner("正在理解您的需求..."):
+        with st.spinner("Understanding your request..."):
             intent = parse_user_intent(
                 user_input, st.session_state.target_product_category
             )
@@ -2508,7 +2483,7 @@ def render_chat_agent():
             _update_current_session_title(new_category)
 
             if has_any_constraint:
-                with st.spinner("正在按您的具体要求精选商品..."):
+                with st.spinner("Curating products based on your specific requirements..."):
                     options = _generate_constrained_options(
                         item_category=new_category,
                         detail_req=user_input,
@@ -2523,10 +2498,10 @@ def render_chat_agent():
                     st.session_state.stage4_no_match = not options
                 current_session["messages"].append({
                     "role": "assistant",
-                    "content": f"好的！已按您的要求（{user_input}）为您精选商品 →"
+                    "content": f"Great! Products curated based on your requirements ({user_input}) →"
                 })
             else:
-                with st.spinner("正在为您联网比价..."):
+                with st.spinner("Comparing prices online for you..."):
                     result = call_deepseek_recommend_engine(
                         step=1,
                         item_category=new_category,
@@ -2537,7 +2512,7 @@ def render_chat_agent():
                     st.session_state.recommend_step = 1
                 current_session["messages"].append({
                     "role": "assistant",
-                    "content": f"我已为【{new_category}】进行全网比价，请看下方推荐卡片 →"
+                    "content": f"I've compared prices across the web for [{new_category}]. Please see the recommendation below →"
                 })
             st.rerun()
 
@@ -2551,7 +2526,7 @@ def render_chat_agent():
             st.session_state.current_price_range = (merged_min, merged_max)
             st.session_state.current_detail_req = user_input
 
-            with st.spinner("正在根据您补充的条件重新精选..."):
+            with st.spinner("Re-curating products based on your additional conditions..."):
                 options = _generate_constrained_options(
                     item_category=st.session_state.target_product_category,
                     detail_req=user_input,
@@ -2567,7 +2542,7 @@ def render_chat_agent():
                 st.session_state.pending_order = None
             current_session["messages"].append({
                 "role": "assistant",
-                "content": "已根据您补充的条件重新为您精选 →"
+                "content": "Re-curated products based on your additional conditions →"
             })
             st.rerun()
 
@@ -2576,7 +2551,7 @@ def render_chat_agent():
 
 
 # ==========================================
-# 7. 主入口
+# 7. Main entry
 # ==========================================
 def main():
     if not st.session_state.authenticated:
@@ -2584,15 +2559,15 @@ def main():
         return
 
     with st.sidebar:
-        st.markdown("## 🧭 导航")
-        if st.button("🤖 智能代购", use_container_width=True):
+        st.markdown("## 🧭 Navigation")
+        if st.button("🤖 AI Shopping", use_container_width=True):
             st.session_state.nav_location = "chat"
             st.rerun()
-        if st.button("👤 个人中心", use_container_width=True):
+        if st.button("👤 My Profile", use_container_width=True):
             st.session_state.nav_location = "profile_home"
             st.rerun()
         st.divider()
-        if st.button("🚪 退出登录", use_container_width=True):
+        if st.button("🚪 Log Out", use_container_width=True):
             st.session_state.authenticated = False
             st.session_state.user_info = None
             st.session_state.nav_location = "chat"
