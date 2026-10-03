@@ -45,6 +45,7 @@ export function LoginForm() {
           <Button type="submit" className="w-full" disabled={pending}>
             {pending ? "登录中…" : "登录"}
           </Button>
+          <p className="text-center text-sm text-zinc-500">还没有账号？ <a className="text-zinc-900 underline" href="/register">注册新账户</a></p>
         </form>
       </CardContent>
     </Card>

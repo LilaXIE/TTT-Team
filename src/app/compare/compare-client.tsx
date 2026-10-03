@@ -27,6 +27,7 @@ export function CompareClient({
   const [keyword, setKeyword] = useState(initialQuery);
   const [result, setResult] = useState<Result | null>(null);
   const [loading, setLoading] = useState(false);
+  const [taobaoLoggedIn, setTaobaoLoggedIn] = useState<boolean | null>(null);
   const [pendingItemIndex, setPendingItemIndex] = useState<number | null>(null);
   const [pending, start] = useTransition();
 
@@ -41,6 +42,23 @@ export function CompareClient({
       setLoading(false);
     }
   }, [keyword]);
+
+  useEffect(() => {
+    void api<{ loggedIn: boolean }>("/api/taobao/login").then((res) => setTaobaoLoggedIn(res.loggedIn)).catch(() => setTaobaoLoggedIn(false));
+  }, []);
+
+  async function loginTaobao() {
+    setLoading(true);
+    try {
+      await api<{ loggedIn: boolean }>("/api/taobao/login", { method: "POST" });
+      setTaobaoLoggedIn(true);
+      toast.success("淘宝登录态已保存，可以开始比价。");
+    } catch (e) {
+      toast.error(e instanceof ApiError ? e.message : "淘宝登录失败");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     if (!initialQuery.trim()) return;
@@ -85,6 +103,10 @@ export function CompareClient({
 
       <Card className="border-zinc-200 shadow-sm">
         <CardContent className="p-5">
+          <div className="mb-4 flex items-center justify-between gap-3 border-b pb-4">
+            <div><p className="font-medium">淘宝账户</p><p className="text-xs text-zinc-500">首次使用时会打开 Edge，请扫码登录；登录态只保存在服务器端。</p></div>
+            <Button variant="outline" onClick={() => void loginTaobao()} disabled={loading}>{taobaoLoggedIn ? "重新登录淘宝" : "首次登录淘宝"}</Button>
+          </div>
           <div className="flex gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-2.5 size-4 text-zinc-400" />

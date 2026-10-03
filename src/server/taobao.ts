@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { z } from "zod";
+import { stateFileForUser } from "@/server/taobao-account";
 
 export const TaobaoItem = z.object({
   index: z.number().optional(),
@@ -26,13 +27,13 @@ const SCRAPER_TIMEOUT_MS = 190_000;
  * 调用本机 Playwright/Edge 爬虫。
  * 只允许单请求、低频查询，并复用人工登录态；不绕过验证码或平台限制。
  */
-export async function searchTaobao(keyword: string, count = 10): Promise<TaobaoSearchResult> {
+export async function searchTaobao(keyword: string, count = 10, userId?: string): Promise<TaobaoSearchResult> {
   if (activeSearch) return activeSearch;
   const waitMs = Math.max(0, MIN_REQUEST_INTERVAL_MS - (Date.now() - lastSearchAt));
   activeSearch = (async () => {
     if (waitMs > 0) await new Promise((resolve) => setTimeout(resolve, waitMs));
     lastSearchAt = Date.now();
-    return runTaobaoSearch(keyword, count);
+    return runTaobaoSearch(keyword, count, userId);
   })();
   try {
     return await activeSearch;
@@ -41,9 +42,11 @@ export async function searchTaobao(keyword: string, count = 10): Promise<TaobaoS
   }
 }
 
-async function runTaobaoSearch(keyword: string, count: number): Promise<TaobaoSearchResult> {
+async function runTaobaoSearch(keyword: string, count: number, userId?: string): Promise<TaobaoSearchResult> {
   const script = scraperPath();
   const python = process.env.TAOBAO_PYTHON || "python";
+  const stateFile = userId ? await stateFileForUser(userId) : null;
+  if (userId && !stateFile) return { keyword, items: [], source: "unavailable", message: "请先完成淘宝登录。" };
   return new Promise((resolve) => {
     const child = spawn(python, [script, "--json", keyword, String(count)], {
       cwd: path.dirname(script),
@@ -52,6 +55,7 @@ async function runTaobaoSearch(keyword: string, count: number): Promise<TaobaoSe
         ...process.env,
         PYTHONIOENCODING: "utf-8",
         PYTHONUTF8: "1",
+        ...(stateFile ? { TAOBAO_STATE_FILE: stateFile, TAOBAO_PROFILE_DIR: path.join(path.dirname(stateFile), `${userId}-profile`) } : {}),
       },
     });
     let stdoutBuffer = Buffer.alloc(0);

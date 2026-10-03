@@ -23,8 +23,8 @@ from urllib.parse import quote_plus
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parent
-PROFILE_DIR = ROOT / "edge_user_data"
-STATE_FILE = ROOT / "taobao_state.json"
+PROFILE_DIR = Path(os.environ.get("TAOBAO_PROFILE_DIR", str(Path(os.environ.get("TEMP", ".")) / "mandate-wallet-taobao-profile")))
+STATE_FILE = Path(os.environ.get("TAOBAO_STATE_FILE", str(ROOT / "taobao_state.json")))
 
 
 def log(message: str) -> None:
