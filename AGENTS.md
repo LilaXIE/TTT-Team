@@ -34,6 +34,15 @@
 - 所有 npm scripts 必须能在 Windows PowerShell 下运行（用 cross-env 或 Node 脚本设置环境变量，不用 bash 语法）。
 - 中文界面，保留 Trust / E-commerce / Agent / Payment 英文标签。
 
+## Cursor Cloud specific instructions
+
+- Node.js 24.21.0 装在 `/usr/local/bin`。平台 PATH 可能把另一个 `node` 放在前面。跑 npm 前先 `export PATH="/usr/local/bin:$PATH"`。`install` 与 `start` 已经这样做。
+- PostgreSQL 18，集群 `18/main`。`policy-rc.d` 会拒绝 `service postgresql start`，用 `sudo pg_ctlcluster 18 main start`。库 `mandate_wallet` 与 `mandate_wallet_test`，角色 `mw` / 密码 `mw`（与 `compose.yaml` 相同）。
+- `start` 在没有 `.env.local` 时写入本地连接串、`DEMO_MODE=true` 和开发用 `SESSION_SECRET`，然后执行 `npm run db:migrate`、`npm run db:seed`，再 `npm run dev`（端口 3000）。已在监听则直接退出。
+- 浏览器打开 `http://localhost:3000`。Next.js 开发模式会拦截来自 `127.0.0.1` 的 dev 资源，页面脚本不会执行。`curl http://127.0.0.1:3000/api/health` 仍然可用。
+- 演示账号：`alex@demo.hk` / `demo1234`。
+- `npm run typecheck` 依赖 `npx next typegen` 生成的 `next-env.d.ts` 与 `.next/types`（`install` 会生成）。然后 `npm run lint` 与 `npm run test:unit`。仓库里还没有集成测试。
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
