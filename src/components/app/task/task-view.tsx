@@ -117,7 +117,7 @@ export function Timeline({ task, className }: { task: MockTask; className?: stri
       </div>
       <p className="mb-5 text-[12px] leading-relaxed text-soft">
         {task.chatMode === "llm" || task.agentMode === "llm"
-          ? t("DeepSeek 负责理解这句话；金额、能不能买，都由规则决定。", "DeepSeek reads the sentence. Amounts and whether it can be bought come from the rules.")
+          ? t("Zev 负责理解这句话；金额、能不能买，都由规则决定。", "Zev reads the sentence. Amounts and whether it can be bought come from the rules.")
           : t("这次用关键词理解。金额、能不能买，都由规则决定。", "This turn used keywords. Amounts and whether it can be bought come from the rules.")}
       </p>
       {task.timeline.length === 0 ? (
@@ -283,7 +283,7 @@ export function NewTask({ q }: { q?: string }) {
   if (q) return <div className="h-64 animate-pulse rounded-[20px] bg-white/60" />;
 
   return (
-    <div className="mx-auto max-w-2xl pt-6 sm:pt-12">
+    <div className="pt-2 sm:pt-6">
       <div className="mb-8 text-center">
         <ZevAvatar className="mx-auto mb-5 size-14" working />
         <h1 className="font-heading text-[30px] leading-tight sm:text-[38px]">{t("要 Zev 帮你买什么？", "What should Zev buy?")}</h1>

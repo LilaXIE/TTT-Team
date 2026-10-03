@@ -109,7 +109,7 @@ export function HomeView() {
               <ArrowUp className="size-5" />
             </button>
           </form>
-          {sending ? <p className="mt-2 text-[13px] text-soft">{t("DeepSeek 在读这句话…", "DeepSeek is reading that…")}</p> : null}
+          {sending ? <p className="mt-2 text-[13px] text-soft">{t("Zev 在读这句话…", "Zev is reading that…")}</p> : null}
           <div className="mt-3 flex flex-wrap gap-2">
             {SUGGESTIONS.map((q) => (
               <button key={q.zh} type="button" onClick={() => void go(q[lang])} className="rounded-full border border-line bg-white/80 px-3 py-1.5 text-left text-[13px] text-ink/80 hover:border-violet hover:text-ink">

@@ -152,7 +152,7 @@ function savedChatReply(): { text: Tx; mode: "llm" | "fallback" } | null {
     const saved = JSON.parse(raw) as { reply?: string; mode?: string };
     if (!saved.reply) return null;
     const mode = saved.mode === "llm" ? "llm" : "fallback";
-    const via = mode === "llm" ? "DeepSeek" : "关键词";
+    const via = mode === "llm" ? "Zev" : "关键词";
     return {
       mode,
       text: {
@@ -655,7 +655,7 @@ export function followUp(taskId: string, text: string, understood?: string): str
   const m = t.mandateId ? mandate(t.mandateId) : undefined;
   const heard = understood ? `${understood}` : "";
   const stay = heard
-    ? `${heard}（DeepSeek 只解释这句。还是买「${item}」，没有另开任务，也没有改已签的金额上限。）`
+    ? `${heard}（Zev 只解释这句。还是买「${item}」，没有另开任务，也没有改已签的金额上限。）`
     : `这句我当成「${item}」的补充，没有另开任务，也没有改金额上限。`;
   actions.appendBlocks(taskId, [{ kind: "user", text, at: nowIso() }, zev({ zh: stay, en: stay })]);
 
