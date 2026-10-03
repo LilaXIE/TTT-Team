@@ -20,6 +20,7 @@ function scraperPath() { return process.env.TAOBAO_SCRAPER_PATH || path.resolve(
 let activeSearch: Promise<TaobaoSearchResult> | null = null;
 let lastSearchAt = 0;
 const MIN_REQUEST_INTERVAL_MS = 12_000;
+const SCRAPER_TIMEOUT_MS = 190_000;
 
 /**
  * 调用本机 Playwright/Edge 爬虫。
@@ -47,7 +48,7 @@ async function runTaobaoSearch(keyword: string, count: number): Promise<TaobaoSe
     const child = spawn(python, [script, "--json", keyword, String(count)], { cwd: path.dirname(script), windowsHide: true });
     let stdout = "";
     let stderr = "";
-    const timer = setTimeout(() => { child.kill(); resolve({ keyword, items: [], source: "unavailable", message: "淘宝搜索超时，可能需要完成登录或验证码验证。" }); }, 35_000);
+    const timer = setTimeout(() => { child.kill(); resolve({ keyword, items: [], source: "unavailable", message: "等待人工登录或安全验证超时，请重新发起比价。" }); }, SCRAPER_TIMEOUT_MS);
     child.stdout.on("data", (chunk) => { stdout += chunk.toString(); });
     child.stderr.on("data", (chunk) => { stderr += chunk.toString(); });
     child.on("error", () => { clearTimeout(timer); resolve({ keyword, items: [], source: "unavailable", message: "未找到可用的淘宝爬虫运行环境。" }); });

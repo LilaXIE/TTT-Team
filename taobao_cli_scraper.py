@@ -8,6 +8,7 @@ JSON 模式的 stdout 只输出商品数组，诊断日志输出 stderr，供 Ne
 
 import argparse
 import json
+import os
 import re
 import sys
 import time
@@ -51,6 +52,32 @@ def parse_price(lines: list[str]) -> str | None:
     return None
 
 
+def challenge_present(page) -> bool:
+    challenge_markers = ("验证码", "安全验证", "滑动验证", "请登录", "登录后查看", "访问受限", "robot check", "captcha")
+    try:
+        current_url = page.url.lower()
+        page_text = page.locator("body").inner_text(timeout=5000).lower()
+    except Exception:
+        return True
+    return any(marker.lower() in current_url or marker.lower() in page_text for marker in challenge_markers)
+
+
+def wait_for_manual_verification(page, search_url: str) -> None:
+    wait_seconds = max(30, int(os.environ.get("TAOBAO_MANUAL_WAIT_SECONDS", "180")))
+    deadline = time.monotonic() + wait_seconds
+    log("[人工操作] 淘宝要求登录或安全验证。请在已打开的 Edge 窗口中完成操作；脚本不会绕过验证。")
+    log(f"[人工操作] 最多等待 {wait_seconds} 秒，验证通过后会自动继续搜索。")
+    while time.monotonic() < deadline:
+        time.sleep(5)
+        if not challenge_present(page):
+            log("[人工操作] 验证状态已解除，继续加载商品搜索页面。")
+            page.goto(search_url, wait_until="domcontentloaded", timeout=30000)
+            time.sleep(3)
+            if not challenge_present(page):
+                return
+    raise RuntimeError("等待人工登录或安全验证超时；请重新运行比价。")
+
+
 def scrape_taobao(keyword: str, count: int = 10) -> list[dict]:
     log(f"[Agent Worker] 正在启动 Edge 浏览器搜索商品: '{keyword}' ...")
     products: list[dict] = []
@@ -64,13 +91,11 @@ def scrape_taobao(keyword: str, count: int = 10) -> list[dict]:
         )
         page = context.pages[0] if context.pages else context.new_page()
         try:
-            page.goto(f"https://s.taobao.com/search?q={quote_plus(keyword)}", wait_until="domcontentloaded", timeout=30000)
+            search_url = f"https://s.taobao.com/search?q={quote_plus(keyword)}"
+            page.goto(search_url, wait_until="domcontentloaded", timeout=30000)
             time.sleep(3)
-            current_url = page.url.lower()
-            page_text = page.locator("body").inner_text(timeout=5000).lower()
-            challenge_markers = ("验证码", "安全验证", "滑动验证", "请登录", "登录后查看", "访问受限", "robot check", "captcha")
-            if any(marker.lower() in current_url or marker.lower() in page_text for marker in challenge_markers):
-                raise RuntimeError("淘宝要求登录或人工验证；未尝试绕过该限制。请运行 init_login.py.py 完成登录后重试。")
+            if challenge_present(page):
+                wait_for_manual_verification(page, search_url)
             page.mouse.wheel(0, 500)
             time.sleep(2)
 

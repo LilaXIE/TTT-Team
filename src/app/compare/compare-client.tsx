@@ -44,7 +44,7 @@ export function CompareClient({ initialQuery = "" }: { initialQuery?: string }) 
             </div>
             <Button onClick={() => void search()} disabled={loading}>{loading ? "搜索中…" : "开始比价"}</Button>
           </div>
-          <p className="mt-3 text-xs text-zinc-500">比价结果来自真实淘宝页面；登录、验证码或网络限制可能导致暂时没有结果。</p>
+          <p className="mt-3 text-xs text-zinc-500">比价结果来自真实淘宝页面。若出现登录或安全验证，请在自动打开的 Edge 窗口中手动完成，脚本会等待并继续。</p>
         </CardContent>
       </Card>
 
