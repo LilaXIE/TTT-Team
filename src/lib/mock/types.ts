@@ -230,6 +230,8 @@ export interface MockTask {
   mandateId: string | null;
   createdAt: string;
   agentMode: "llm" | "fallback";
+  /** 首页对话是否真的叫了 DeepSeek。和演示开关 agentMode 分开，避免把模板推荐理由说成模型写的 */
+  chatMode?: "llm" | "fallback";
   blocks: Block[];
   timeline: TimelineStep[];
 }

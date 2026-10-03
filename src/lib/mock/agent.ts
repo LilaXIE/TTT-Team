@@ -142,7 +142,7 @@ function step(checkpoint: TimelineStep["checkpoint"], title: Tx, detail: Tx, out
 
 // ---------- 开始一个任务 ----------
 
-function savedChatReply(): Tx | null {
+function savedChatReply(): { text: Tx; mode: "llm" | "fallback" } | null {
   if (typeof sessionStorage === "undefined") return null;
   const raw = sessionStorage.getItem("mw.chatReply");
   sessionStorage.removeItem("mw.chatReply");
@@ -150,10 +150,14 @@ function savedChatReply(): Tx | null {
   try {
     const saved = JSON.parse(raw) as { reply?: string; mode?: string };
     if (!saved.reply) return null;
-    const via = saved.mode === "llm" ? "DeepSeek" : "关键词";
+    const mode = saved.mode === "llm" ? "llm" : "fallback";
+    const via = mode === "llm" ? "DeepSeek" : "关键词";
     return {
-      zh: `${saved.reply}（${via}只负责理解这句话，金额和能不能买仍由规则引擎决定。）`,
-      en: `${saved.reply} (${via} only reads the sentence. The rule engine still decides the amount and whether it can be bought.)`,
+      mode,
+      text: {
+        zh: `${saved.reply}（${via}只负责理解这句话，金额和能不能买仍由规则引擎决定。）`,
+        en: `${saved.reply} (${via} only reads the sentence. The rule engine still decides the amount and whether it can be bought.)`,
+      },
     };
   } catch {
     return null;
@@ -177,7 +181,8 @@ export function startTask(text: string): string {
     status: "drafting",
     mode: intent.curated ? "curated" : "quick",
     mandateId: null,
-    blocks: reply ? [{ kind: "user", text, at: nowIso() }, zev(reply)] : [{ kind: "user", text, at: nowIso() }],
+    chatMode: reply?.mode,
+    blocks: reply ? [{ kind: "user", text, at: nowIso() }, zev(reply.text)] : [{ kind: "user", text, at: nowIso() }],
     timeline: [],
   });
   later(700, () => respond(id, intent));

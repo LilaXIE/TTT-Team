@@ -114,9 +114,9 @@ export function Timeline({ task, className }: { task: MockTask; className?: stri
         <h2 className="font-heading text-[17px]">{t("Zev 的工作记录", "Zev's work log")}</h2>
       </div>
       <p className="mb-5 text-[12px] leading-relaxed text-soft">
-        {task.agentMode === "llm"
-          ? t("模型负责理解和解释；金额、能不能买，都由规则决定。", "The model reads and explains. Amounts and decisions come from the rules.")
-          : t("规则演示模式：不调用模型，结果完全一样由规则决定。", "Rules demo mode: no model is called; the rules decide exactly as before.")}
+        {task.chatMode === "llm" || task.agentMode === "llm"
+          ? t("DeepSeek 负责理解这句话；金额、能不能买，都由规则决定。", "DeepSeek reads the sentence. Amounts and whether it can be bought come from the rules.")
+          : t("这次用关键词理解。金额、能不能买，都由规则决定。", "This turn used keywords. Amounts and whether it can be bought come from the rules.")}
       </p>
       {task.timeline.length === 0 ? (
         <p className="text-[13px] text-soft">{t("还没有开始。", "Nothing yet.")}</p>
