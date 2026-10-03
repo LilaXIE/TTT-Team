@@ -134,7 +134,7 @@ export async function runTask(ctx: TaskContext): Promise<RunResult> {
 
       // Step 4–6: 为每个商品评估 CANDIDATES + 报价 + 排序
       const t4 = Date.now();
-      const method = await getFirstMethod(tx, ctx.userId);
+      const method = await getFirstMethod(tx, ctx.userId, mandate.allowedMethods);
       const validCandidates: Array<{
         product: ProductRow;
         merchant: MerchantInfo;
@@ -385,20 +385,21 @@ async function saveRun(tx: Tx, taskId: string, mode: "llm" | "fallback", steps: 
   );
 }
 
-async function getFirstMethod(tx: Tx, userId: string): Promise<PaymentMethodInfo> {
+async function getFirstMethod(tx: Tx, userId: string, allowed: string[]): Promise<PaymentMethodInfo> {
   const r = await tx.query<{ id: string; label: string; consumer_fee_minor: string }>(
     `SELECT pm.id, pm.label, pm.consumer_fee_minor
      FROM payment_methods pm
      JOIN user_payment_methods upm ON upm.method_id = pm.id
-     WHERE upm.user_id = $1 AND upm.enabled = true
-     ORDER BY pm.id LIMIT 1`,
+     WHERE upm.user_id = $1 AND upm.enabled = true`,
     [userId],
   );
-  if (r.rowCount === 0) throw new AppError("VALIDATION_ERROR", "无可用支付方式。");
+  const rows = r.rows.filter((row) => allowed.includes(row.id));
+  const pick = rows.find((row) => row.id === "tapngo_mc") ?? rows.find((row) => row.id === "fps") ?? rows[0];
+  if (!pick) throw new AppError("VALIDATION_ERROR", "无可用支付方式。");
   return {
-    id: r.rows[0].id,
-    label: r.rows[0].label,
-    consumerFeeMinor: BigInt(r.rows[0].consumer_fee_minor),
+    id: pick.id,
+    label: pick.label,
+    consumerFeeMinor: BigInt(pick.consumer_fee_minor),
   };
 }
 

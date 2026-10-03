@@ -177,7 +177,7 @@ export function ReceiptBlock({ b }: { b: B<"receipt"> }) {
           </div>
           <div className="text-right">
             <Money minor={o.totalMinor} className="font-heading text-[26px] leading-none" />
-            <div className="mt-1 text-[12px] text-soft">{t("含运费与手续费", "incl. shipping & fees")}</div>
+            <div className="mt-1 text-[12px] text-soft">{o.method === "tapngo_mc" ? t("含运费。Tap & Go 手续费未核实，没有算进这笔。", "Shipping included. Tap & Go's fee is unverified and was not added.") : t("含运费与手续费", "incl. shipping & fees")}</div>
           </div>
         </div>
         <div className="mt-4 flex items-center gap-3 rounded-2xl bg-canvas/60 p-3">
@@ -187,12 +187,13 @@ export function ReceiptBlock({ b }: { b: B<"receipt"> }) {
             <div className="text-[12px] text-soft">
               {mer.name[lang]} · {method?.label[lang]} <SimNote className="ml-1" />
             </div>
+            {o.method === "tapngo_mc" && <p className="mt-1 text-[12px] text-soft">{t("从零钱包扣，所以用 Tap & Go，不是因为手续费更低。", "Paid from the pocket, so this is Tap & Go, not because the fee is lower.")}</p>}
           </div>
         </div>
         <div className="mt-3 grid gap-x-6 text-[13px] sm:grid-cols-2">
           <Row k={t("商品", "Item")} v={<Money minor={o.subtotalMinor} />} />
           <Row k={t("运费", "Shipping")} v={<Money minor={o.shippingMinor} />} />
-          <Row k={t("手续费", "Fee")} v={<Money minor={o.feeMinor} />} />
+          <Row k={t("手续费", "Fee")} v={o.method === "tapngo_mc" ? <span>{t("未核实", "Unverified")}</span> : <Money minor={o.feeMinor} />} />
           <Row k={t("订单号", "Order")} v={<span className="font-mono text-[12px]">{o.id}</span>} />
           {m && <Row k={t("用的授权", "Mandate")} v={`${m.title[lang]} v${o.mandateVersion}`} />}
           {m && <Row k={t("授权还剩", "Mandate left")} v={<span><Money minor={m.remainingMinor} /> · {t(`${m.remainingPurchases} 次`, `${m.remainingPurchases} left`)}</span>} />}
@@ -500,11 +501,21 @@ const GUIDE = [
   },
 ] as const;
 
+const CUSTOM_KEYS = new Set(["size", "budget"]);
+
 export function NeedGuide({ onApply }: { onApply?: (text: string) => void }) {
   const { t, lang } = useLang();
   const [open, setOpen] = useState(false);
   const [picked, setPicked] = useState<Record<string, string>>({});
-  const sentence = GUIDE.map((g) => picked[g.key]).filter((v) => v && !v.startsWith("不")).join("，");
+  const [custom, setCustom] = useState<Record<string, string>>({});
+  const valueOf = (key: string) => {
+    if (picked[key] !== "自定义") return picked[key] ?? "";
+    const raw = (custom[key] ?? "").trim();
+    if (!raw) return "";
+    if (key === "budget") return `HK$${raw.replace(/^HK\$/i, "")} 以内`;
+    return raw;
+  };
+  const sentence = GUIDE.map((g) => valueOf(g.key)).filter((v) => v && !v.startsWith("不")).join("，");
   const apply = () => {
     const text = sentence ? t(`帮我买${sentence}`, `Get me ${sentence}`) : t("帮我买日用品", "Get me household supplies");
     if (onApply) onApply(text);
@@ -544,7 +555,24 @@ export function NeedGuide({ onApply }: { onApply?: (text: string) => void }) {
                       </button>
                     );
                   })}
+                  {CUSTOM_KEYS.has(g.key) && (
+                    <button
+                      type="button"
+                      onClick={() => setPicked((p) => ({ ...p, [g.key]: p[g.key] === "自定义" ? "" : "自定义" }))}
+                      className={cn("rounded-full border px-3 py-1 text-[13px]", picked[g.key] === "自定义" ? "border-violet bg-violet-soft/60 text-violet" : "border-line text-ink/80 hover:border-violet")}
+                    >
+                      {t("自定义", "Custom")}
+                    </button>
+                  )}
                 </div>
+                {CUSTOM_KEYS.has(g.key) && picked[g.key] === "自定义" && (
+                  <input
+                    value={custom[g.key] ?? ""}
+                    onChange={(e) => setCustom((c) => ({ ...c, [g.key]: e.target.value }))}
+                    placeholder={g.key === "budget" ? t("例如 80", "e.g. 80") : t("例如 500ml、3 包", "e.g. 500ml, 3 packs")}
+                    className="mt-2 h-9 w-full rounded-xl border border-line bg-white px-3 text-[13px] outline-none focus:border-violet"
+                  />
+                )}
               </div>
             ))}
           </div>

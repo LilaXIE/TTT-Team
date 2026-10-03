@@ -6,6 +6,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import type { RuleId } from "@/contracts";
 import { merchantOf, productOf } from "./catalog";
+import { choosePaymentMethod } from "@/lib/payment-choice";
 import { candidatesFor, evaluate } from "./evaluate";
 import { seedState, type MockState } from "./seed";
 import type { Block, CoolingChange, DraftFields, MockMandate, MockOrder, MockTask, PendingConfirmation, TimelineStep, Tx } from "./types";
@@ -171,6 +172,12 @@ function settle(
     return { next: { ...s, demo: { ...s.demo, nextIssuerDecline: false } }, result: { ok: false, code: "ISSUER_DECLINED" } };
   }
   if (BigInt(s.pocketMinor) < ev.total) return { next: s, result: { ok: false, code: "INSUFFICIENT_POCKET" } };
+  const mer = merchantOf(p.merchantId);
+  const pay = choosePaymentMethod({
+    allowed: m.methods,
+    accepts: mer.accepts,
+    pocketCovers: true,
+  });
 
   const orderId = uid("ord");
   const order: MockOrder = {
@@ -185,7 +192,7 @@ function settle(
     shippingMinor: ev.shipping.toString(),
     feeMinor: ev.fee.toString(),
     totalMinor: ev.total.toString(),
-    method: "fps",
+    method: pay.id,
     status: "paid",
     paidAt: nowIso(),
     cartVersion: args.cartVersion,
@@ -455,6 +462,13 @@ export const actions = {
       return s2;
     });
     return r;
+  },
+
+  dropTaskPending(taskId: string) {
+    set((s) => ({
+      ...s,
+      pending: s.pending.map((p) => (p.taskId === taskId && p.status === "pending" ? { ...p, status: "cancelled" as const } : p)),
+    }));
   },
 
   cancelPending(id: string) {

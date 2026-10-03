@@ -6,6 +6,7 @@ import { Chip, Eyebrow, Money, PageHeader, Panel, PanelTitle, SimNote } from "@/
 import { fmtDateTime } from "@/lib/format";
 import { useLang } from "@/lib/i18n";
 import { METHODS, MERCHANTS, merchantOf } from "@/lib/mock/catalog";
+import { choosePaymentMethod } from "@/lib/payment-choice";
 import { useMock } from "@/lib/mock/store";
 
 export default function PayMethodsPage() {
@@ -16,6 +17,11 @@ export default function PayMethodsPage() {
   const merchant = order ? merchantOf(order.merchantId) : MERCHANTS[0];
   const base = order ? BigInt(order.totalMinor) : 13800n;
 
+  const chosen = choosePaymentMethod({
+    allowed: mandate ? mandate.methods : ["fps", "tapngo_mc"],
+    accepts: merchant.accepts,
+    pocketCovers: BigInt(s.pocketMinor) >= base,
+  });
   const rows = METHODS.map((m) => {
     const inMandate = mandate ? mandate.methods.includes(m.id) : true;
     const accepted = merchant.accepts.includes(m.id);
@@ -23,6 +29,8 @@ export default function PayMethodsPage() {
     const cost = m.consumerFeeMinor === null ? null : base + BigInt(m.consumerFeeMinor);
     return { m, inMandate, accepted, eligible, cost };
   }).sort((a, b) => {
+    if (a.m.id === chosen.id) return -1;
+    if (b.m.id === chosen.id) return 1;
     if (a.eligible !== b.eligible) return a.eligible ? -1 : 1;
     if (a.cost === null || b.cost === null) return a.cost === null ? 1 : -1;
     return a.cost < b.cost ? -1 : a.cost > b.cost ? 1 : 0;
@@ -33,7 +41,7 @@ export default function PayMethodsPage() {
       <PageHeader
         eyebrow={t("付款方式", "Payment methods")}
         title={t("Zev 怎么选付款方式", "How Zev picks a payment method")}
-        description={t("先看能不能用，再比你实际要付多少。回赠只是预计，只展示，不参与选择，也不计入预算。", "First what's allowed, then what you'd actually pay. Rewards are estimates — shown only, never used to choose or counted toward budgets.")}
+        description={t(chosen.reason.zh, chosen.reason.en)}
       />
 
       <Panel className="mb-4">
@@ -102,10 +110,10 @@ export default function PayMethodsPage() {
       <Panel className="mt-4">
         <PanelTitle>{t("规则", "The rules")}</PanelTitle>
         <ul className="grid gap-2 text-[13px] text-soft sm:grid-cols-2">
-          <li>· {t("只在能用的方式里比较，按你实际要付的钱从低到高。", "Compare only allowed methods, cheapest actual cost first.")}</li>
-          <li>· {t("一样便宜时，到账更快的优先。", "On a tie, faster settlement wins.")}</li>
-          <li>· {t("商家那边的手续费不算在你的成本里。", "Merchant-side fees aren't part of your cost.")}</li>
-          <li>· {t("手续费查不到的标「未核实」，不当成 0。", "Unknown fees are marked unverified, never assumed zero.")}</li>
+          <li>· {t("零钱包付得起、商家也收 Tap & Go 时，用 Tap & Go。钱本来就是从那里充进来的。", "When the pocket covers it and the shop takes Tap & Go, use Tap & Go. That is where the pocket was funded.")}</li>
+          <li>· {t("否则用 FPS。已观测的个人本地港元手续费是 0。", "Otherwise use FPS. The observed personal local-HKD fee is 0.")}</li>
+          <li>· {t("手续费查不到的标「未核实」，不当成 0，也不拿来击败 FPS。", "Unknown fees stay unverified. They are not treated as zero, and not used to beat FPS.")}</li>
+          <li>· {t("回赠只展示，不参与选择，也不计入预算。", "Rewards are shown only. They never choose the method or count toward the budget.")}</li>
         </ul>
       </Panel>
     </>

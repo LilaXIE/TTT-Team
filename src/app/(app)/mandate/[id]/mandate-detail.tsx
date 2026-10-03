@@ -16,8 +16,7 @@ import { Input } from "@/components/ui/input";
 import { fmtDate, fmtDateTime, fmtMoney } from "@/lib/format";
 import { useLang } from "@/lib/i18n";
 import { METHODS, productOf } from "@/lib/mock/catalog";
-import { startTask } from "@/lib/mock/agent";
-import { startLiveTask } from "@/lib/live";
+import { sendOnTask, startTask } from "@/lib/mock/agent";
 import { actions, useMock, useNow, useSessionMode } from "@/lib/mock/store";
 import { CATEGORY_LABEL } from "@/lib/rule-text";
 
@@ -256,13 +255,14 @@ export function MandateDetail({ id }: { id: string }) {
                 placeholder={t("例如：改成无香，今天到", "e.g. unscented, arrives today")}
                 disabled={mode === "attacker" || s.session.frozen}
                 onSend={(text) => {
+                  const related = s.tasks.find((task) => task.mandateId === m.id);
                   void (async () => {
-                    const liveId = await startLiveTask(`${m.title[lang]}。${text}`).catch(() => null);
-                    if (liveId) {
-                      router.push(`/task/${liveId}`);
+                    if (related) {
+                      const next = await sendOnTask(related.id, text);
+                      router.push(`/task/${next ?? related.id}`);
                       return;
                     }
-                    router.push(`/task/${startTask(text)}`);
+                    router.push(`/task/${startTask(`${m.query.zh}。${text}`)}`);
                   })();
                 }}
               />

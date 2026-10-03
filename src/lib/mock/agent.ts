@@ -4,6 +4,7 @@
 // 它只负责起草、搜索、排序、解释；能不能付款永远由 evaluate()（真实引擎）和模拟结算决定。
 // 接真实数据时，这里的每一步对应 POST /api/tasks 与 /api/tasks/:id/* 的服务端流程。
 import { hkdToMinor } from "@/contracts/money";
+import { api } from "@/lib/api";
 import { fmtMoney } from "@/lib/format";
 import { catalogToken, isScriptedQuery, merchantOf, productOf, productsMatching } from "./catalog";
 import { candidatesFor, evaluate, scoreAll, type Scored } from "./evaluate";
@@ -342,8 +343,59 @@ export function runSearch(taskId: string, mandateId: string) {
     actions.addTimeline(taskId, [
       step("QUOTE", { zh: "按含运费总价报价", en: "Quoted with shipping included" }, { zh: "上限和剩余额度都按实际扣款判断：商品 + 运费 + 手续费。", en: "Caps and budget use what you'd actually pay: item + shipping + fees." }),
     ]);
-    present(taskId, mandateId, 1, rank(m, kind));
+    presentConstrained(taskId, mandateId, 1);
   });
+}
+
+function deliveryWant(text: string): Delivery[] {
+  if (/今天|今日|today/i.test(text)) return ["today"];
+  if (/明天|次日|tomorrow/i.test(text)) return ["tomorrow"];
+  return [];
+}
+
+function taskQuery(t: { blocks: Block[]; mandateId: string | null }): string | null {
+  const draft = [...t.blocks].reverse().find((b) => b.kind === "draft");
+  if (draft && draft.kind === "draft") return draft.fields.query.zh;
+  const m = t.mandateId ? mandate(t.mandateId) : undefined;
+  return m?.query.zh ?? null;
+}
+
+function userText(t: { blocks: Block[] }): string {
+  return t.blocks
+    .filter((b) => b.kind === "user")
+    .map((b) => (b.kind === "user" ? (typeof b.text === "string" ? b.text : b.text.zh) : ""))
+    .join("\n");
+}
+
+function deliveryMiss(want: Delivery, item: string): Tx {
+  if (want === "today") {
+    return {
+      zh: `要今天到。演示目录里没有今日达：快快屋最快明天，日日鲜大约 3 天。还是找「${item}」，没有换成别的商品。`,
+      en: `You wanted it today. Nothing in the demo catalogue arrives today: KuaiKuai is tomorrow, Riri Fresh is about 3 days. Still looking for “${item}”, not a different product.`,
+    };
+  }
+  return {
+    zh: `要明天到。能明天到的只有快快屋，日日鲜大约 3 天。还是找「${item}」，没有换成别的商品。`,
+    en: `You wanted it tomorrow. Only KuaiKuai can do tomorrow; Riri Fresh is about 3 days. Still looking for “${item}”, not a different product.`,
+  };
+}
+
+function presentConstrained(taskId: string, mandateId: string, round: number) {
+  const m = mandate(mandateId);
+  const t = task(taskId);
+  if (!m || !t) return;
+  const text = userText(t);
+  const filters: Filters = {
+    maxMinor: m.perTxnMinor,
+    delivery: deliveryWant(text),
+    brands: ["品牌甲", "品牌乙", "品牌丙", "品牌丁"].filter((b) => text.includes(b)),
+  };
+  let ranked = rank(m, m.queryKind, filters);
+  if (filters.delivery.length && ranked.filter((x) => x.evaluation.outcome !== "DENY").length === 0) {
+    actions.appendBlocks(taskId, [zev(deliveryMiss(filters.delivery[0], m.query.zh))]);
+    ranked = rank(m, m.queryKind, { ...filters, delivery: [] });
+  }
+  present(taskId, mandateId, round, ranked);
 }
 
 function present(taskId: string, mandateId: string, round: number, ranked: Scored[], chosenByUser = false) {
@@ -592,35 +644,79 @@ export function chooseCurated(taskId: string, mandateId: string, productId: stri
  * 任务里的追问。超出当前授权（换了东西或提了新预算）→ 返回新任务 id，由页面跳转；
  * 否则把描述翻译成筛选条件重新推荐。
  */
-export function followUp(taskId: string, text: string): string | null {
+export function followUp(taskId: string, text: string, understood?: string): string | null {
   const t = task(taskId);
-  const m = t?.mandateId ? mandate(t.mandateId) : undefined;
+  if (!t) return startTask(text);
   const intent = parseIntent(text);
-  const changedItem = m ? (intent.token ? intent.token !== m.query.zh : intent.kind !== "unknown" && intent.kind !== m.queryKind) : false;
-  if (!t || !m || m.status !== "active" || changedItem || intent.perTxnMinor !== null) {
-    return startTask(text);
+  const item = taskQuery(t);
+  const switching = Boolean(intent.token && item && intent.token !== item);
+  if (!item || switching) return startTask(text);
+
+  const m = t.mandateId ? mandate(t.mandateId) : undefined;
+  const heard = understood ? `${understood}` : "";
+  const stay = heard
+    ? `${heard}（DeepSeek 只解释这句。还是买「${item}」，没有另开任务，也没有改已签的金额上限。）`
+    : `这句我当成「${item}」的补充，没有另开任务，也没有改金额上限。`;
+  actions.appendBlocks(taskId, [{ kind: "user", text, at: nowIso() }, zev({ zh: stay, en: stay })]);
+
+  if (!m || m.status !== "active") {
+    const draftAt = t.blocks.findIndex((b) => b.kind === "draft" && b.signedMandateId === null);
+    const draft = t.blocks[draftAt];
+    if (draft && draft.kind === "draft" && (intent.perTxnMinor || intent.minVolumeMl)) {
+      actions.updateBlock(taskId, draftAt, {
+        ...draft,
+        fields: {
+          ...draft.fields,
+          ...(intent.perTxnMinor ? { perTxnMinor: intent.perTxnMinor, totalMinor: (BigInt(intent.perTxnMinor) * 2n).toString() } : {}),
+          ...(intent.minVolumeMl ? { minVolumeMl: intent.minVolumeMl } : {}),
+        },
+      });
+    }
+    const want = deliveryWant(text);
+    if (want.length) actions.appendBlocks(taskId, [zev(deliveryMiss(want[0], item))]);
+    return null;
   }
   if (/细挑|精选|慢慢|carefully|curat/i.test(text)) {
     enterCurated(taskId, m.id);
     return null;
   }
-  const delivery: Delivery[] = /今天|今日|today/i.test(text) ? ["today"] : /明天|次日|tomorrow/i.test(text) ? ["tomorrow"] : [];
-  const brands = ["品牌甲", "品牌乙", "品牌丙", "品牌丁"].filter((b) => text.includes(b) || text.toLowerCase().includes(`brand ${BRAND_KEY[b]}`));
-  actions.appendBlocks(taskId, [{ kind: "user", text, at: nowIso() }]);
-  t.blocks.forEach((b, i) => {
-    if (b.kind === "pick" && b.state === "offered") {
-      pausePick(taskId, i);
-      actions.updateBlock(taskId, i, { ...b, state: "skipped", autoPayAt: null });
-    }
-  });
+  const cheap = /便宜|最低价|cheap/i.test(text);
+  const want = deliveryWant(text);
+  if (!want.length && !cheap && !intent.perTxnMinor) return null;
+
   const round = Math.max(0, ...t.blocks.map((b) => (b.kind === "pick" ? b.round : 0))) + 1;
-  const ranked = rank(m, m.queryKind, { maxMinor: m.perTxnMinor, delivery, brands });
-  if (/便宜|最低价|cheap/i.test(text)) ranked.sort((a, b) => (a.evaluation.total < b.evaluation.total ? -1 : a.evaluation.total > b.evaluation.total ? 1 : 0));
-  later(600, () => present(taskId, m.id, round, ranked));
+  later(600, () => {
+    const filters: Filters = { maxMinor: intent.perTxnMinor ?? m.perTxnMinor, delivery: want, brands: [] };
+    let ranked = rank(m, m.queryKind, filters);
+    if (cheap) ranked = [...ranked].sort((a, b) => (a.evaluation.total < b.evaluation.total ? -1 : a.evaluation.total > b.evaluation.total ? 1 : 0));
+    if (want.length && ranked.filter((x) => x.evaluation.outcome !== "DENY").length === 0) {
+      actions.appendBlocks(taskId, [zev(deliveryMiss(want[0], item))]);
+      return;
+    }
+    actions.dropTaskPending(taskId);
+    const current = task(taskId);
+    current?.blocks.forEach((b, i) => {
+      if (b.kind === "pick" && (b.state === "offered" || b.state === "awaiting")) {
+        pausePick(taskId, i);
+        actions.updateBlock(taskId, i, { ...b, state: "skipped", autoPayAt: null });
+      }
+    });
+    present(taskId, m.id, round, ranked);
+  });
   return null;
 }
 
-const BRAND_KEY: Record<string, string> = { 品牌甲: "jia", 品牌乙: "yi", 品牌丙: "bing", 品牌丁: "ding" };
+/** 任务页和授权页的追问：先让 DeepSeek 读这句话，商品和上限仍由本地规则留在原任务里。 */
+export async function sendOnTask(taskId: string, text: string): Promise<string | null> {
+  let understood: string | undefined;
+  try {
+    const draft = await api<{ message: string; mode: "llm" | "fallback" }>("/api/chat", { method: "POST", json: { message: text } });
+    if (draft.mode === "llm" && draft.message.trim()) understood = draft.message.trim();
+  } catch {
+    understood = undefined;
+  }
+  return followUp(taskId, text, understood);
+}
 
 /** 被拒后申请提高单笔上限：需要通行密钥 + 冷静期 */
 export function requestHigherCap(taskId: string, mandateId: string, toMinor: string) {

@@ -10,7 +10,7 @@ import { TaskStatusChip } from "@/components/app/task-status";
 import { Button } from "@/components/ui/button";
 import { fmtDateTime } from "@/lib/format";
 import { useLang } from "@/lib/i18n";
-import { followUp, startTask } from "@/lib/mock/agent";
+import { sendOnTask, startTask } from "@/lib/mock/agent";
 import { startLiveTask } from "@/lib/live";
 import { LiveRun } from "./live-run";
 import { useMock, useNow, useSessionMode } from "@/lib/mock/store";
@@ -178,8 +178,9 @@ function MockTaskView({ taskId }: { taskId: string }) {
   }
 
   const send = (text: string) => {
-    const next = followUp(task.id, text);
-    if (next && next !== task.id) router.push(`/task/${next}`);
+    void sendOnTask(task.id, text).then((next) => {
+      if (next && next !== task.id) router.push(`/task/${next}`);
+    });
   };
 
   return (

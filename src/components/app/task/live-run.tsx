@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { api, ApiError } from "@/lib/api";
 import { fmtMoney } from "@/lib/format";
 import { useLang } from "@/lib/i18n";
+import { catalogToken } from "@/lib/mock/catalog";
 import { startLiveTask } from "@/lib/live";
 import { workStepTitle, type WorkStep } from "@/lib/work-log";
 import type { Outcome } from "@/contracts";
@@ -92,7 +93,7 @@ export function LiveRun({ taskId }: { taskId: string }) {
       const result = await api<{ status: string; totalMinor: string; decisionOutcome: string; reason?: string }>("/api/orders/settle", {
         method: "POST",
         headers: { "Idempotency-Key": crypto.randomUUID() },
-        json: { cartId: picked.cart_id, cartVersion: picked.cart_version, methodId: "fps" },
+        json: { cartId: picked.cart_id, cartVersion: picked.cart_version, methodId: "tapngo_mc" },
       });
       setPayNote(
         result.status === "succeeded"
@@ -108,7 +109,26 @@ export function LiveRun({ taskId }: { taskId: string }) {
 
   const refine = async (text: string) => {
     const next = text.trim();
-    if (!next || busy) return;
+    if (!next || busy || !data) return;
+    const token = catalogToken(next);
+    const switching = Boolean(token && !data.task.input_text.includes(token));
+    if (!switching) {
+      let heard = "";
+      try {
+        const draft = await api<{ message: string; mode: "llm" | "fallback" }>("/api/chat", { method: "POST", json: { message: next } });
+        if (draft.mode === "llm" && draft.message.trim()) heard = `${draft.message.trim()} `;
+      } catch {
+        heard = "";
+      }
+      const delivery = /今天|今日/.test(next)
+        ? t("目录里没有今日达，最快是明天。", "Nothing arrives today; the fastest is tomorrow.")
+        : /明天|次日/.test(next)
+          ? t("能明天到的会排在前面；没有的话仍留着现在这几件。", "Tomorrow arrivals come first; if none do, these stay.")
+          : t("这句只补充当前这单。", "That only adds to this order.");
+      setPayNote(`${heard}${delivery}${t("还是这一单，没有另开任务，也没有改已签的上限。", " Still this order. No new task, and the signed cap is unchanged.")}`);
+      setExtra("");
+      return;
+    }
     setBusy(true);
     try {
       const id = await startLiveTask(`${data.task.input_text}。另外：${next}`, data.task.mandate_id);
