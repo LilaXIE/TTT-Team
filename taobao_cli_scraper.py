@@ -12,6 +12,7 @@ import re
 import sys
 import time
 from pathlib import Path
+
 const_encoding = "utf-8"
 if sys.stdout.encoding.lower() != const_encoding:
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=const_encoding, errors="replace")
@@ -23,6 +24,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parent
 PROFILE_DIR = ROOT / "edge_user_data"
+STATE_FILE = ROOT / "taobao_state.json"
 
 
 def log(message: str) -> None:
@@ -103,32 +105,44 @@ def wait_for_manual_verification(page, search_url: str) -> None:
 def scrape_taobao(keyword: str, count: int = 10) -> list[dict]:
     log(f"[Agent Worker] 正在启动 Edge 浏览器搜索商品: '{keyword}' ...")
     products: list[dict] = []
+    
+    # 检查状态文件是否存在
+    if not STATE_FILE.exists():
+        print("[错误] 未找到登录凭证 taobao_state.json，请先运行登录脚本生成此文件！")
+        return []
 
-    with sync_playwright() as playwright:
-        context = playwright.chromium.launch_persistent_context(
+    with sync_playwright() as p:
+        context = p.chromium.launch_persistent_context(
             user_data_dir=str(PROFILE_DIR),
             channel="msedge",
             headless=False,
-            # 使用官方标记去除自动化特征，避免自行注入有缺陷的 JS 造成反效果
             args=[
                 "--disable-blink-features=AutomationControlled",
-                "--no-sandbox",
-                "--disable-infobars",
-            ],
+                "--no-sandbox"
+            ]
         )
-        page = context.pages[0] if context.pages else context.new_page()
-
+        
+        # 从 json 注入凭证 Cookie
         try:
-            # 直接通过完整 Search URL 访问，依靠 Cookie 保持登录态
+            with open(STATE_FILE, "r", encoding="utf-8") as f:
+                state_data = json.load(f)
+                if "cookies" in state_data:
+                    context.add_cookies(state_data["cookies"])
+        except Exception as err:
+            log(f"[警告] 加载登录凭证文件失败: {err}")
+
+        page = context.pages[0] if context.pages else context.new_page()
+        
+        try:
             search_url = f"https://s.taobao.com/search?q={quote_plus(keyword)}"
-            log(f"[调试] 正在访问搜索页面: {search_url}")
             page.goto(search_url, wait_until="domcontentloaded", timeout=30000)
+            
+            # 检测是否被踢回登录页（Cookie 过期）
+            if "login.taobao.com" in page.url or "sec.taobao.com" in page.url:
+                print("⚠️ Cookie 已过期或触发验证，请重新扫码登录并更新 taobao_state.json 文件。")
+                return []
 
-            time.sleep(2)
-            if challenge_present(page):
-                wait_for_manual_verification(page, search_url)
-
-            # 模拟滚屏触发图片与卡片懒加载
+            # 正常执行解析与抓取
             page.mouse.wheel(0, 800)
             time.sleep(2)
 
