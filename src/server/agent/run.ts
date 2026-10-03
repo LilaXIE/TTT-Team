@@ -1,5 +1,6 @@
 // Agent 任务执行。规格：docs/MANUAL.md §6.1 九步流程。
 import { AppError } from "@/contracts/errors";
+import { hkdToMinor } from "@/contracts/money";
 import type { Decision, EngineContext } from "@/contracts/schemas";
 import { createCartVersion } from "@/server/catalog/cart";
 import type { MerchantInfo, PaymentMethodInfo } from "@/server/catalog/quote";
@@ -145,6 +146,12 @@ export async function runTask(ctx: TaskContext): Promise<RunResult> {
         const merchant = buildMerchantInfo(p);
         const productWithQty = { ...p, qty: intent.qty };
         const quote = quoteCart(merchant, [productWithQty], method);
+        const range = mandate.task.priceRangeHKD;
+        if (range) {
+          const minPrice = hkdToMinor(range.min);
+          const maxPrice = hkdToMinor(range.max);
+          if (quote.subtotalMinor < minPrice || quote.subtotalMinor > maxPrice) continue;
+        }
 
         const candidateCtx: EngineContext = {
           now: new Date(),

@@ -7,7 +7,8 @@ const NAV = [
   { href: "/mandate/new", label: "新建授权" },
   { href: "/inbox", label: "待确认" },
   { href: "/ledger", label: "记录" },
-  { href: "/pay-methods", label: "支付方式" },
+  { href: "/settings", label: "账户设置" },
+  { href: "/compare", label: "比价" },
 ] as const;
 
 export function AppShell({ user, children }: { user: SessionUser; children: React.ReactNode }) {

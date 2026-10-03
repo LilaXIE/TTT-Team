@@ -2,12 +2,13 @@ import { redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { getSession } from "@/server/auth/session";
 import { loadRates } from "@/server/fixtures";
+import { getUserPreferences } from "@/server/preferences";
 import { MandateForm } from "./mandate-form";
 
 export default async function NewMandatePage() {
   const user = await getSession();
   if (!user) redirect("/login");
-  const rates = loadRates();
+  const [rates, preferences] = await Promise.all([Promise.resolve(loadRates()), getUserPreferences(user.id)]);
   const methods = rates.methods.map((m) => ({ id: m.id, label: m.label }));
   return (
     <AppShell user={user}>
@@ -17,7 +18,7 @@ export default async function NewMandatePage() {
           这是 Agent 唯一能花钱的依据。右侧三张卡会随你的设置实时变化，让你在签发前就知道它会怎么做。
         </p>
       </div>
-      <MandateForm methods={methods} />
+      <MandateForm methods={methods} preferences={preferences} />
     </AppShell>
   );
 }

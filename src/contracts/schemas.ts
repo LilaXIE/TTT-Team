@@ -25,6 +25,7 @@ export const MandateDraft = z.object({
     minSpec: z.record(z.string(), z.number()).default({}),
     allowSubstituteBrand: z.boolean().default(true),
     preferredBrand: z.string().max(40).nullable().default(null),
+    priceRangeHKD: z.object({ min: z.string(), max: z.string() }).optional(),
   }),
   categories: z.array(z.string().min(1)).min(1).max(10),
   merchantDeny: z.array(z.string()).default([]),
