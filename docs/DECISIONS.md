@@ -36,3 +36,8 @@ S1 示例含运费 138 是单笔上限 150 的 92%，按 90% 会被判 REVIEW（
 - 界面一次只显示一种语言（右上角切换），Trust / Agent 等标签也跟着翻译，覆盖 AGENTS.md「保留英文标签」一条。
 - 筛选滑块按 10 港元一档的整数档位工作，换算回分时用 bigint，不出现浮点金额。
 
+
+## 2026-10-04 01:10 UI 原型单独部署
+
+Vercel 新项目 mandate-wallet-ui（https://mandate-wallet-ui.vercel.app），连同一个 GitHub 仓库，Production Branch 设为 lilaxie-ui-redesign，推送即上线；原 mandate-wallet 项目仍跟 main。只设 DEMO_MODE=true，不配数据库，数据存在访问者浏览器里。
+
