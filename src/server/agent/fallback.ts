@@ -1,4 +1,5 @@
 // Agent fallback：规则意图抽取与解释。不使用 LLM。规格：docs/MANUAL.md §6.1。
+import { spokenProduct } from "@/lib/spoken-product";
 export interface ExtractedIntent {
   query: string;
   qty: number;
@@ -32,53 +33,10 @@ export function extractIntentFallback(text: string): ExtractedIntent {
   const minSpec: Record<string, number> = {};
   let maxPriceMinor: bigint | null = null;
 
-  const lower = cleaned.toLowerCase();
-  const aliases: Array<[string, string]> = [
-    ["laundry liquid", "洗衣液"],
-    ["laundry detergent", "洗衣液"],
-    ["dish soap", "洗洁精"],
-    ["dishwashing", "洗洁精"],
-    ["facial tissue", "纸巾"],
-    ["tissue", "纸巾"],
-    ["paper towel", "纸巾"],
-    ["tumbler", "保温杯"],
-    ["thermos", "保温杯"],
-    ["vitamin", "维他命"],
-    ["detergent", "洗衣液"],
-    ["laundry", "洗衣液"],
-  ];
-  const alias = aliases.find(([phrase]) => lower.includes(phrase));
-  if (alias) query = alias[1];
-
-  // 优先识别演示目录中的商品关键词；再退回清理后的首个词。
-  const knownQueries = [
-    "洗衣液",
-    "洗衣凝珠",
-    "柔顺剂",
-    "抽纸",
-    "纸巾",
-    "卷纸",
-    "洗洁精",
-    "垃圾袋",
-    "维他命",
-    "维生素",
-    "保健品",
-    "钙片",
-    "鱼油",
-    "保温杯",
-    "马克杯",
-    "水杯",
-    "抹布",
-    "牙刷",
-    "牙膏",
-    "洗发水",
-    "沐浴露",
-  ];
-  const known = knownQueries.find((keyword) => cleaned.includes(keyword));
-  if (alias) {
-    query = alias[1];
-  } else if (known) {
-    query = known;
+  // 只认用户原话里的商品。对不上目录时保留原词，不换成水杯或其他商品。
+  const spoken = spokenProduct(cleaned);
+  if (spoken.catalog || spoken.phrase) {
+    query = spoken.catalog ?? spoken.phrase ?? cleaned;
   } else {
     const normalized = cleaned
       .replace(/帮我|请|给我|补|购买|买|一瓶|一件|一个|一盒|一包|一箱/g, " ")

@@ -13,7 +13,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { fmtDateTime } from "@/lib/format";
 import { api } from "@/lib/api";
 import { useLang } from "@/lib/i18n";
-import { catalogToken, merchantOf, productOf } from "@/lib/mock/catalog";
+import { productReply, replyMentionsProduct } from "@/lib/spoken-product";
+import { merchantOf, productOf } from "@/lib/mock/catalog";
 import { activeMandates, openPending, useMock, useNow } from "@/lib/mock/store";
 
 export const SUGGESTIONS = [
@@ -41,20 +42,14 @@ export function HomeView() {
     const clean = q.trim();
     if (!clean || sending) return;
     setSending(true);
-    let next = clean;
     try {
       const draft = await api<{ query: string; message: string; mode: "llm" | "fallback" }>("/api/chat", { method: "POST", json: { message: clean } });
-      if (draft.query.trim() && !clean.includes(draft.query)) {
-        const merged = `${clean}（${draft.query}）`;
-        const before = catalogToken(clean);
-        const after = catalogToken(merged);
-        if (!before || before === after) next = merged;
-      }
-      sessionStorage.setItem("mw.chatReply", JSON.stringify({ reply: draft.message, mode: draft.mode }));
+      const reply = replyMentionsProduct(clean, draft.message) ? draft.message : productReply(clean);
+      sessionStorage.setItem("mw.chatReply", JSON.stringify({ reply, mode: draft.mode }));
     } catch {
       sessionStorage.removeItem("mw.chatReply");
     }
-    router.push(`/task/new?q=${encodeURIComponent(next)}`);
+    router.push(`/task/new?q=${encodeURIComponent(clean)}`);
   };
 
   useEffect(() => {

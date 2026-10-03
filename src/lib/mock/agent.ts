@@ -6,7 +6,8 @@
 import { hkdToMinor } from "@/contracts/money";
 import { api } from "@/lib/api";
 import { fmtMoney } from "@/lib/format";
-import { catalogToken, isScriptedQuery, merchantOf, productOf, productsMatching } from "./catalog";
+import { namesSameItem, spokenProduct } from "@/lib/spoken-product";
+import { merchantOf, productOf, productsMatching } from "./catalog";
 import { candidatesFor, evaluate, scoreAll, type Scored } from "./evaluate";
 import { actions, getState } from "./store";
 import type { Block, Category, Delivery, DraftFields, MockMandate, QueryKind, TimelineStep, Tx } from "./types";
@@ -15,8 +16,9 @@ export const AUTO_PAY_MS = 8000;
 
 export interface Intent {
   kind: QueryKind | "unknown";
-  /** 目录里的商品词。不是洗衣液 / 纸巾 / 保温杯这三条演示脚本时才有 */
+  /** 用户说出的商品。洗衣液 / 纸巾 / 保温杯这三条演示脚本不用它 */
   token: string | null;
+  label: { zh: string; en: string } | null;
   curated: boolean;
   perTxnMinor: string | null;
   minVolumeMl: number | null;
@@ -33,29 +35,16 @@ const nowIso = () => new Date().toISOString();
 const later = (ms: number, fn: () => void) => setTimeout(fn, ms);
 
 export function parseIntent(text: string): Intent {
-  const token = catalogToken(text);
-  const kind: Intent["kind"] = token && isScriptedQuery(token)
-    ? token === "洗衣液"
-      ? "detergent"
-      : token === "保温杯"
-        ? "tumbler"
-        : "tissue"
-    : token
-      ? "unknown"
-      : /洗衣液|洗衣|laundry|detergent/i.test(text)
-        ? "detergent"
-        : /纸巾|纸|tissue/i.test(text)
-          ? "tissue"
-          : /保温杯|杯|tumbler|cup|bottle/i.test(text)
-            ? "tumbler"
-            : "unknown";
+  const spoken = spokenProduct(text);
+  const kind: Intent["kind"] = spoken.scripted ?? "unknown";
   const money = text.match(/HK\$\s?(\d+(?:\.\d{1,2})?)|(\d+(?:\.\d{1,2})?)\s*(?:港元|港币|块|元|dollars?|HKD)/i);
   const amount = money ? (money[1] ?? money[2]) : null;
   const vol = text.match(/(\d+(?:\.\d+)?)\s*L\b/i);
   return {
     kind,
-    token: token && !isScriptedQuery(token) ? token : null,
-    curated: /细挑|精选|慢慢挑|carefully|curat/i.test(text) || kind === "tumbler",
+    token: spoken.scripted ? null : spoken.phrase,
+    label: spoken.phrase ? { zh: spoken.zh, en: spoken.en } : null,
+    curated: /细挑|精选|慢慢挑|carefully|curat/i.test(text) || spoken.scripted === "tumbler",
     perTxnMinor: amount ? hkdToMinor(amount).toString() : null,
     minVolumeMl: vol ? Math.round(Number.parseFloat(vol[1]) * 1000) : null,
     allowSubstitute: /换牌子|换个牌子|别的牌子|any brand|other brand|different brand|switch brand/i.test(text),
@@ -68,14 +57,19 @@ const TITLES: Record<QueryKind, { quick: Tx; curated: Tx; query: Tx; categories:
   tumbler: { quick: { zh: "保温杯", en: "Tumbler" }, curated: { zh: "精选 · 保温杯", en: "Curated · Tumbler" }, query: { zh: "保温杯", en: "Tumbler" }, categories: ["drinkware"] },
 };
 
+function productLabel(intent: Intent): { zh: string; en: string } {
+  return intent.label ?? { zh: intent.token ?? "", en: intent.token ?? "" };
+}
+
 export function draftFromIntent(intent: Intent): DraftFields {
   if (intent.token) {
     const per = intent.perTxnMinor ?? "15000";
+    const label = productLabel(intent);
     return {
-      title: { zh: intent.token, en: intent.token },
+      title: label,
       mode: "quick",
       queryKind: "detergent",
-      query: { zh: intent.token, en: intent.token },
+      query: label,
       categories: ["household", "drinkware", "supplement", "electronics"],
       perTxnMinor: per,
       totalMinor: (BigInt(per) * 2n).toString(),
@@ -173,7 +167,7 @@ export function startTask(text: string): string {
   actions.createTask({
     id,
     title: intent.token
-      ? { zh: intent.token, en: intent.token }
+      ? productLabel(intent)
       : kind
         ? intent.curated
           ? TITLES[kind].curated
@@ -197,7 +191,9 @@ function respond(taskId: string, intent: Intent) {
       "INTENT",
       { zh: "理解需求", en: "Understood the request" },
       intent.token
-        ? { zh: `要买：${intent.token}。演示目录里按这个词来找。`, en: `To buy: ${intent.token}. Searching the demo catalogue for that.` }
+        ? productsMatching(intent.label?.zh || intent.token).length || productsMatching(intent.token).length
+          ? { zh: `要买：${productLabel(intent).zh}。演示目录里按这个词来找。`, en: `To buy: ${productLabel(intent).en}. Searching the demo catalogue for that.` }
+          : { zh: `要买：${productLabel(intent).zh}。演示目录里没有这个词，不会改成别的商品。`, en: `To buy: ${productLabel(intent).en}. The demo catalogue has no match, so this stays as you said.` }
         : intent.kind === "unknown"
         ? { zh: "没认出要买什么。", en: "Could not tell what to buy." }
         : {
@@ -405,7 +401,7 @@ function present(taskId: string, mandateId: string, round: number, ranked: Score
   if (pickable.length === 0) {
     const top = ranked[0];
     if (!top) {
-      actions.appendBlocks(taskId, [zev({ zh: "按这些条件没有找到商品。放宽一点试试？", en: "Nothing matched those filters. Try loosening them?" }), { kind: "hint", at: nowIso() }]);
+      actions.appendBlocks(taskId, [zev({ zh: `演示目录里没有「${m.query.zh}」，没有换成别的商品。`, en: `Nothing in the demo catalogue matches “${m.query.en}”. It was not switched to a different product.` }), { kind: "hint", at: nowIso() }]);
       return;
     }
     actions.appendBlocks(taskId, [{ kind: "denied", productId: top.product.id, mandateId, rules: top.evaluation.rules.filter((r) => r.severity === "DENY"), at: nowIso() }]);
@@ -649,7 +645,7 @@ export function followUp(taskId: string, text: string, understood?: string): str
   if (!t) return startTask(text);
   const intent = parseIntent(text);
   const item = taskQuery(t);
-  const switching = Boolean(intent.token && item && intent.token !== item);
+  const switching = Boolean(item && spokenProduct(text).phrase && !namesSameItem(item, text));
   if (!item || switching) return startTask(text);
 
   const m = t.mandateId ? mandate(t.mandateId) : undefined;

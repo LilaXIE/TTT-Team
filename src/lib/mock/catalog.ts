@@ -1,5 +1,6 @@
 // 模拟目录：两家可购买商家 + 一家凭证已撤销的商家（docs/MANUAL.md §2.2）。
 // 接真实数据时改为读取 fixtures/catalog.json 与 GET /api/tasks/[id] 的候选。
+import { spokenProduct } from "@/lib/spoken-product";
 import { extraProducts } from "./catalog-extra";
 import type { MethodId, MockMerchant, MockProduct, Tx } from "./types";
 
@@ -308,24 +309,11 @@ export const METHODS: {
 
 PRODUCTS.push(...extraProducts());
 
-const GENERIC = new Set(["日用", "清洁", "品牌", "补充", "家庭", "模拟", "商品", "香港", "用甲", "用乙", "用丙"]);
-
-function nameTokens(name: string): string[] {
-  const zh = name.replace(/[0-9a-zA-Z.\s]/g, "");
-  const out = new Set<string>();
-  for (let n = 2; n <= Math.min(6, zh.length); n += 1) {
-    for (let i = 0; i + n <= zh.length; i += 1) out.add(zh.slice(i, i + n));
-  }
-  return [...out];
-}
-
-const CATALOG_TOKENS = [...new Set(PRODUCTS.flatMap((p) => nameTokens(p.name.zh)))]
-  .filter((t) => !GENERIC.has(t))
-  .sort((a, b) => b.length - a.length);
-
-/** 从用户的话里抽出目录里最长的商品词。洗衣液、纸巾、保温杯仍走原来的演示脚本。 */
+/** 用户原话里的商品。不从商品名里切 2 字片段，避免英文句子被对成目录里的另一件。 */
 export function catalogToken(text: string): string | null {
-  return CATALOG_TOKENS.find((t) => text.includes(t)) ?? null;
+  const spoken = spokenProduct(text);
+  if (!spoken.phrase) return null;
+  return spoken.catalog ?? spoken.phrase;
 }
 
 export function isScriptedQuery(token: string): boolean {
@@ -333,7 +321,9 @@ export function isScriptedQuery(token: string): boolean {
 }
 
 export function productsMatching(token: string): MockProduct[] {
-  return PRODUCTS.filter((p) => p.name.zh.includes(token)).slice(0, 8);
+  const q = token.trim().toLowerCase();
+  if (q.length < 2) return [];
+  return PRODUCTS.filter((p) => p.name.zh.toLowerCase().includes(q) || p.name.en.toLowerCase().includes(q)).slice(0, 8);
 }
 
 export function merchantOf(id: string): MockMerchant {
