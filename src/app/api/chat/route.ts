@@ -10,8 +10,17 @@ const Body = z.object({
 });
 
 export const POST = route(async (req: Request) => {
-  const user = await requireSession(req);
   const { sessionId: requestedId, message } = Body.parse(await readJson(req));
+  let user: { id: string } | null = null;
+  try {
+    user = await requireSession(req);
+  } catch (err) {
+    if (process.env.DEMO_MODE !== "true") throw err;
+  }
+  if (!user) {
+    const draft = await draftFromChat([], message);
+    return json({ sessionId: null, message: draft.reply, query: draft.query, qty: draft.qty, mode: draft.mode });
+  }
   let sessionId = requestedId;
   if (sessionId) {
     const owned = await query("SELECT id FROM chat_sessions WHERE id=$1 AND user_id=$2", [sessionId, user.id]);

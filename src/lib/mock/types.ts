@@ -5,7 +5,7 @@ import type { Outcome, RuleId } from "@/contracts";
 export type Tx = { zh: string; en: string };
 export type Minor = string;
 export type MethodId = "fps" | "tapngo_mc";
-export type Category = "household" | "supplement" | "drinkware" | "alcohol";
+export type Category = "household" | "supplement" | "drinkware" | "alcohol" | "electronics";
 export type Delivery = "today" | "tomorrow" | "week";
 
 export interface MockMerchant {

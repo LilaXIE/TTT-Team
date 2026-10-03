@@ -5,7 +5,7 @@
 // 接真实数据时，这里的每一步对应 POST /api/tasks 与 /api/tasks/:id/* 的服务端流程。
 import { hkdToMinor } from "@/contracts/money";
 import { fmtMoney } from "@/lib/format";
-import { merchantOf, productOf } from "./catalog";
+import { catalogToken, isScriptedQuery, merchantOf, productOf, productsMatching } from "./catalog";
 import { candidatesFor, evaluate, scoreAll, type Scored } from "./evaluate";
 import { actions, getState } from "./store";
 import type { Block, Category, Delivery, DraftFields, MockMandate, QueryKind, TimelineStep, Tx } from "./types";
@@ -14,6 +14,8 @@ export const AUTO_PAY_MS = 8000;
 
 export interface Intent {
   kind: QueryKind | "unknown";
+  /** 目录里的商品词。不是洗衣液 / 纸巾 / 保温杯这三条演示脚本时才有 */
+  token: string | null;
   curated: boolean;
   perTxnMinor: string | null;
   minVolumeMl: number | null;
@@ -30,18 +32,28 @@ const nowIso = () => new Date().toISOString();
 const later = (ms: number, fn: () => void) => setTimeout(fn, ms);
 
 export function parseIntent(text: string): Intent {
-  const kind: Intent["kind"] = /洗衣液|洗衣|laundry|detergent/i.test(text)
-    ? "detergent"
-    : /纸巾|纸|tissue/i.test(text)
-      ? "tissue"
-      : /保温杯|杯|tumbler|cup|bottle/i.test(text)
+  const token = catalogToken(text);
+  const kind: Intent["kind"] = token && isScriptedQuery(token)
+    ? token === "洗衣液"
+      ? "detergent"
+      : token === "保温杯"
         ? "tumbler"
-        : "unknown";
+        : "tissue"
+    : token
+      ? "unknown"
+      : /洗衣液|洗衣|laundry|detergent/i.test(text)
+        ? "detergent"
+        : /纸巾|纸|tissue/i.test(text)
+          ? "tissue"
+          : /保温杯|杯|tumbler|cup|bottle/i.test(text)
+            ? "tumbler"
+            : "unknown";
   const money = text.match(/HK\$\s?(\d+(?:\.\d{1,2})?)|(\d+(?:\.\d{1,2})?)\s*(?:港元|港币|块|元|dollars?|HKD)/i);
   const amount = money ? (money[1] ?? money[2]) : null;
   const vol = text.match(/(\d+(?:\.\d+)?)\s*L\b/i);
   return {
     kind,
+    token: token && !isScriptedQuery(token) ? token : null,
     curated: /细挑|精选|慢慢挑|carefully|curat/i.test(text) || kind === "tumbler",
     perTxnMinor: amount ? hkdToMinor(amount).toString() : null,
     minVolumeMl: vol ? Math.round(Number.parseFloat(vol[1]) * 1000) : null,
@@ -56,6 +68,32 @@ const TITLES: Record<QueryKind, { quick: Tx; curated: Tx; query: Tx; categories:
 };
 
 export function draftFromIntent(intent: Intent): DraftFields {
+  if (intent.token) {
+    const per = intent.perTxnMinor ?? "15000";
+    return {
+      title: { zh: intent.token, en: intent.token },
+      mode: "quick",
+      queryKind: "detergent",
+      query: { zh: intent.token, en: intent.token },
+      categories: ["household", "drinkware", "supplement", "electronics"],
+      perTxnMinor: per,
+      totalMinor: (BigInt(per) * 2n).toString(),
+      maxPurchases: 2,
+      days: 7,
+      preferredBrand: null,
+      allowSubstituteBrand: true,
+      minVolumeMl: intent.minVolumeMl,
+      reviewWhen: {
+        nearCapPct: 95,
+        substituteBrand: false,
+        watchCategories: ["supplement"],
+        newMerchantDays: null,
+        priceAboveRefPct: null,
+      },
+      protection: "standard",
+      methods: ["fps", "tapngo_mc"],
+    };
+  }
   const kind = intent.kind === "unknown" ? "detergent" : intent.kind;
   const t = TITLES[kind];
   const per = intent.perTxnMinor ?? (kind === "tumbler" ? "30000" : "10000");
@@ -104,17 +142,42 @@ function step(checkpoint: TimelineStep["checkpoint"], title: Tx, detail: Tx, out
 
 // ---------- 开始一个任务 ----------
 
+function savedChatReply(): Tx | null {
+  if (typeof sessionStorage === "undefined") return null;
+  const raw = sessionStorage.getItem("mw.chatReply");
+  sessionStorage.removeItem("mw.chatReply");
+  if (!raw) return null;
+  try {
+    const saved = JSON.parse(raw) as { reply?: string; mode?: string };
+    if (!saved.reply) return null;
+    const via = saved.mode === "llm" ? "DeepSeek" : "关键词";
+    return {
+      zh: `${saved.reply}（${via}只负责理解这句话，金额和能不能买仍由规则引擎决定。）`,
+      en: `${saved.reply} (${via} only reads the sentence. The rule engine still decides the amount and whether it can be bought.)`,
+    };
+  } catch {
+    return null;
+  }
+}
+
 export function startTask(text: string): string {
   const intent = parseIntent(text);
   const id = `t_${Date.now().toString(36)}`;
   const kind = intent.kind === "unknown" ? null : intent.kind;
+  const reply = savedChatReply();
   actions.createTask({
     id,
-    title: kind ? (intent.curated ? TITLES[kind].curated : TITLES[kind].quick) : { zh: "新任务", en: "New task" },
+    title: intent.token
+      ? { zh: intent.token, en: intent.token }
+      : kind
+        ? intent.curated
+          ? TITLES[kind].curated
+          : TITLES[kind].quick
+        : { zh: "新任务", en: "New task" },
     status: "drafting",
     mode: intent.curated ? "curated" : "quick",
     mandateId: null,
-    blocks: [{ kind: "user", text, at: nowIso() }],
+    blocks: reply ? [{ kind: "user", text, at: nowIso() }, zev(reply)] : [{ kind: "user", text, at: nowIso() }],
     timeline: [],
   });
   later(700, () => respond(id, intent));
@@ -127,7 +190,9 @@ function respond(taskId: string, intent: Intent) {
     step(
       "INTENT",
       { zh: "理解需求", en: "Understood the request" },
-      intent.kind === "unknown"
+      intent.token
+        ? { zh: `要买：${intent.token}。演示目录里按这个词来找。`, en: `To buy: ${intent.token}. Searching the demo catalogue for that.` }
+        : intent.kind === "unknown"
         ? { zh: "没认出要买什么。", en: "Could not tell what to buy." }
         : {
             zh: `要买：${TITLES[intent.kind].query.zh}${intent.minVolumeMl ? `，至少 ${intent.minVolumeMl / 1000}L` : ""}${intent.perTxnMinor ? `，单笔 ${fmtMoney(intent.perTxnMinor, "zh")} 以内` : ""}${intent.allowSubstitute ? "，可以换牌子" : ""}。`,
@@ -141,22 +206,24 @@ function respond(taskId: string, intent: Intent) {
     actions.updateTask(taskId, { status: "failed" });
     return;
   }
-  if (intent.kind === "unknown") {
+  if (intent.kind === "unknown" && !intent.token) {
     actions.appendBlocks(taskId, [
       zev({
-        zh: "这个我在两家模拟商家里找不到。原型目前能买：洗衣液、纸巾、保温杯。换个说法试试？",
-        en: "I can't find that at the two simulated shops. This prototype can buy laundry liquid, tissue, or a tumbler. Try one of those?",
+        zh: "演示目录里有日用品、杯具和保健品。可以说「洗洁精」「水杯」或「牙膏」，也可以继续买洗衣液、纸巾、保温杯。",
+        en: "The demo catalogue has household goods, cups and supplements. Try “dish soap”, “a cup” or “toothpaste”, or the laundry, tissue and tumbler demos.",
       }),
+      { kind: "hint", at: nowIso() },
     ]);
     actions.updateTask(taskId, { status: "failed" });
     return;
   }
 
-  const kind = intent.kind;
+  const kind = intent.kind === "unknown" ? "detergent" : intent.kind;
+  const want = intent.token ?? TITLES[kind].query.zh;
   // 没提新预算，且已有覆盖这件事的授权 → 直接在授权范围内做
   const covering =
     intent.perTxnMinor === null
-      ? s.mandates.find((m) => m.status === "active" && m.queryKind === kind && m.remainingPurchases > 0 && (!intent.curated || m.mode === "curated"))
+      ? s.mandates.find((m) => m.status === "active" && m.query.zh === want && m.remainingPurchases > 0 && (!intent.curated || m.mode === "curated"))
       : undefined;
 
   if (covering) {
@@ -189,7 +256,8 @@ export function signDraft(taskId: string, blockIndex: number, fields: DraftField
 function rank(m: MockMandate, kind: QueryKind, filters?: Filters, exclude: Set<string> = new Set()): Scored[] {
   const s = getState();
   const now = new Date();
-  const list = candidatesFor(kind, exclude)
+  const scripted = m.query.zh === "洗衣液" || m.query.zh === "纸巾" || m.query.zh === "保温杯" || m.query.zh === "Laundry liquid" || m.query.zh === "Tissue" || m.query.zh === "Tumbler";
+  const list = (scripted ? candidatesFor(kind, exclude) : productsMatching(m.query.zh).filter((p) => !exclude.has(p.id)))
     .filter((p) => {
       if (!filters) return true;
       const mer = merchantOf(p.merchantId);
@@ -523,7 +591,8 @@ export function followUp(taskId: string, text: string): string | null {
   const t = task(taskId);
   const m = t?.mandateId ? mandate(t.mandateId) : undefined;
   const intent = parseIntent(text);
-  if (!t || !m || m.status !== "active" || (intent.kind !== "unknown" && intent.kind !== m.queryKind) || intent.perTxnMinor !== null) {
+  const changedItem = m ? (intent.token ? intent.token !== m.query.zh : intent.kind !== "unknown" && intent.kind !== m.queryKind) : false;
+  if (!t || !m || m.status !== "active" || changedItem || intent.perTxnMinor !== null) {
     return startTask(text);
   }
   if (/细挑|精选|慢慢|carefully|curat/i.test(text)) {

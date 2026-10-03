@@ -10,6 +10,7 @@ export const CATEGORY_LABEL: Record<Category, Tx> = {
   supplement: { zh: "保健品", en: "Supplements" },
   drinkware: { zh: "杯具", en: "Drinkware" },
   alcohol: { zh: "酒类", en: "Alcohol" },
+  electronics: { zh: "电子", en: "Electronics" },
 };
 
 export const RULE_TITLE: Record<RuleId, Tx> = {

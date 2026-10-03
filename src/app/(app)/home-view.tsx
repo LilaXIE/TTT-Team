@@ -12,13 +12,14 @@ import { buttonVariants } from "@/components/ui/button";
 import { fmtDateTime } from "@/lib/format";
 import { api } from "@/lib/api";
 import { useLang } from "@/lib/i18n";
-import { merchantOf, productOf } from "@/lib/mock/catalog";
+import { catalogToken, merchantOf, productOf } from "@/lib/mock/catalog";
 import { activeMandates, openPending, useMock, useNow } from "@/lib/mock/store";
 
 export const SUGGESTIONS = [
   { zh: "帮我补一瓶洗衣液，2L 以上，HK$150 以内，可以换牌子，这周内买到。", en: "Restock laundry liquid: 2L or more, under HK$150, any brand, within this week." },
   { zh: "再买一包纸巾。", en: "Buy another pack of tissue." },
   { zh: "帮我细挑一个黑色、极简的保温杯。", en: "Help me carefully pick a black, minimal tumbler." },
+  { zh: "帮我买一瓶洗洁精。", en: "Buy a bottle of dish soap." },
 ];
 
 export function HomeView() {
@@ -40,10 +41,16 @@ export function HomeView() {
     setSending(true);
     let next = clean;
     try {
-      const draft = await api<{ query: string }>("/api/chat", { method: "POST", json: { message: clean } });
-      if (draft.query.trim()) next = clean.includes(draft.query) ? clean : `${clean}（${draft.query}）`;
+      const draft = await api<{ query: string; message: string; mode: "llm" | "fallback" }>("/api/chat", { method: "POST", json: { message: clean } });
+      if (draft.query.trim() && !clean.includes(draft.query)) {
+        const merged = `${clean}（${draft.query}）`;
+        const before = catalogToken(clean);
+        const after = catalogToken(merged);
+        if (!before || before === after) next = merged;
+      }
+      sessionStorage.setItem("mw.chatReply", JSON.stringify({ reply: draft.message, mode: draft.mode }));
     } catch {
-      // 没登录或模型超时：仍用原话进入任务页，页面不卡住。
+      sessionStorage.removeItem("mw.chatReply");
     }
     router.push(`/task/new?q=${encodeURIComponent(next)}`);
   };
@@ -86,6 +93,7 @@ export function HomeView() {
               <ArrowUp className="size-5" />
             </button>
           </form>
+          {sending ? <p className="mt-2 text-[13px] text-soft">{t("DeepSeek 在读这句话…", "DeepSeek is reading that…")}</p> : null}
           <div className="mt-3 flex flex-wrap gap-2">
             {SUGGESTIONS.map((q) => (
               <button key={q.zh} type="button" onClick={() => void go(q[lang])} className="rounded-full border border-line bg-white/80 px-3 py-1.5 text-left text-[13px] text-ink/80 hover:border-violet hover:text-ink">
