@@ -45,3 +45,6 @@ next-env.d.ts
 
 # python/tooling
 __pycache__/
+
+# Local browser profile used by the Taobao scraper
+/edge_user_data/

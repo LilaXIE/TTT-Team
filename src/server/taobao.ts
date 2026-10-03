@@ -15,7 +15,7 @@ export type TaobaoItem = z.infer<typeof TaobaoItem>;
 
 export interface TaobaoSearchResult { keyword: string; items: TaobaoItem[]; source: "taobao" | "unavailable"; message?: string }
 
-function scraperPath() { return process.env.TAOBAO_SCRAPER_PATH || path.resolve(process.cwd(), "..", "taobao_cli_scraper.py.py"); }
+function scraperPath() { return process.env.TAOBAO_SCRAPER_PATH || path.resolve(process.cwd(), "taobao_cli_scraper.py.py"); }
 
 /** 调用本机 Playwright/Edge 爬虫。淘宝的登录、验证码或浏览器缺失不会阻塞应用主流程。 */
 export async function searchTaobao(keyword: string, count = 10): Promise<TaobaoSearchResult> {
