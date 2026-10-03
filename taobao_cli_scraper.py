@@ -53,13 +53,17 @@ def parse_price(lines: list[str]) -> str | None:
 
 
 def challenge_present(page) -> bool:
-    challenge_markers = ("验证码", "安全验证", "滑动验证", "请登录", "登录后查看", "访问受限", "robot check", "captcha")
+    """只识别明确的验证页面，避免普通商品页的登录文案造成误判。"""
+    url_markers = ("captcha", "verify", "punish", "sec.taobao.com", "login.taobao.com")
+    strong_text_markers = ("滑动验证", "安全验证", "请输入验证码", "访问验证", "检测到异常访问", "robot check")
     try:
         current_url = page.url.lower()
         page_text = page.locator("body").inner_text(timeout=5000).lower()
     except Exception:
         return True
-    return any(marker.lower() in current_url or marker.lower() in page_text for marker in challenge_markers)
+    if any(marker in current_url for marker in url_markers):
+        return True
+    return any(marker.lower() in page_text for marker in strong_text_markers)
 
 
 def wait_for_manual_verification(page, search_url: str) -> None:
@@ -93,7 +97,7 @@ def scrape_taobao(keyword: str, count: int = 10) -> list[dict]:
         try:
             search_url = f"https://s.taobao.com/search?q={quote_plus(keyword)}"
             page.goto(search_url, wait_until="domcontentloaded", timeout=30000)
-            time.sleep(3)
+            time.sleep(2)
             if challenge_present(page):
                 wait_for_manual_verification(page, search_url)
             page.mouse.wheel(0, 500)
@@ -116,6 +120,9 @@ def scrape_taobao(keyword: str, count: int = 10) -> list[dict]:
                         break
                 except Exception:
                     continue
+            if not nodes:
+                log("[提示] 未匹配到商品卡片，改用 item.htm 链接容器继续提取。")
+                nodes = page.locator("a[href*='item.htm']").all()
 
             for node in nodes:
                 if len(products) >= count:

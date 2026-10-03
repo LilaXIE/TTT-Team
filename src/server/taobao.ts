@@ -54,7 +54,7 @@ async function runTaobaoSearch(keyword: string, count: number): Promise<TaobaoSe
     child.on("error", () => { clearTimeout(timer); resolve({ keyword, items: [], source: "unavailable", message: "未找到可用的淘宝爬虫运行环境。" }); });
     child.on("close", (code) => {
       clearTimeout(timer);
-      if (code !== 0) { resolve({ keyword, items: [], source: "unavailable", message: stderr.trim() || "淘宝搜索未返回结果。请先在本机完成淘宝登录或验证码验证。" }); return; }
+      if (code !== 0) { resolve({ keyword, items: [], source: "unavailable", message: stderr.trim() || "淘宝搜索未返回结果。若 Edge 显示登录或安全验证，请在窗口中手动完成后重试。" }); return; }
       try {
         const parsed = JSON.parse(stdout.trim()) as unknown;
         const items = z.array(TaobaoItem).parse(parsed);
