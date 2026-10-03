@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Eyebrow, OutcomeChip, Panel, ZevAvatar } from "@/components/app/primitives";
+import { moodForTask } from "@/components/app/zev";
 import { TaskStatusChip } from "@/components/app/task-status";
 import { Button } from "@/components/ui/button";
 import { fmtDateTime } from "@/lib/format";
@@ -107,10 +108,11 @@ const CHECKPOINT: Record<TimelineStep["checkpoint"], { zh: string; en: string }>
 
 export function Timeline({ task, className }: { task: MockTask; className?: string }) {
   const { t, lang } = useLang();
+  const frozen = useMock().session.frozen;
   return (
     <Panel className={cn("p-5", className)}>
       <div className="mb-1 flex items-center gap-2">
-        <ZevAvatar working={task.status === "running"} className="size-7" />
+        <ZevAvatar mood={moodForTask(task, frozen)} className="size-7" />
         <h2 className="font-heading text-[17px]">{t("Zev 的工作记录", "Zev's work log")}</h2>
       </div>
       <p className="mb-5 text-[12px] leading-relaxed text-soft">

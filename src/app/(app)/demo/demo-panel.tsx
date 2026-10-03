@@ -5,6 +5,7 @@ import { ExternalLink, RotateCcw, Snowflake } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Chip, Eyebrow, PageHeader, Panel, PanelTitle } from "@/components/app/primitives";
+import { ZEV_POSES, ZevCharacter } from "@/components/app/zev";
 import { MaxLossLine } from "@/components/app/security-card";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useLang } from "@/lib/i18n";
@@ -71,6 +72,20 @@ export function DemoPanel() {
           </Button>
         }
       />
+
+      <Panel className="mb-8">
+        <PanelTitle>{t("Zev 的状态", "How Zev moves")}</PanelTitle>
+        <p className="mb-4 text-[13px] text-soft">{t("五种姿态对应页面和账户状态。不能买用 ASK 再轻轻摇头；冻结用 HOLD，并变成灰色。", "Five poses follow the page and the account. A decline is ASK with a small shake. Freeze is HOLD, in grey.")}</p>
+        <div className="grid grid-cols-5 gap-2">
+          {ZEV_POSES.map((item) => (
+            <div key={item.id} className="text-center">
+              <ZevCharacter mood={item.id === "ask" ? "ask" : item.id === "look" ? "search" : item.id === "done" ? "done" : item.id === "hold" ? "wait" : "idle"} className="mx-auto size-14" />
+              <div className="mt-1 text-[12px] tracking-wide">{item.zh}</div>
+              <div className="text-[11px] text-soft">{item.when[lang]}</div>
+            </div>
+          ))}
+        </div>
+      </Panel>
 
       <section className="mb-8">
         <h2 className="mb-4 font-heading text-[22px]">{t("验收场景", "Scenarios")}</h2>

@@ -6,6 +6,7 @@ import { fmtCountdown, fmtMoney } from "@/lib/format";
 import { useLang } from "@/lib/i18n";
 import { useNow } from "@/lib/mock/store";
 import type { MockProduct, Tx } from "@/lib/mock/types";
+import { ZevCharacter, ZevMark, type ZevMood } from "@/components/app/zev";
 
 /** 实心紫色圆点：品牌与 Zev 的唯一图形 */
 export function Dot({ className, working }: { className?: string; working?: boolean }) {
@@ -16,18 +17,14 @@ export function Logo({ className }: { className?: string }) {
   const { t } = useLang();
   return (
     <span className={cn("inline-flex items-center gap-2 font-heading text-[17px] leading-none tracking-tight", className)}>
-      <Dot className="size-3" />
+      <ZevMark className="size-4" />
       {t("授权钱包", "Mandate Wallet")}
     </span>
   );
 }
 
-export function ZevAvatar({ working, className }: { working?: boolean; className?: string }) {
-  return (
-    <span className={cn("grid size-8 shrink-0 place-items-center rounded-full bg-violet-soft", className)}>
-      <Dot className="size-3" working={working} />
-    </span>
-  );
+export function ZevAvatar({ working, mood, className }: { working?: boolean; mood?: ZevMood; className?: string }) {
+  return <ZevCharacter mood={mood ?? (working ? "search" : "idle")} className={cn("size-8", className)} />;
 }
 
 export function Eyebrow({ children, className }: { children: React.ReactNode; className?: string }) {

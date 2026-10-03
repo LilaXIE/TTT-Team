@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { MandateCard, QuotaRing } from "@/components/app/mandate-card";
 import { Countdown, Money, OutcomeChip, Panel, PanelTitle, ProductThumb, ZevAvatar } from "@/components/app/primitives";
 import { SecurityCard } from "@/components/app/security-card";
+import { moodForTask } from "@/components/app/zev";
 import { TaskStatusChip } from "@/components/app/task-status";
 import { buttonVariants } from "@/components/ui/button";
 import { fmtDateTime } from "@/lib/format";
@@ -75,7 +76,7 @@ export function HomeView() {
       <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
         <section className="relative overflow-hidden rounded-[24px] border border-line bg-[linear-gradient(135deg,#ffffff_0%,#f6f4ff_55%,#ecebff_100%)] p-6 sm:p-8">
           <div className="flex items-center gap-2.5 text-[13px] text-soft">
-            <ZevAvatar className="size-7" />
+            <ZevAvatar className="size-7" mood={s.session.frozen ? "frozen" : "idle"} />
             Zev
           </div>
           <h1 className="mt-5 font-heading text-[30px] leading-tight sm:text-[40px]">
@@ -196,7 +197,7 @@ export function HomeView() {
             {s.tasks.map((task) => (
               <li key={task.id}>
                 <Link href={`/task/${task.id}`} className="flex items-center gap-3 rounded-2xl px-2 py-3 hover:bg-canvas">
-                  <ZevAvatar working={task.status === "running"} />
+                  <ZevAvatar mood={moodForTask(task, s.session.frozen)} />
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-[15px]">{task.title[lang]}</div>
                     <div className="truncate text-[12.5px] text-soft">
