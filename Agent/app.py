@@ -16,10 +16,14 @@ from email.utils import formataddr
 from datetime import datetime, timezone
 from openai import OpenAI
 
+# 顶部替换
+DEEPSEEK_API_KEY   = st.secrets["DEEPSEEK_API_KEY"]
+TENCENT_SECRET_ID  = st.secrets["TENCENT_SECRET_ID"]
+TENCENT_SECRET_KEY = st.secrets["TENCENT_SECRET_KEY"]
+
 # ==========================================
 # 0. API 配置
 # ==========================================
-DEEPSEEK_API_KEY = "sk-083a47037ec647e1ae09cf4279afd89a"
 client = OpenAI(
     api_key=DEEPSEEK_API_KEY,
     base_url="https://api.deepseek.com"
@@ -28,9 +32,6 @@ client = OpenAI(
 # ==========================================
 # 0.0 腾讯云联网搜索 API（WSA）配置
 # ==========================================
-TENCENT_SECRET_ID  = "AKIDv1CIEyb6SdgXDnRyPjuysex9C6qSvGRU"
-TENCENT_SECRET_KEY = "ypX7Zs35zlQxMc8e4MTN6f6NTQDoEi8Q"
-
 WSA_SERVICE = "wsa"
 WSA_HOST    = "wsa.tencentcloudapi.com"
 WSA_ACTION  = "SearchPro"
@@ -233,15 +234,9 @@ def send_payment_code_email(to_email: str, code: str, order: dict):
 
 
 # ==========================================
-# ★ 新增：支付成功后的收据邮件
+# ★ 支付成功后的收据邮件（商户 → 买家）
 # ==========================================
 def send_receipt_email(to_email: str, order: dict, paid_at: str) -> tuple:
-    """
-    付款成功后由"商户"发送的收据邮件。
-    内容格式：
-        【平台名】尊敬的用户您好，我们已于 xxx 收到您在我平台购买 xxx 所支付的 xxx，
-        此为收据，请不要回复。
-    """
     platform = order.get("platform", "") or "官方平台"
     title = order.get("title", "")
     price = order.get("final_price", 0)
@@ -249,11 +244,6 @@ def send_receipt_email(to_email: str, order: dict, paid_at: str) -> tuple:
         price_str = f"￥{float(price):.2f}"
     except Exception:
         price_str = f"￥{price}"
-
-    body_text = (
-        f"【{platform}】尊敬的用户您好，我们已于 {paid_at} 收到您在我平台购买 "
-        f"“{title}” 所支付的 {price_str}，此为收据，请不要回复。"
-    )
 
     body_html = f"""
     <div style="font-family: Arial, 'Microsoft YaHei', sans-serif; padding: 20px; line-height:1.8;">
@@ -270,7 +260,7 @@ def send_receipt_email(to_email: str, order: dict, paid_at: str) -> tuple:
 
     return send_email_code(
         to_email=to_email,
-        code="",  # 收据邮件没有验证码
+        code="",
         smtp_host=st.session_state.smtp_host,
         smtp_port=st.session_state.smtp_port,
         smtp_user=st.session_state.smtp_user,
@@ -1404,11 +1394,7 @@ def render_bank_cards_section():
         with st.container():
             c1, c2, c3 = st.columns([6, 1, 1])
             with c1:
-                tail = card.get("tail", "")
-                if tail:
-                    st.write(f"🏦 **{card['bank']}** (尾号 {tail}) · {card['type']}")
-                else:
-                    st.write(f"🏦 **{card['bank']}** · {card['type']}")
+                st.write(f"🏦 **{card['bank']}** (尾号 {card.get('tail','')}) · {card['type']}")
             with c2:
                 if st.button("✏️ 编辑", key=f"edit_card_{card['id']}",
                              use_container_width=True):
@@ -1473,8 +1459,7 @@ def render_bank_cards_section():
         with st.form("add_card_form"):
             nb = st.text_input("银行名称", placeholder="如：中国银行")
             nt = st.selectbox("卡类型", ["储蓄卡", "信用卡"])
-            ntail = st.text_input("卡号尾号 (4 位)", max_chars=4,
-                                  placeholder="如：1234")
+            ntail = st.text_input("卡号尾号 (4 位)", max_chars=4, placeholder="如：1234")
             submit_add = st.form_submit_button("➕ 添加", type="primary",
                                                use_container_width=True)
             if submit_add:
@@ -1781,8 +1766,7 @@ def render_order_card(order: dict, key_prefix: str = ""):
             value=src,
             key=f"copy_{key_prefix}_{order.get('order_id', random.random())}",
         )
-    else:
-        st.warning("🔗 未能在电商平台搜索到该商品的具体详情页，建议您根据上方商品名称在对应平台搜索。")
+    # ★ 若没有商品详情页链接，静默不显示任何提示
 
 
 def render_address_selection():
@@ -2045,7 +2029,6 @@ def render_payment_section():
         addr = st.session_state.selected_address_for_order
         paid_at_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # 记录订单
         st.session_state.orders_history.append({
             "order_id": order["order_id"],
             "title": order["title"],
@@ -2057,7 +2040,6 @@ def render_payment_section():
             "paid_at": paid_at_str,
         })
 
-        # ★★★ 新增：支付成功后，自动向用户登录邮箱发送收据邮件 ★★★
         user_email = st.session_state.user_info.get("email") if st.session_state.user_info else ""
         if user_email and st.session_state.get("smtp_user"):
             with st.spinner("支付成功，商户正在发送收据邮件..."):
