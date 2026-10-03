@@ -1,7 +1,7 @@
 """淘宝商品搜索适配器。
 
-交互模式：python taobao_cli_scraper.py.py
-JSON 模式：python taobao_cli_scraper.py.py --json "洗衣液" 10
+交互模式：python taobao_cli_scraper.py
+JSON 模式：python taobao_cli_scraper.py --json "洗衣液" 10
 
 JSON 模式的 stdout 只输出商品数组，诊断日志输出 stderr，供 Next.js 服务端调用。
 """
@@ -60,13 +60,18 @@ def scrape_taobao(keyword: str, count: int = 10) -> list[dict]:
             user_data_dir=str(PROFILE_DIR),
             channel="msedge",
             headless=False,
-            args=["--disable-blink-features=AutomationControlled", "--no-sandbox"],
+            args=["--no-sandbox"],
         )
         page = context.pages[0] if context.pages else context.new_page()
         try:
             page.goto(f"https://s.taobao.com/search?q={quote_plus(keyword)}", wait_until="domcontentloaded", timeout=30000)
-            time.sleep(2)
-            page.mouse.wheel(0, 800)
+            time.sleep(3)
+            current_url = page.url.lower()
+            page_text = page.locator("body").inner_text(timeout=5000).lower()
+            challenge_markers = ("验证码", "安全验证", "滑动验证", "请登录", "登录后查看", "访问受限", "robot check", "captcha")
+            if any(marker.lower() in current_url or marker.lower() in page_text for marker in challenge_markers):
+                raise RuntimeError("淘宝要求登录或人工验证；未尝试绕过该限制。请运行 init_login.py.py 完成登录后重试。")
+            page.mouse.wheel(0, 500)
             time.sleep(2)
 
             selectors = [

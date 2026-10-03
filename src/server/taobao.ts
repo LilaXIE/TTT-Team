@@ -15,10 +15,32 @@ export type TaobaoItem = z.infer<typeof TaobaoItem>;
 
 export interface TaobaoSearchResult { keyword: string; items: TaobaoItem[]; source: "taobao" | "unavailable"; message?: string }
 
-function scraperPath() { return process.env.TAOBAO_SCRAPER_PATH || path.resolve(process.cwd(), "taobao_cli_scraper.py.py"); }
+function scraperPath() { return process.env.TAOBAO_SCRAPER_PATH || path.resolve(process.cwd(), "taobao_cli_scraper.py"); }
 
-/** 调用本机 Playwright/Edge 爬虫。淘宝的登录、验证码或浏览器缺失不会阻塞应用主流程。 */
+let activeSearch: Promise<TaobaoSearchResult> | null = null;
+let lastSearchAt = 0;
+const MIN_REQUEST_INTERVAL_MS = 12_000;
+
+/**
+ * 调用本机 Playwright/Edge 爬虫。
+ * 只允许单请求、低频查询，并复用人工登录态；不绕过验证码或平台限制。
+ */
 export async function searchTaobao(keyword: string, count = 10): Promise<TaobaoSearchResult> {
+  if (activeSearch) return activeSearch;
+  const waitMs = Math.max(0, MIN_REQUEST_INTERVAL_MS - (Date.now() - lastSearchAt));
+  activeSearch = (async () => {
+    if (waitMs > 0) await new Promise((resolve) => setTimeout(resolve, waitMs));
+    lastSearchAt = Date.now();
+    return runTaobaoSearch(keyword, count);
+  })();
+  try {
+    return await activeSearch;
+  } finally {
+    activeSearch = null;
+  }
+}
+
+async function runTaobaoSearch(keyword: string, count: number): Promise<TaobaoSearchResult> {
   const script = scraperPath();
   const python = process.env.TAOBAO_PYTHON || "python";
   return new Promise((resolve) => {
@@ -31,7 +53,7 @@ export async function searchTaobao(keyword: string, count = 10): Promise<TaobaoS
     child.on("error", () => { clearTimeout(timer); resolve({ keyword, items: [], source: "unavailable", message: "未找到可用的淘宝爬虫运行环境。" }); });
     child.on("close", (code) => {
       clearTimeout(timer);
-      if (code !== 0) { resolve({ keyword, items: [], source: "unavailable", message: stderr.trim() || "淘宝搜索未返回结果。" }); return; }
+      if (code !== 0) { resolve({ keyword, items: [], source: "unavailable", message: stderr.trim() || "淘宝搜索未返回结果。请先在本机完成淘宝登录或验证码验证。" }); return; }
       try {
         const parsed = JSON.parse(stdout.trim()) as unknown;
         const items = z.array(TaobaoItem).parse(parsed);
