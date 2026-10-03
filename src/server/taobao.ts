@@ -45,22 +45,58 @@ async function runTaobaoSearch(keyword: string, count: number): Promise<TaobaoSe
   const script = scraperPath();
   const python = process.env.TAOBAO_PYTHON || "python";
   return new Promise((resolve) => {
-    const child = spawn(python, [script, "--json", keyword, String(count)], { cwd: path.dirname(script), windowsHide: true });
-    let stdout = "";
-    let stderr = "";
-    const timer = setTimeout(() => { child.kill(); resolve({ keyword, items: [], source: "unavailable", message: "等待人工登录或安全验证超时，请重新发起比价。" }); }, SCRAPER_TIMEOUT_MS);
-    child.stdout.on("data", (chunk) => { stdout += chunk.toString(); });
-    child.stderr.on("data", (chunk) => { stderr += chunk.toString(); });
-    child.on("error", () => { clearTimeout(timer); resolve({ keyword, items: [], source: "unavailable", message: "未找到可用的淘宝爬虫运行环境。" }); });
+    const child = spawn(python, [script, "--json", keyword, String(count)], {
+      cwd: path.dirname(script),
+      windowsHide: true,
+      env: {
+        ...process.env,
+        PYTHONIOENCODING: "utf-8",
+        PYTHONUTF8: "1",
+      },
+    });
+    let stdoutBuffer = Buffer.alloc(0);
+    let stderrBuffer = Buffer.alloc(0);
+
+    const timer = setTimeout(() => {
+      child.kill();
+      resolve({ keyword, items: [], source: "unavailable", message: "等待人工登录或安全验证超时，请重新发起比价。" });
+    }, SCRAPER_TIMEOUT_MS);
+
+    child.stdout.on("data", (chunk: Buffer) => {
+      stdoutBuffer = Buffer.concat([stdoutBuffer, chunk]);
+    });
+    child.stderr.on("data", (chunk: Buffer) => {
+      stderrBuffer = Buffer.concat([stderrBuffer, chunk]);
+    });
+    child.on("error", () => {
+      clearTimeout(timer);
+      resolve({ keyword, items: [], source: "unavailable", message: "未找到可用的淘宝爬虫运行环境。" });
+    });
     child.on("close", (code) => {
       clearTimeout(timer);
-      if (code !== 0) { resolve({ keyword, items: [], source: "unavailable", message: stderr.trim() || "淘宝搜索未返回结果。若 Edge 显示登录或安全验证，请在窗口中手动完成后重试。" }); return; }
+      const stdout = stdoutBuffer.toString("utf-8").trim();
+      const stderr = stderrBuffer.toString("utf-8").trim();
+
+      if (code !== 0) {
+        resolve({
+          keyword,
+          items: [],
+          source: "unavailable",
+          message: stderr || "淘宝搜索未返回结果。若 Edge 显示登录或安全验证，请在窗口中手动完成后重试。",
+        });
+        return;
+      }
       try {
-        const parsed = JSON.parse(stdout.trim()) as unknown;
+        const parsed = JSON.parse(stdout) as unknown;
         const items = z.array(TaobaoItem).parse(parsed);
         resolve({ keyword, items, source: "taobao" });
       } catch {
-        resolve({ keyword, items: [], source: "unavailable", message: "淘宝爬虫输出格式不可识别。" });
+        resolve({
+          keyword,
+          items: [],
+          source: "unavailable",
+          message: stderr || "淘宝爬虫输出格式不可识别。",
+        });
       }
     });
   });

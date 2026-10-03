@@ -1,22 +1,25 @@
-"""淘宝商品搜索适配器。
+"""淘宝商品搜索适配器 (抗反爬修复版)。
 
 交互模式：python taobao_cli_scraper.py
 JSON 模式：python taobao_cli_scraper.py --json "洗衣液" 10
-
-JSON 模式的 stdout 只输出商品数组，诊断日志输出 stderr，供 Next.js 服务端调用。
 """
 
 import argparse
+import io
 import json
 import os
 import re
 import sys
 import time
 from pathlib import Path
+const_encoding = "utf-8"
+if sys.stdout.encoding.lower() != const_encoding:
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=const_encoding, errors="replace")
+if sys.stderr.encoding.lower() != const_encoding:
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding=const_encoding, errors="replace")
+
 from urllib.parse import quote_plus
-
 from playwright.sync_api import sync_playwright
-
 
 ROOT = Path(__file__).resolve().parent
 PROFILE_DIR = ROOT / "edge_user_data"
@@ -53,24 +56,22 @@ def parse_price(lines: list[str]) -> str | None:
 
 
 def challenge_present(page) -> bool:
-    """只识别明确的验证页面，避免普通商品页的登录文案造成误判。"""
+    """识别明确的验证/惩罚页面"""
     url_markers = ("captcha", "verify", "punish", "sec.taobao.com", "login.taobao.com")
-    strong_text_markers = ("滑动验证", "安全验证", "请输入验证码", "访问验证", "检测到异常访问", "robot check")
     try:
         current_url = page.url.lower()
-        page_text = page.locator("body").inner_text(timeout=5000).lower()
+        if any(marker in current_url for marker in url_markers):
+            return True
     except Exception:
         return True
-    if any(marker in current_url for marker in url_markers):
-        return True
-    return any(marker.lower() in page_text for marker in strong_text_markers)
+    return False
 
 
 def wait_for_manual_verification(page, search_url: str) -> None:
     wait_seconds = max(30, int(os.environ.get("TAOBAO_MANUAL_WAIT_SECONDS", "180")))
     deadline = time.monotonic() + wait_seconds
-    log("[人工操作] 淘宝要求登录或安全验证。请在已打开的 Edge 窗口中完成操作；脚本不会绕过验证。")
-    log(f"[人工操作] 最多等待 {wait_seconds} 秒，验证通过后会自动继续搜索。")
+    log("[人工操作] 淘宝要求登录或安全验证。请在已打开的 Edge 窗口中完成操作。")
+    log(f"[人工操作] 最多等待 {wait_seconds} 秒，验证通过后会自动继续。")
     while time.monotonic() < deadline:
         time.sleep(5)
         if not challenge_present(page):
@@ -91,16 +92,27 @@ def scrape_taobao(keyword: str, count: int = 10) -> list[dict]:
             user_data_dir=str(PROFILE_DIR),
             channel="msedge",
             headless=False,
-            args=["--no-sandbox"],
+            # 使用官方标记去除自动化特征，避免自行注入有缺陷的 JS 造成反效果
+            args=[
+                "--disable-blink-features=AutomationControlled",
+                "--no-sandbox",
+                "--disable-infobars",
+            ],
         )
         page = context.pages[0] if context.pages else context.new_page()
+
         try:
+            # 直接通过完整 Search URL 访问，依靠 Cookie 保持登录态
             search_url = f"https://s.taobao.com/search?q={quote_plus(keyword)}"
+            log(f"[调试] 正在访问搜索页面: {search_url}")
             page.goto(search_url, wait_until="domcontentloaded", timeout=30000)
+
             time.sleep(2)
             if challenge_present(page):
                 wait_for_manual_verification(page, search_url)
-            page.mouse.wheel(0, 500)
+
+            # 模拟滚屏触发图片与卡片懒加载
+            page.mouse.wheel(0, 800)
             time.sleep(2)
 
             selectors = [
@@ -122,22 +134,31 @@ def scrape_taobao(keyword: str, count: int = 10) -> list[dict]:
                     continue
             if not nodes:
                 log("[提示] 未匹配到商品卡片，改用 item.htm 链接容器继续提取。")
-                nodes = page.locator("a[href*='item.htm']").all()
+                try:
+                    nodes = page.query_selector_all("a[href*='item.htm']")
+                except Exception:
+                    nodes = []
 
             for node in nodes:
                 if len(products) >= count:
                     break
                 try:
-                    text = node.inner_text().strip()
-                    lines = [line.strip() for line in text.splitlines() if line.strip()]
+                    text_content = node.inner_text().strip() if hasattr(node, "inner_text") else ""
+                    if not text_content:
+                        continue
+                    lines = [line.strip() for line in text_content.splitlines() if line.strip()]
                     price = parse_price(lines)
                     if not price:
                         continue
                     title = next((line for line in lines if len(line) > 5 and "¥" not in line and "￥" not in line), keyword)
-                    link = node.get_attribute("href")
-                    if not link:
+                    
+                    link = None
+                    if hasattr(node, "get_attribute"):
+                        link = node.get_attribute("href")
+                    if not link and hasattr(node, "query_selector"):
                         link_node = node.query_selector("a[href*='item.htm']")
                         link = link_node.get_attribute("href") if link_node else None
+                    
                     image = first_image(node)
                     products.append({
                         "index": len(products) + 1,
@@ -149,7 +170,8 @@ def scrape_taobao(keyword: str, count: int = 10) -> list[dict]:
                         "description": "；".join(lines[:3])[:240],
                     })
                 except Exception as error:
-                    log(f"[警告] 跳过商品卡片: {error}")
+                    log(f"[警告] 提取商品属性跳过: {error}")
+                    continue
         finally:
             context.close()
     return products
