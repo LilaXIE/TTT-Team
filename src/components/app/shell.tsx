@@ -100,7 +100,7 @@ export function AppShell({ demoMode, children }: { demoMode: boolean; children: 
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-50 flex h-14 items-center justify-between gap-3 bg-canvas/85 px-4 backdrop-blur md:px-6">
+          <header className="sticky top-0 z-50 flex h-14 items-center justify-between gap-3 bg-canvas/85 px-8 backdrop-blur md:px-12">
             <Link href="/" className="md:hidden">
               <Logo />
             </Link>
@@ -148,7 +148,7 @@ export function AppShell({ demoMode, children }: { demoMode: boolean; children: 
             </Banner>
           )}
 
-          <main className="w-full flex-1 px-4 pt-4 pb-24 md:px-6 md:pt-5 md:pb-8">{children}</main>
+          <main className="w-full flex-1 px-8 pt-4 pb-24 md:px-12 md:pt-5 md:pb-8">{children}</main>
           <Disclaimer />
         </div>
 
@@ -183,7 +183,7 @@ function TabLink({ item, active }: { item: NavItem; active: boolean }) {
 
 function Banner({ tone, icon, children }: { tone: "ask" | "no"; icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="px-4 md:px-6">
+    <div className="px-8 md:px-12">
       <div
         className={cn(
           "mt-1 flex w-full flex-wrap items-center gap-2 rounded-2xl px-4 py-2.5 text-[13px]",
@@ -200,7 +200,7 @@ function Banner({ tone, icon, children }: { tone: "ask" | "no"; icon: React.Reac
 export function Disclaimer({ className }: { className?: string }) {
   const { t } = useLang();
   return (
-    <footer className={cn("px-4 pb-24 text-[11.5px] leading-relaxed text-soft md:px-6 md:pb-6", className)}>
+    <footer className={cn("px-8 pb-24 text-[11.5px] leading-relaxed text-soft md:px-12 md:pb-6", className)}>
       <div className="border-t border-line pt-4">
         {t(
           "支付由模拟器执行，不连接真实资金。费率与回赠为公开页面的观测值，标注来源与时间。「商家凭证验证通过」只表示所验证的条件通过，不代表商家绝对可信。",
