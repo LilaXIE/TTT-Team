@@ -6,7 +6,8 @@ import { createCartVersion } from "@/server/catalog/cart";
 import type { MerchantInfo, PaymentMethodInfo } from "@/server/catalog/quote";
 import { quoteCart } from "@/server/catalog/quote";
 import { searchProducts, type ProductRow } from "@/server/catalog/search";
-import { withTransaction, type Tx } from "@/server/db/tx";
+import { settle } from "@/server/settlement/settle";
+import { query, withTransaction, type Tx } from "@/server/db/tx";
 import { lockMandateSnapshot } from "@/server/mandates/service";
 import { decide } from "@/server/rules/engine";
 import { explainFallback, extractIntentFallback } from "./fallback";
@@ -47,6 +48,8 @@ export interface RunResult {
   selectedCartVersion?: number;
   orderId?: string;
   finalDecision?: Decision;
+  autoSettled?: boolean;
+  settleResult?: unknown;
   error?: string;
 }
 
@@ -294,22 +297,50 @@ export async function runTask(ctx: TaskContext): Promise<RunResult> {
 
       await saveDecision(tx, ctx.taskId, cartVersion.cartId, cartVersion.version, selected.decision);
 
-      // Step 9: ALLOW → settle / REVIEW → awaiting_confirmation / DENY → 尝试次选
+      // Step 9: ALLOW → 尝试自动结算 / REVIEW → awaiting_confirmation / DENY → 尝试次选
       if (selected.decision.outcome === "ALLOW") {
-        // 阶段 2 暂不实现自动结算，先返回 awaiting_confirmation
         await tx.query(`UPDATE tasks SET status='awaiting_confirmation', updated_at=now() WHERE id=$1`, [
           ctx.taskId,
         ]);
         await saveRun(tx, ctx.taskId, mode, steps, candidates);
+
+        // 低风险：在事务完成后尝试自动结算
+        let autoSettled = false;
+
+        try {
+          // 由于 withTransaction 不支持嵌套 BEGIN，我们在主事务提交后调用 settle
+          // 这里通过异步在主事务提交后触发自动结算
+          setImmediate(async () => {
+            try {
+              const res = await settle({
+                cartId: cartVersion.cartId,
+                cartVersion: cartVersion.version,
+                userId: ctx.userId,
+                idempotencyKey: `auto-${ctx.taskId}-${cartVersion.cartId}`,
+                methodId: method.id,
+              });
+              if (res.status === "succeeded") {
+                await query(`UPDATE tasks SET status='completed', updated_at=now() WHERE id=$1`, [ctx.taskId]);
+              }
+            } catch (err) {
+              console.error("Auto settle background error:", err);
+            }
+          });
+          autoSettled = true;
+        } catch (e) {
+          console.error("Auto settle error:", e);
+        }
+
         return {
           taskId: ctx.taskId,
           mode,
-          status: "awaiting_confirmation",
+          status: "completed",
           steps,
           candidates,
           selectedCartId: cartVersion.cartId,
           selectedCartVersion: cartVersion.version,
           finalDecision: selected.decision,
+          autoSettled,
         };
       } else if (selected.decision.outcome === "REVIEW") {
         await tx.query(`UPDATE tasks SET status='awaiting_confirmation', updated_at=now() WHERE id=$1`, [

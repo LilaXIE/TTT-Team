@@ -46,12 +46,29 @@ def first_image(node) -> str | None:
     return image.get_attribute("src") or image.get_attribute("data-src") or image.get_attribute("data-lazy-src")
 
 
-def parse_price(lines: list[str]) -> str | None:
+def parse_price(lines: list[str], text_content: str = "") -> str | None:
+    # 1. 在整体文本中正则匹配 ¥27.9 / ￥27.9
+    m = re.search(r"(?:¥|￥)\s*(\d+(?:\.\d+)?)", text_content)
+    if m:
+        return f"¥{m.group(1)}"
+
+    # 2. 逐行匹配包含 ¥ 或 ￥ 的价格
+    for i, line in enumerate(lines):
+        m = re.search(r"(?:¥|￥)\s*(\d+(?:\.\d+)?)", line)
+        if m:
+            return f"¥{m.group(1)}"
+        # 若本行为纯货币符号，则检查下一行是否为纯数字
+        if line.strip() in ("¥", "￥") and i + 1 < len(lines):
+            nxt = lines[i + 1].strip()
+            nm = re.search(r"^(\d+(?:\.\d+)?)$", nxt)
+            if nm:
+                return f"¥{nm.group(1)}"
+
+    # 3. 匹配独立的纯价格数字
     for line in lines:
-        if "¥" in line or "￥" in line:
-            return line.replace("￥", "¥")
         if re.fullmatch(r"\d+(?:\.\d{1,2})?", line) and len(line) < 10:
-            return "¥" + line
+            return f"¥{line}"
+
     return None
 
 
@@ -147,8 +164,8 @@ def scrape_taobao(keyword: str, count: int = 10) -> list[dict]:
                     if not text_content:
                         continue
                     lines = [line.strip() for line in text_content.splitlines() if line.strip()]
-                    price = parse_price(lines)
-                    if not price:
+                    price = parse_price(lines, text_content)
+                    if not price or price.strip() in ("¥", "￥"):
                         continue
                     title = next((line for line in lines if len(line) > 5 and "¥" not in line and "￥" not in line), keyword)
                     

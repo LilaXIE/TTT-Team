@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
+import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,10 +12,23 @@ import { api, ApiError } from "@/lib/api";
 type Item = { title: string; price: string; shop: string; url?: string; image?: string; description?: string };
 type Result = { keyword: string; items: Item[]; source: "taobao" | "unavailable"; message?: string };
 
-export function CompareClient({ initialQuery = "" }: { initialQuery?: string }) {
+export function CompareClient({
+  initialQuery = "",
+  taskId = "",
+  mandateId = "",
+  isRisk = false,
+}: {
+  initialQuery?: string;
+  taskId?: string;
+  mandateId?: string;
+  isRisk?: boolean;
+}) {
+  const router = useRouter();
   const [keyword, setKeyword] = useState(initialQuery);
   const [result, setResult] = useState<Result | null>(null);
   const [loading, setLoading] = useState(false);
+  const [pendingItemIndex, setPendingItemIndex] = useState<number | null>(null);
+  const [pending, start] = useTransition();
 
   const search = useCallback(async (query = keyword) => {
     if (!query.trim()) return;
@@ -33,8 +48,41 @@ export function CompareClient({ initialQuery = "" }: { initialQuery?: string }) 
     return () => window.clearTimeout(timer);
   }, [initialQuery, search]);
 
+  function handleConfirmItem(item: Item, index: number) {
+    if (!taskId || !mandateId) {
+      toast.error("当前未关联任何代购任务，请先发起代购任务。");
+      return;
+    }
+    setPendingItemIndex(index);
+    start(async () => {
+      try {
+        await api<{ status: string; orderId: string; totalMinor: string }>("/api/tasks/confirm-item", {
+          method: "POST",
+          json: { taskId, mandateId, item },
+        });
+        toast.success(`🎉 代理下单成功！已为您自动扣款完成交易。`);
+        router.push("/ledger");
+      } catch (e) {
+        toast.error(e instanceof ApiError ? e.message : "代理下单失败，请重试。");
+      } finally {
+        setPendingItemIndex(null);
+      }
+    });
+  }
+
   return (
     <div className="space-y-5">
+      {isRisk && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900">
+          <div className="flex items-center gap-2 font-medium">
+            <span>⚠️ 代理风险评价提示</span>
+          </div>
+          <p className="mt-1 text-sm text-amber-800">
+            当前代购任务经过评估触发了风险确认规则（例如：换品牌/接近上限/高关注类别）。已暂停自动划款，请在下方选择任意一款商品点击【🤖 委托 Agent 代理下单】完成购买。
+          </p>
+        </div>
+      )}
+
       <Card className="border-zinc-200 shadow-sm">
         <CardContent className="p-5">
           <div className="flex gap-3">
@@ -62,12 +110,32 @@ export function CompareClient({ initialQuery = "" }: { initialQuery?: string }) 
       {!!result?.items.length && (
         <div className="grid gap-4 md:grid-cols-2">
           {result.items.map((item, index) => (
-            <Card key={`${item.url ?? item.title}-${index}`} className="overflow-hidden">
-              <div className="flex gap-4 p-4">
-                {item.image ? <img src={item.image} alt="" className="size-28 rounded-lg object-cover" /> : <div className="flex size-28 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-xs text-zinc-400">淘宝商品</div>}
-                <div className="min-w-0 flex-1"><h3 className="line-clamp-2 font-medium">{item.title}</h3><p className="mt-1 text-xs text-zinc-500">{item.shop}</p><p className="mt-2 text-xl font-semibold text-red-600">{item.price}</p></div>
+            <Card key={`${item.url ?? item.title}-${index}`} className="flex flex-col overflow-hidden justify-between">
+              <div>
+                <div className="flex gap-4 p-4">
+                  {item.image ? <img src={item.image} alt="" className="size-28 rounded-lg object-cover" /> : <div className="flex size-28 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-xs text-zinc-400">淘宝商品</div>}
+                  <div className="min-w-0 flex-1"><h3 className="line-clamp-2 font-medium">{item.title}</h3><p className="mt-1 text-xs text-zinc-500">{item.shop}</p><p className="mt-2 text-xl font-semibold text-red-600">{item.price}</p></div>
+                </div>
+                <CardContent className="border-t pt-3">
+                  <p className="line-clamp-2 text-sm text-zinc-600">{item.description || "淘宝商品详情以商品页面为准。"}</p>
+                </CardContent>
               </div>
-              <CardContent className="border-t pt-3"><p className="line-clamp-2 text-sm text-zinc-600">{item.description || "淘宝商品详情以商品页面为准。"}</p>{item.url && <a href={item.url} target="_blank" rel="noreferrer" className="mt-3 inline-block text-sm font-medium text-blue-600 hover:underline">打开淘宝商品 →</a>}</CardContent>
+              <div className="flex items-center justify-between border-t bg-zinc-50/50 px-4 py-3">
+                {item.url ? (
+                  <a href={item.url} target="_blank" rel="noreferrer" className="text-xs font-medium text-zinc-500 hover:text-zinc-900 underline">
+                    打开淘宝商品 ↗
+                  </a>
+                ) : <span />}
+                {taskId && mandateId && (
+                  <Button
+                    size="sm"
+                    disabled={pending}
+                    onClick={() => handleConfirmItem(item, index)}
+                  >
+                    {pending && pendingItemIndex === index ? "代理下单中…" : "🤖 委托 Agent 代理下单"}
+                  </Button>
+                )}
+              </div>
             </Card>
           ))}
         </div>

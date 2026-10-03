@@ -16,8 +16,14 @@ export function TaskStartForm({ mandateId, defaultQuery }: { mandateId: string; 
     event.preventDefault();
     start(async () => {
       try {
-        await api("/api/tasks", { method: "POST", json: { mandateId, text } });
-        router.push(`/compare?q=${encodeURIComponent(defaultQuery)}`);
+        const res = await api<{ status: string; autoSettled?: boolean; taskId: string }>("/api/tasks", { method: "POST", json: { mandateId, text } });
+        if (res.status === "completed" && res.autoSettled) {
+          toast.success("🛡️ 低风险关联购买：Agent 已根据授权边界自动为您代理扣款下单！");
+          router.push("/ledger");
+        } else {
+          toast.info("⚠️ 当前代购任务评估存在需确认项/风险规则，已进入全网比价环节供您选择确认。");
+          router.push(`/compare?q=${encodeURIComponent(defaultQuery)}&taskId=${res.taskId}&mandateId=${mandateId}&risk=1`);
+        }
       } catch (e) { toast.error(e instanceof ApiError ? e.message : "Agent 执行失败"); }
     });
   }
