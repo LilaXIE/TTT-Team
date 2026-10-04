@@ -1,10 +1,10 @@
-## AI Shopping Agent with Auto Payment
+# AI Shopping Agent with Auto Payment
 
 An intelligent, end-to-end AI shopping assistant built with Streamlit and DeepSeek. 
 It understands natural-language shopping requests, compares real-time prices across China's top e-commerce platforms,
 curates refined product recommendations through a 4-stage funnel, and completes the entire checkout flow — from address selection to payment — with email-based verification.
 
-# ✨ Features
+## ✨ Features
 
 *🤖 Conversational Shopping Assistant*
 - Natural-language intent parsing (category, price range, attributes like color/brand/capacity).
@@ -43,7 +43,7 @@ curates refined product recommendations through a 4-stage funnel, and completes 
 - Password validation (min 8 chars, must include letters and digits).
 - Persistent chat sessions and purchase history per user.
 
-# 📂 Project Structure
+## 📂 Project Structure
 
 ```text
 Agent/
@@ -55,7 +55,7 @@ Agent/
 └── README.md               # This file
 ```
 
-# 🚀 Quick Start
+## 🚀 Quick Start
 
 *1. Prerequisites*
 - Python 3.12 or higher
@@ -90,7 +90,7 @@ SMTP_PORT     = 465
 SMTP_USE_SSL  = true
 ```
 
-# ⚠️ Never commit secrets.toml to version control. Add .streamlit/secrets.toml to .gitignore.
+## ⚠️ Never commit secrets.toml to version control. Add .streamlit/secrets.toml to .gitignore.
 
 *4. Run the App*
 - Local Implementation: streamlit run app.py
@@ -106,7 +106,7 @@ Email:    test@example.com
 Password: password123
 ```
 
-# 🛒 Usage Walkthrough
+## 🛒 Usage Walkthrough
 
 1. Sign up / log in with your email.
 2. Tell the agent what you want — e.g.:
@@ -132,10 +132,10 @@ SMTP_PORT	           ❌	     SMTP port (auto-detected)
 SMTP_USE_SSL	       ❌	     Use SSL (auto-detected)
 ```
 
-# 📄 License
+## 📄 License
 This project is provided for educational and demonstration purposes. Use at your own risk. Ensure compliance with the terms of service of all third-party APIs (DeepSeek, Tencent Cloud, and the e-commerce platforms referenced).
 
-# Acknowledgements
+## Acknowledgements
 ```text
 Streamlit – Rapid UI framework
 DeepSeek – LLM reasoning engine
