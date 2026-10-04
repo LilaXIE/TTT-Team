@@ -99,10 +99,12 @@ SMTP_USE_SSL  = true
 # 🧪 Test Account
 A demo account is pre-loaded for quick testing:
 
+```text
 Field	     |Value
 -----------------------------
 Email      |test@example.com
 Password	 |password123
+```
 
 # 🛒 Usage Walkthrough
 
@@ -117,6 +119,7 @@ Password	 |password123
 7. Done! You'll receive a payment receipt email.
 
 *Key modules in app.py:*
+```text
         Key	       | Required |         Description
 --------------------------------------------------------------------
 DEEPSEEK_API_KEY	 |    ✅	  |  DeepSeek API key for LLM reasoning
@@ -127,6 +130,7 @@ SMTP_PASS	         |    ✅    |  Sender email app password
 SMTP_HOST	         |    ❌	  |  SMTP host (auto-detected)
 SMTP_PORT	         |    ❌	  |  SMTP port (auto-detected)
 SMTP_USE_SSL	     |    ❌	  |  Use SSL (auto-detected)
+```
 
 # 📄 License
 This project is provided for educational and demonstration purposes. Use at your own risk. Ensure compliance with the terms of service of all third-party APIs (DeepSeek, Tencent Cloud, and the e-commerce platforms referenced).
