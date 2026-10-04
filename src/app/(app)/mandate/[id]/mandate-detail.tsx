@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { fmtDate, fmtDateTime, fmtMoney } from "@/lib/format";
 import { useLang } from "@/lib/i18n";
 import { METHODS, productOf } from "@/lib/mock/catalog";
-import { sendOnTask, startTask } from "@/lib/mock/agent";
+import { openMandateTask, sendOnTask, shopWithMandate } from "@/lib/mock/agent";
 import { actions, useMock, useNow, useSessionMode } from "@/lib/mock/store";
 import { CATEGORY_LABEL } from "@/lib/rule-text";
 
@@ -210,6 +210,25 @@ export function MandateDetail({ id }: { id: string }) {
                 })}
               </ul>
             )}
+            {active && (
+              <div className="mt-4 border-t border-line pt-4">
+                <Button
+                  disabled={mode === "attacker" || s.session.frozen || m.remainingPurchases <= 0}
+                  onClick={() => {
+                    const id = shopWithMandate(m.id);
+                    if (id) router.push(`/task/${id}`);
+                    else toast.error(t("这份授权已经不能再买了。", "This mandate cannot buy anything else."));
+                  }}
+                >
+                  {t("用这份授权去买", "Shop with this mandate")}
+                </Button>
+                <p className="mt-2 text-[12px] leading-relaxed text-soft">
+                  {m.remainingPurchases > 0
+                    ? t("直接在这份已经签好的授权里找商品，不用回到原来的对话，也不会另开一份。", "Search under this signed mandate. You don't need the original chat, and this does not draft a new one.")
+                    : t("购买次数已经用完。", "No purchases left.")}
+                </p>
+              </div>
+            )}
           </Panel>
         </div>
 
@@ -250,20 +269,15 @@ export function MandateDetail({ id }: { id: string }) {
           {active && (
             <Panel>
               <PanelTitle>{t("还想改要求", "Change what to buy")}</PanelTitle>
-              <p className="mb-3 text-[13px] text-soft">{t("授权还在。下面补充规格、牌子或送到时间，会按同一份授权重新找。金额上限不会在这里被改掉。", "The mandate stays. Add a spec, brand or delivery time below and Zev searches again under the same mandate. Caps are not changed here.")}</p>
+              <p className="mb-3 text-[13px] text-soft">{t("还是改这一份。补充规格、牌子、送到时间，或说「改成最多可以买 3 次」，不会另开一封授权。", "This stays on the same mandate. Add a spec, brand, delivery time, or say “up to 3 purchases”. It will not draft a new one.")}</p>
               <Composer
-                placeholder={t("例如：改成无香，今天到", "e.g. unscented, arrives today")}
+                placeholder={t("例如：改成最多可以买 3 次", "e.g. up to 3 purchases")}
                 disabled={mode === "attacker" || s.session.frozen}
                 onSend={(text) => {
-                  const related = s.tasks.find((task) => task.mandateId === m.id);
-                  void (async () => {
-                    if (related) {
-                      const next = await sendOnTask(related.id, text);
-                      router.push(`/task/${next ?? related.id}`);
-                      return;
-                    }
-                    router.push(`/task/${startTask(`${m.query.zh}。${text}`)}`);
-                  })();
+                  const taskId = openMandateTask(m.id);
+                  void sendOnTask(taskId, text).then((next) => {
+                    router.push(`/task/${next ?? taskId}`);
+                  });
                 }}
               />
             </Panel>

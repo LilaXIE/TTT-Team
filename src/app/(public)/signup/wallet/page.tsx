@@ -46,7 +46,7 @@ export default function SignupWalletPage() {
         )}
       </div>
       <ul className="mt-5 space-y-2 text-[13px] text-soft">
-        <li>· {t("单次充值最多 HK$500，由你在钱包里确认。", "Each top-up is capped at HK$500 and you confirm it in the wallet.")}</li>
+        <li>· {t("单次充值最多 $500，由你在钱包里确认。", "Each top-up is capped at $500 and you confirm it in the wallet.")}</li>
         <li>· {t("我们看不到你的钱包余额和交易记录。", "We can't see your wallet balance or history.")}</li>
         <li>· {t("随时可以在「我的 › 连接」里断开。", "Disconnect anytime under Me › Connections.")}</li>
       </ul>

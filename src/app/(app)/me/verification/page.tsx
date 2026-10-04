@@ -19,8 +19,8 @@ export default function VerificationPage() {
   const levels = [
     { done: true, title: t("手机号", "Phone"), sub: t("登录、安全提醒", "Sign-in and alerts"), unlock: t("可以查看", "View") },
     { done: s.user.passkey, title: t("通行密钥", "Passkey"), sub: t("签授权、确认付款", "Sign mandates, approve payments"), unlock: t("可以授权 Zev 买东西", "Let Zev buy") },
-    { done: s.connections.tapngo, title: t("钱包实名", "Wallet identity"), sub: t("由 Tap & Go 完成，我们不看证件", "Done by Tap & Go; we never see your ID"), unlock: t("单笔 1,000.00 港元以内", "Orders up to HK$1,000.00") },
-    { done: upgraded, title: t("升级认证", "Upgraded"), sub: t("单笔超过 1,000.00 港元时才需要", "Only for orders above HK$1,000.00"), unlock: t("单笔 1,000.00 港元以上", "Orders above HK$1,000.00") },
+    { done: s.connections.tapngo, title: t("钱包实名", "Wallet identity"), sub: t("由 Tap & Go 完成，我们不看证件", "Done by Tap & Go; we never see your ID"), unlock: t("单笔 $1,000.00 以内", "Orders up to $1,000.00") },
+    { done: upgraded, title: t("升级认证", "Upgraded"), sub: t("单笔超过 $1,000.00 时才需要", "Only for orders above $1,000.00"), unlock: t("单笔 $1,000.00 以上", "Orders above $1,000.00") },
   ];
 
   const upgrade = async () => {

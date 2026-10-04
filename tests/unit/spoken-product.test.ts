@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { draftFromIntent, parseIntent } from "@/lib/mock/agent";
-import { catalogToken } from "@/lib/mock/catalog";
+import { draftFromIntent, parseIntent, readAmendment } from "@/lib/mock/agent";
+import { catalogToken, productOf } from "@/lib/mock/catalog";
+import { evaluate } from "@/lib/mock/evaluate";
 import { extractIntentFallback } from "@/server/agent/fallback";
 import { groundedQuery, namesSameItem, spokenProduct } from "@/lib/spoken-product";
 
@@ -48,6 +49,49 @@ describe("spoken product stays on the user's words", () => {
     expect(parseIntent("帮我买一瓶洗洁精").token).toBe("洗洁精");
     expect(parseIntent("Buy a bottle of dish soap.").label).toEqual({ zh: "洗洁精", en: "dish soap" });
     expect(extractIntentFallback("帮我补一瓶洗衣液，2L 以上，150 以内").query).toBe("洗衣液");
+  });
+
+  it("keeps shipping out of an item-price cap", () => {
+    const text = "帮我买一瓶至少2L的洗衣液，商品价格118港元以内就行，运费另算，直接买。";
+    const intent = parseIntent(text);
+    expect(intent.kind).toBe("detergent");
+    expect(intent.minVolumeMl).toBe(2000);
+    expect(intent.itemPriceCapMinor).toBe("11800");
+    expect(intent.perTxnMinor).toBe("14800");
+    const draft = draftFromIntent(intent);
+    expect(draft.itemPriceCapMinor).toBe("11800");
+    expect(draft.perTxnMinor).toBe("14800");
+    expect(BigInt(draft.totalMinor)).toBe(29600n);
+    const priced = evaluate(
+      {
+        id: "draft",
+        version: 1,
+        status: "active",
+        expiresAt: "2026-12-01T00:00:00+08:00",
+        revokedAt: null,
+        categories: ["household"],
+        perTxnMinor: draft.perTxnMinor,
+        totalMinor: draft.totalMinor,
+        remainingMinor: draft.totalMinor,
+        maxPurchases: draft.maxPurchases,
+        remainingPurchases: draft.maxPurchases,
+        reviewWhen: draft.reviewWhen,
+        methods: draft.methods,
+        preferredBrand: draft.preferredBrand,
+        allowSubstituteBrand: draft.allowSubstituteBrand,
+        minVolumeMl: draft.minVolumeMl,
+      },
+      productOf("p_a_jia_2l"),
+      { now: new Date("2026-10-04T01:00:00+08:00") },
+    );
+    expect(priced.subtotal).toBe(11800n);
+    expect(priced.shipping).toBe(2000n);
+    expect(priced.outcome).not.toBe("DENY");
+  });
+
+  it("reads a purchase-count change as an amendment", () => {
+    expect(readAmendment("改成最多可以买3次")).toEqual({ maxPurchases: 3 });
+    expect(readAmendment("帮我买一瓶洗衣液")).toBeNull();
   });
 
   it("does not treat a delivery follow-up as a new product", () => {

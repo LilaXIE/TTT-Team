@@ -18,7 +18,7 @@ export default function ConnectionsPage() {
       icon: Wallet,
       name: "Tap & Go",
       on: s.connections.tapngo,
-      scope: t("给 Agent 零钱包充值，单次最多 500.00 港元；读取实名认证状态", "Top up the Agent pocket (≤ HK$500.00 each); read identity status"),
+      scope: t("给 Agent 零钱包充值，单次最多 $500.00；读取实名认证状态", "Top up the Agent pocket (≤ $500.00 each); read identity status"),
       href: "/consent/tapngo?return=/me/connections",
     },
     {

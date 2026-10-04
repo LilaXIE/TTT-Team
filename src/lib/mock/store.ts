@@ -325,6 +325,7 @@ export const actions = {
       reviewWhen: fields.reviewWhen,
       protection: fields.protection,
       methods: fields.methods,
+      itemPriceCapMinor: fields.itemPriceCapMinor ?? null,
       createdAt: at,
       revokedAt: null,
       versions: [{ v: 1, at, note: { zh: "用通行密钥签发", en: "Signed with passkey" } }],
@@ -333,15 +334,19 @@ export const actions = {
     return id;
   },
 
-  /** 收紧权限立即生效、不需要通行密钥：降低上限、减少次数、多加「先问我」 */
-  tightenMandate(id: string, patch: Partial<Pick<MockMandate, "perTxnMinor" | "remainingPurchases" | "reviewWhen">>, note: Tx) {
+  /** 改当前授权：收紧立刻生效；次数也可以在这里改，仍是同一份授权 */
+  tightenMandate(id: string, patch: Partial<Pick<MockMandate, "perTxnMinor" | "remainingPurchases" | "maxPurchases" | "reviewWhen">>, note: Tx) {
     set((s) =>
       addActivity(
         {
           ...s,
-          mandates: s.mandates.map((m) =>
-            m.id === id && m.status === "active" ? { ...m, ...patch, version: m.version + 1, versions: [...m.versions, { v: m.version + 1, at: nowIso(), note }] } : m,
-          ),
+          mandates: s.mandates.map((m) => {
+            if (m.id !== id || (m.status !== "active" && m.status !== "completed")) return m;
+            const next = { ...m, ...patch, version: m.version + 1, versions: [...m.versions, { v: m.version + 1, at: nowIso(), note }] };
+            if (next.remainingPurchases <= 0) next.status = "completed";
+            else if (next.status === "completed") next.status = "active";
+            return next;
+          }),
         },
         "revoke",
         note,

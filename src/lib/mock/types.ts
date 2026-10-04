@@ -79,6 +79,8 @@ export interface MockMandate {
   reviewWhen: ReviewWhen;
   protection: "standard" | "enhanced";
   methods: MethodId[];
+  /** 用户说「商品价格 … 运费另算」时，这是商品标价上限；单笔上限另含运费 */
+  itemPriceCapMinor?: string | null;
   createdAt: string;
   revokedAt: string | null;
   versions: MandateVersion[];
@@ -185,6 +187,8 @@ export interface DraftFields {
   reviewWhen: ReviewWhen;
   protection: "standard" | "enhanced";
   methods: MethodId[];
+  /** 商品标价上限。有值时运费不计入这道线，单笔上限已含运费余量 */
+  itemPriceCapMinor?: string | null;
 }
 
 export type Block =

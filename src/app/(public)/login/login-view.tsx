@@ -32,7 +32,7 @@ function Stage() {
       <div className="relative flex h-full flex-col gap-4">
         <div className="flex justify-end">
           <div className="max-w-[80%] rounded-[18px] rounded-br-md bg-ink px-4 py-2.5 text-[14px] text-white">
-            {t("帮我补一瓶洗衣液，HK$150 以内，可以换牌子。", "Restock laundry liquid under HK$150, other brands OK.")}
+            {t("帮我补一瓶洗衣液，$150 以内，可以换牌子。", "Restock laundry liquid under $150, other brands OK.")}
           </div>
         </div>
         {scene === 0 && (
@@ -48,8 +48,8 @@ function Stage() {
             <div className="text-[10px] tracking-[0.18em] text-white/50 uppercase">{t("授权书 · v1", "Mandate · v1")}</div>
             <div className="mt-1 font-heading text-[17px]">{t("日用品补货", "Household restock")}</div>
             <div className="mt-3 text-[10px] text-white/50">{t("剩余额度", "Remaining")}</div>
-            <div className="font-heading text-[20px] tabular">{t("300.00 港元", "HK$300.00")}</div>
-            <div className="mt-1 text-[11px] text-white/60">{t("单笔 ≤ 150.00 港元 · 7 天", "≤ HK$150.00 per order · 7 days")}</div>
+            <div className="font-heading text-[20px] tabular">{t("$300.00", "$300.00")}</div>
+            <div className="mt-1 text-[11px] text-white/60">{t("单笔 ≤ $150.00 · 7 天", "≤ $150.00 per order · 7 days")}</div>
             <Dot className="absolute right-4 bottom-4 size-2.5" />
           </div>
         </div>
@@ -64,7 +64,7 @@ function Stage() {
             <div key={o} className="rounded-2xl bg-white p-3 ring-1 ring-line">
               <OutcomeChip outcome={o} className="h-5 px-2 text-[10px]" />
               <div className="mt-2 truncate text-[12px]">{label}</div>
-              <div className="text-[11px] text-soft tabular">{t(`${n}.00 港元`, `HK$${n}.00`)}</div>
+              <div className="text-[11px] text-soft tabular">{t(`$${n}.00`, `$${n}.00`)}</div>
             </div>
           ))}
         </div>
@@ -76,7 +76,7 @@ function Stage() {
             <div>{t("已付款 · 规则全部通过", "Paid · every rule passed")}</div>
             <div className="text-[11px] text-soft">{t("FPS · 模拟", "FPS · simulated")}</div>
           </div>
-          <span className="font-heading text-[18px] tabular">{t("138.00 港元", "HK$138.00")}</span>
+          <span className="font-heading text-[18px] tabular">{t("$138.00", "$138.00")}</span>
         </div>
       </div>
       <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">

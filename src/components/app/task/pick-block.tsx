@@ -252,7 +252,7 @@ function Alternatives({ ranked, current, task, mandateId, onFilter }: { ranked: 
 
 function FilterLayer({ ranked, capMinor, onCancel, onApply }: { ranked: Scored[]; capMinor: string; onCancel: () => void; onApply: (f: Filters) => void }) {
   const { t, lang } = useLang();
-  // 滑块按 10 港元一档，档位是序号而不是金额本身
+  // 滑块按 $10一档，档位是序号而不是金额本身
   const STEP = 1000n;
   const steps = Number(BigInt(capMinor) / STEP);
   const [idx, setIdx] = useState(steps);

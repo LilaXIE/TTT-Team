@@ -427,7 +427,7 @@ export function DeniedBlock({ b, taskId }: { b: B<"denied">; taskId: string }) {
             ) : raising ? (
               <div className="flex flex-wrap items-end gap-2">
                 <label className="block">
-                  <span className="mb-1.5 block text-[13px] text-soft">{t("新的单笔上限（港元）", "New per-order cap (HKD)")}</span>
+                  <span className="mb-1.5 block text-[13px] text-soft">{t("新的单笔上限（$）", "New per-order cap ($)")}</span>
                   <Input value={text} onChange={(e) => setText(e.target.value)} inputMode="decimal" className="w-36 tabular" />
                 </label>
                 <Button onClick={submit}>
@@ -512,7 +512,7 @@ export function NeedGuide({ onApply }: { onApply?: (text: string) => void }) {
     if (picked[key] !== "自定义") return picked[key] ?? "";
     const raw = (custom[key] ?? "").trim();
     if (!raw) return "";
-    if (key === "budget") return `HK$${raw.replace(/^HK\$/i, "")} 以内`;
+    if (key === "budget") return `$${raw.replace(/^(?:HK)?\$/i, "")} 以内`;
     return raw;
   };
   const sentence = GUIDE.map((g) => valueOf(g.key)).filter((v) => v && !v.startsWith("不")).join("，");

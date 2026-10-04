@@ -32,14 +32,14 @@ export function hkdToMinor(input: string | number): Minor {
   return sign * (whole * 100n + frac);
 }
 
-/** 13800n -> "HK$138.00"；1234550n -> "HK$12,345.50" */
+/** 13800n -> "$138.00"；1234550n -> "$12,345.50" */
 export function formatHKD(v: Minor): string {
   const neg = v < 0n;
   const abs = neg ? -v : v;
   const whole = abs / 100n;
   const frac = (abs % 100n).toString().padStart(2, "0");
   const wholeStr = whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return `${neg ? "-" : ""}HK$${wholeStr}.${frac}`;
+  return `${neg ? "-" : ""}$${wholeStr}.${frac}`;
 }
 
 export function sumMinor(values: Iterable<Minor>): Minor {

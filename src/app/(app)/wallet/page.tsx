@@ -75,7 +75,7 @@ export default function WalletPage() {
                 <Plus />
                 {t("充值", "Top up")}
               </Button>
-              <span className="self-center text-[12px] text-white/50">{t("单次最多 500.00 港元", "Up to HK$500.00 each time")}</span>
+              <span className="self-center text-[12px] text-white/50">{t("单次最多 $500.00", "Up to $500.00 each time")}</span>
             </div>
           </div>
         </Panel>
@@ -196,7 +196,7 @@ export default function WalletPage() {
       <Dialog open={topup} onOpenChange={setTopup}>
         <DialogContent className="rounded-[24px] p-6 sm:max-w-md">
           <DialogTitle className="font-heading text-xl">{t("给 Agent 零钱包充值", "Top up Agent pocket")}</DialogTitle>
-          <DialogDescription>{t("从 Tap & Go 转入。单次最多 500.00 港元。", "From Tap & Go. Up to HK$500.00 each time.")}</DialogDescription>
+          <DialogDescription>{t("从 Tap & Go 转入。单次最多 $500.00。", "From Tap & Go. Up to $500.00 each time.")}</DialogDescription>
           {!s.connections.tapngo ? (
             <div className="rounded-2xl bg-canvas p-4 text-[14px]">
               {t("先连接 Tap & Go。", "Connect Tap & Go first.")}{" "}
@@ -214,7 +214,7 @@ export default function WalletPage() {
                 ))}
               </div>
               <label className="block">
-                <span className="mb-1.5 block text-[13px] text-soft">{t("金额（港元）", "Amount (HKD)")}</span>
+                <span className="mb-1.5 block text-[13px] text-soft">{t("金额（$）", "Amount ($)")}</span>
                 <Input value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" className="tabular" />
               </label>
               {!amountOk && <p className="text-[13px] text-no">{t("请输入 0.01 到 500.00 之间的金额。", "Enter between 0.01 and 500.00.")}</p>}

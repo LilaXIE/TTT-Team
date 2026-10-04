@@ -28,7 +28,14 @@ function specLabel(spec: Record<string, number>): string {
   return parts.join(" · ");
 }
 
-/** 把 fixtures 里扩到 98 件的目录接到页面能搜到的商品上。演示脚本用的洗衣液不重复加入。 */
+/** fixtures 的 name 是「中文 / English」，单列就能被中英文 LIKE 命中。 */
+export function splitName(name: string): { zh: string; en: string } {
+  const cut = name.indexOf(" / ");
+  if (cut < 0) return { zh: name, en: name };
+  return { zh: name.slice(0, cut), en: name.slice(cut + 3) };
+}
+
+/** 把 fixtures 目录接到页面能搜到的商品上。演示脚本用的洗衣液不重复加入。 */
 export function extraProducts(): MockProduct[] {
   return catalog.products
     .filter((p) => !/洗衣液/.test(p.name))
@@ -37,7 +44,7 @@ export function extraProducts(): MockProduct[] {
       return {
         id: `fx_${p.id}`,
         merchantId: MERCHANT[p.merchantId] ?? "m_ririxian",
-        name: { zh: p.name, en: p.name },
+        name: splitName(p.name),
         brand: { zh: p.brand, en: p.brand },
         category: categoryOf(p),
         spec: p.spec as Record<string, number>,

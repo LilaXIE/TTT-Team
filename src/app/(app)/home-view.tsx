@@ -18,11 +18,11 @@ import { merchantOf, productOf } from "@/lib/mock/catalog";
 import { activeMandates, openPending, useMock, useNow } from "@/lib/mock/store";
 
 export const SUGGESTIONS = [
-  { zh: "帮我补一瓶洗衣液，2L 以上，HK$150 以内，可以换牌子，这周内买到。", en: "Restock laundry liquid: 2L or more, under HK$150, any brand, within this week." },
+  { zh: "帮我补一瓶洗衣液，2L 以上，$150 以内，可以换牌子，这周内买到。", en: "Restock laundry liquid: 2L or more, under $150, any brand, within this week." },
   { zh: "再买一包纸巾。", en: "Buy another pack of tissue." },
   { zh: "帮我细挑一个黑色、极简的保温杯。", en: "Help me carefully pick a black, minimal tumbler." },
   { zh: "帮我买一瓶洗洁精。", en: "Buy a bottle of dish soap." },
-  { zh: "单笔上限 HK$100，帮我买洗衣液。", en: "Cap each order at HK$100 and buy laundry liquid." },
+  { zh: "单笔上限 $100，帮我买洗衣液。", en: "Cap each order at $100 and buy laundry liquid." },
 ];
 
 export function HomeView() {
@@ -60,7 +60,7 @@ export function HomeView() {
         if (res.denied?.[0]) setLiveDenied(res.denied[0]);
       })
       .catch(() => {
-        /* 没登录就用页面里已经放好的 138 港元和被拒绝示例 */
+        /* 没登录就用页面里已经放好的 $138和被拒绝示例 */
       });
   }, []);
 
@@ -95,7 +95,7 @@ export function HomeView() {
                   void go(text);
                 }
               }}
-              placeholder={t("例如：帮我补一瓶洗衣液，HK$150 以内…", "e.g. Restock laundry liquid under HK$150…")}
+              placeholder={t("例如：帮我补一瓶洗衣液，$150 以内…", "e.g. Restock laundry liquid under $150…")}
               className="min-h-12 flex-1 resize-none bg-transparent py-2 text-[15px] outline-none placeholder:text-soft"
             />
             <button type="submit" className="grid size-10 shrink-0 place-items-center rounded-full bg-violet text-white disabled:opacity-40" disabled={!text.trim() || sending} aria-label={t("发送", "Send")}>
@@ -117,13 +117,13 @@ export function HomeView() {
       <div className="grid gap-3 sm:grid-cols-2">
         <Link href={livePaid ? `/task/${livePaid.task_id}` : "/task/s1"} className="rounded-[20px] border border-ok/30 bg-white px-4 py-3 hover:border-ok">
           <div className="text-[12px] text-ok">{t("已入账", "Paid")}</div>
-          <div className="mt-1 font-heading text-[18px]">{livePaid ? <Money minor={livePaid.total_minor} /> : t("138.00 港元", "HK$138.00")}</div>
-          <div className="mt-1 text-[13px] text-soft">{livePaid ? livePaid.task_text : t("含运费 138.00 港元。打开能看到 Zev 的工作记录。", "HK$138.00 with shipping. Open it to see Zev's work log.")}</div>
+          <div className="mt-1 font-heading text-[18px]">{livePaid ? <Money minor={livePaid.total_minor} /> : t("$138.00", "$138.00")}</div>
+          <div className="mt-1 text-[13px] text-soft">{livePaid ? livePaid.task_text : t("含运费 $138.00。打开能看到 Zev 的工作记录。", "$138.00 with shipping. Open it to see Zev's work log.")}</div>
         </Link>
         <Link href={liveDenied ? `/task/${liveDenied.id}` : "/task/s3"} className="rounded-[20px] border border-no/30 bg-white px-4 py-3 hover:border-no">
           <div className="text-[12px] text-no">{t("已拦住", "Stopped")}</div>
           <div className="mt-1 font-heading text-[18px]">{t("这单不能确认放行", "This one cannot be approved")}</div>
-          <div className="mt-1 text-[13px] text-soft">{liveDenied ? liveDenied.input_text : t("2.5L 洗衣液含运费 158 港元，超过单笔上限。拒绝没有确认按钮。", "The 2.5L laundry liquid is HK$158 with shipping, over the cap. A refusal has no approve button.")}</div>
+          <div className="mt-1 text-[13px] text-soft">{liveDenied ? liveDenied.input_text : t("2.5L 洗衣液含运费 $158，超过单笔上限。拒绝没有确认按钮。", "The 2.5L laundry liquid is $158 with shipping, over the cap. A refusal has no approve button.")}</div>
         </Link>
       </div>
 

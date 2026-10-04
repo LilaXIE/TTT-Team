@@ -13,7 +13,7 @@ import { useLang } from "@/lib/i18n";
 import { productOf } from "@/lib/mock/catalog";
 import { actions, getState, openPending, useMock, useNow, useSessionMode } from "@/lib/mock/store";
 
-const S1 = "帮我补一瓶洗衣液，2L 以上，HK$150 以内，可以换牌子，这周内买到。";
+const S1 = "帮我补一瓶洗衣液，2L 以上，$150 以内，可以换牌子，这周内买到。";
 const SOAP = "帮我买一瓶洗洁精。";
 
 function Toggle({ on, onChange, label, sub }: { on: boolean; onChange: (v: boolean) => void; label: string; sub?: string }) {
@@ -91,21 +91,21 @@ export function DemoPanel() {
     {
       id: "S1",
       title: t("范围内自动完成", "Auto-complete within limits"),
-      body: t("一句话起草授权，通行密钥签发后直接付款。含运费 138.00 港元的那笔已经入账。", "One sentence drafts a mandate. After the passkey it pays. The HK$138.00 order, shipping included, is already paid."),
+      body: t("一句话起草授权，通行密钥签发后直接付款。含运费 $138.00 的那笔已经入账。", "One sentence drafts a mandate. After the passkey it pays. The $138.00 order, shipping included, is already paid."),
       href: `/task/new?q=${encodeURIComponent(S1)}`,
       alt: { href: "/task/s1", label: t("已入账的例子", "Paid example") },
     },
     {
       id: "S2",
       title: t("换牌子先问你", "Different brand asks first"),
-      body: t("品牌甲缺货，换成品牌丙要你确认。确认前可以在下面把价格涨 5.00 港元，旧确认会失效。", "Brand Jia is sold out, so Brand Bing asks first. Bump the price by HK$5.00 below and the old approval dies."),
+      body: t("品牌甲缺货，换成品牌丙要你确认。确认前可以在下面把价格涨 $5.00，旧确认会失效。", "Brand Jia is sold out, so Brand Bing asks first. Bump the price by $5.00 below and the old approval dies."),
       href: "/task/s2",
       alt: { href: "/inbox", label: t("待确认", "Inbox") },
     },
     {
       id: "S3",
       title: t("超上限直接拒绝", "Over the cap is declined"),
-      body: t("158.00 港元超过单笔 150.00 港元。没有确认按钮，拒绝不能被放行。", "HK$158.00 is over the HK$150.00 cap. There is no approve button. A refusal cannot be waved through."),
+      body: t("$158.00 超过单笔 $150.00。没有确认按钮，拒绝不能被放行。", "$158.00 is over the $150.00 cap. There is no approve button. A refusal cannot be waved through."),
       href: "/task/s3",
       alt: { href: "/inbox", label: t("待确认里的拒绝", "Refusal in inbox") },
     },
@@ -297,13 +297,13 @@ export function DemoPanel() {
             <div className="mt-3 border-t border-line pt-3">
               <div className="text-[14px]">{t("零钱包余额", "Pocket balance")}</div>
               <Money minor={s.pocketMinor} className="mt-1 block font-heading text-[22px]" />
-              <p className="mt-1 text-[12px] text-soft">{t("调到 10.00 港元后再去付款，会停住并让你充值。不会改走银行账户的 FPS。", "Set it to HK$10.00 and the next payment stops and asks for a top-up. It does not switch to a bank FPS transfer.")}</p>
+              <p className="mt-1 text-[12px] text-soft">{t("调到 $10.00后再去付款，会停住并让你充值。不会改走银行账户的 FPS。", "Set it to $10.00 and the next payment stops and asks for a top-up. It does not switch to a bank FPS transfer.")}</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 <Button size="sm" variant={pocketLow ? "default" : "outline"} onClick={() => actions.setPocketForDemo("1000")}>
-                  {t("改成 10.00 港元", "Set to HK$10.00")}
+                  {t("改成 $10.00", "Set to $10.00")}
                 </Button>
                 <Button size="sm" variant="outline" onClick={() => actions.setPocketForDemo("30000")}>
-                  {t("恢复 300.00 港元", "Restore HK$300.00")}
+                  {t("恢复 $300.00", "Restore $300.00")}
                 </Button>
               </div>
             </div>
@@ -326,7 +326,7 @@ export function DemoPanel() {
                       {productOf(p.productId).name[lang]} · v{p.cartVersion}
                     </span>
                     <Button size="sm" variant="outline" onClick={() => actions.bumpPendingPrice(p.id)}>
-                      {t("涨价 5.00 港元", "+ HK$5.00")}
+                      {t("涨价 $5.00", "+ $5.00")}
                     </Button>
                   </li>
                 ))}

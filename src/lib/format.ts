@@ -14,19 +14,19 @@ function splitMinor(minor: string | bigint): { neg: boolean; whole: string; cent
 
 export function fmtHKD(minor: string | bigint): string {
   const { neg, whole, cents } = splitMinor(minor);
-  return `${neg ? "-" : ""}HK$${whole}.${cents}`;
+  return `${neg ? "-" : ""}$${whole}.${cents}`;
 }
 
-/** 中文界面写「162.00 港元」，英文界面写「HK$162.00」 */
-export function fmtMoney(minor: string | bigint, lang: Lang): string {
+/** 金额标识一律用 $，中英文相同。lang 保留给调用方，避免改每一处签名。 */
+export function fmtMoney(minor: string | bigint, _lang: Lang): string {
   const { neg, whole, cents } = splitMinor(minor);
-  return lang === "zh" ? `${neg ? "-" : ""}${whole}.${cents} 港元` : `${neg ? "-" : ""}HK$${whole}.${cents}`;
+  return `${neg ? "-" : ""}$${whole}.${cents}`;
 }
 
 /** 不带小数的短写，用于滑块刻度等 */
-export function fmtMoneyShort(minor: string | bigint, lang: Lang): string {
+export function fmtMoneyShort(minor: string | bigint, _lang: Lang): string {
   const { neg, whole } = splitMinor(minor);
-  return lang === "zh" ? `${neg ? "-" : ""}${whole} 港元` : `${neg ? "-" : ""}HK$${whole}`;
+  return `${neg ? "-" : ""}$${whole}`;
 }
 
 const TZ = "Asia/Hong_Kong";

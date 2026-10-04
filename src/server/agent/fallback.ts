@@ -100,5 +100,5 @@ export function explainFallback(
   },
 ): string {
   const totalHKD = (candidate.totalMinor / 100n).toString();
-  return `推荐 ${candidate.merchantName} 的 ${candidate.brand} ${candidate.name}，含运费 HK$${totalHKD}，${candidate.deliveryDays} 天送达。`;
+  return `推荐 ${candidate.merchantName} 的 ${candidate.brand} ${candidate.name}，含运费 $${totalHKD}，${candidate.deliveryDays} 天送达。`;
 }

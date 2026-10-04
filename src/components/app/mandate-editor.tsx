@@ -57,7 +57,7 @@ function MoneyField({ label, value, onChange, hint }: { label: string; value: st
             }
           }}
         />
-        <span className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-sm text-soft">{t("港元", "HKD")}</span>
+        <span className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-sm text-soft">$</span>
       </div>
       {bad ? <span className="mt-1 block text-xs text-no">{t("请输入金额，最多两位小数", "Enter an amount, up to 2 decimals")}</span> : hint ? <span className="mt-1 block text-xs text-soft">{hint}</span> : null}
     </label>
@@ -91,7 +91,7 @@ function Field({ label, children, className }: { label: string; children: React.
   );
 }
 
-const CATS: Category[] = ["household", "supplement", "drinkware", "alcohol"];
+const CATS: Category[] = ["household", "supplement", "drinkware", "electronics", "alcohol"];
 const DAYS = [1, 3, 7, 14];
 
 export function MandateEditor({ value, onChange, compact }: { value: DraftFields; onChange: (f: DraftFields) => void; compact?: boolean }) {

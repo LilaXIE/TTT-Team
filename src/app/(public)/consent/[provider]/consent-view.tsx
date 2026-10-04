@@ -16,7 +16,7 @@ const COPY: Record<Provider, { name: Tx; mark: string; title: Tx; can: Tx[]; can
     mark: "#1C1B1F",
     title: { zh: "授权钱包 请求连接你的 Tap\u00a0&\u00a0Go", en: "Mandate Wallet wants to connect to your Tap\u00a0&\u00a0Go" },
     can: [
-      { zh: "允许向 Agent 零钱包充值，单次最多 HK$500", en: "Top up your Agent pocket, up to HK$500 each time" },
+      { zh: "允许向 Agent 零钱包充值，单次最多 $500", en: "Top up your Agent pocket, up to $500 each time" },
       { zh: "读取你的实名认证状态（是 / 否）", en: "See whether your identity is verified (yes / no)" },
     ],
     cannot: [

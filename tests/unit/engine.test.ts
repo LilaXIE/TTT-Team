@@ -123,7 +123,7 @@ describe("engine: DENY rules", () => {
     const d = decide(ctx({ product: p, cart: cart(p, 3000n) }), "QUOTE");
     expect(d.outcome).toBe("DENY");
     expect(ids(d)).toContain("CAP_PER_TXN");
-    expect(d.rules.find((r) => r.id === "CAP_PER_TXN")!.message).toContain("HK$158.00");
+    expect(d.rules.find((r) => r.id === "CAP_PER_TXN")!.message).toContain("$158.00");
     expect(ids(d)).not.toContain("NEAR_CAP");
   });
   it("CAP_TOTAL：剩余 100 不够 138", () => {
@@ -245,8 +245,8 @@ describe("money", () => {
   it("hkdToMinor / formatHKD / parseMinor", () => {
     expect(hkdToMinor("150")).toBe(15000n);
     expect(hkdToMinor("138.5")).toBe(13850n);
-    expect(formatHKD(13800n)).toBe("HK$138.00");
-    expect(formatHKD(1234550n)).toBe("HK$12,345.50");
+    expect(formatHKD(13800n)).toBe("$138.00");
+    expect(formatHKD(1234550n)).toBe("$12,345.50");
     expect(parseMinor("13800")).toBe(13800n);
     expect(() => parseMinor("138.00")).toThrow();
   });

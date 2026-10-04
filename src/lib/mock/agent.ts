@@ -7,7 +7,7 @@ import { hkdToMinor } from "@/contracts/money";
 import { api } from "@/lib/api";
 import { fmtMoney } from "@/lib/format";
 import { namesSameItem, spokenProduct } from "@/lib/spoken-product";
-import { merchantOf, productOf, productsMatching } from "./catalog";
+import { MERCHANTS, merchantOf, productOf, productsMatching } from "./catalog";
 import { candidatesFor, evaluate, scoreAll, type Scored } from "./evaluate";
 import { actions, getState } from "./store";
 import type { Block, Category, Delivery, DraftFields, MockMandate, QueryKind, TimelineStep, Tx } from "./types";
@@ -21,6 +21,8 @@ export interface Intent {
   label: { zh: string; en: string } | null;
   curated: boolean;
   perTxnMinor: string | null;
+  /** 「商品价格 X，运费另算」时的商品标价上限。单笔上限已加上运费余量 */
+  itemPriceCapMinor: string | null;
   minVolumeMl: number | null;
   allowSubstitute: boolean;
 }
@@ -34,21 +36,47 @@ export interface Filters {
 const nowIso = () => new Date().toISOString();
 const later = (ms: number, fn: () => void) => setTimeout(fn, ms);
 
+/** 演示商家里最高的一档运费。商品标价上限要另留这么多，结算仍按含运费总额判断。 */
+function maxShippingMinor(): bigint {
+  return MERCHANTS.filter((m) => m.credential === "valid").reduce((max, m) => {
+    const fee = BigInt(m.shippingMinor);
+    return fee > max ? fee : max;
+  }, 0n);
+}
+
+function shippingSeparate(text: string): boolean {
+  return /运费另算|运费另计|运费不算|不含运费|运费除外|shipping\s+(?:extra|separate|excluded|on top)/i.test(text);
+}
+
 export function parseIntent(text: string): Intent {
   const spoken = spokenProduct(text);
   const kind: Intent["kind"] = spoken.scripted ?? "unknown";
-  const money = text.match(/HK\$\s?(\d+(?:\.\d{1,2})?)|(\d+(?:\.\d{1,2})?)\s*(?:港元|港币|块|元|dollars?|HKD)/i);
+  const money = text.match(/(?:HK\$|\$)\s?(\d+(?:\.\d{1,2})?)|(\d+(?:\.\d{1,2})?)\s*(?:港元|港币|块|元|dollars?|HKD)/i);
   const amount = money ? (money[1] ?? money[2]) : null;
   const vol = text.match(/(\d+(?:\.\d+)?)\s*L\b/i);
+  const itemCap = amount && shippingSeparate(text) ? hkdToMinor(amount) : null;
+  const per = amount ? hkdToMinor(amount) : null;
   return {
     kind,
     token: spoken.scripted ? null : spoken.phrase,
     label: spoken.phrase ? { zh: spoken.zh, en: spoken.en } : null,
     curated: /细挑|精选|慢慢挑|carefully|curat/i.test(text) || spoken.scripted === "tumbler",
-    perTxnMinor: amount ? hkdToMinor(amount).toString() : null,
+    perTxnMinor: per === null ? null : (itemCap === null ? per : per + maxShippingMinor()).toString(),
+    itemPriceCapMinor: itemCap === null ? null : itemCap.toString(),
     minVolumeMl: vol ? Math.round(Number.parseFloat(vol[1]) * 1000) : null,
     allowSubstitute: /换牌子|换个牌子|别的牌子|any brand|other brand|different brand|switch brand/i.test(text),
   };
+}
+
+/** 「改成最多可以买 3 次」这类句子是在改当前授权，不是一件新商品。 */
+export function readAmendment(text: string): { maxPurchases: number } | null {
+  if (!/(最多|改成|改为|次数)/.test(text) || !/次/.test(text)) return null;
+  if (spokenProduct(text).catalog) return null;
+  const found = text.match(/(\d+)\s*次/);
+  if (!found) return null;
+  const n = Number.parseInt(found[1], 10);
+  if (n < 1 || n > 10) return null;
+  return { maxPurchases: n };
 }
 
 const TITLES: Record<QueryKind, { quick: Tx; curated: Tx; query: Tx; categories: Category[] }> = {
@@ -87,6 +115,7 @@ export function draftFromIntent(intent: Intent): DraftFields {
       },
       protection: "standard",
       methods: ["fps", "tapngo_mc"],
+      itemPriceCapMinor: intent.itemPriceCapMinor,
     };
   }
   const kind = intent.kind === "unknown" ? "detergent" : intent.kind;
@@ -116,6 +145,7 @@ export function draftFromIntent(intent: Intent): DraftFields {
     },
     protection: "standard",
     methods: ["fps", "tapngo_mc"],
+    itemPriceCapMinor: intent.itemPriceCapMinor,
   };
 }
 
@@ -197,8 +227,8 @@ function respond(taskId: string, intent: Intent) {
         : intent.kind === "unknown"
         ? { zh: "没认出要买什么。", en: "Could not tell what to buy." }
         : {
-            zh: `要买：${TITLES[intent.kind].query.zh}${intent.minVolumeMl ? `，至少 ${intent.minVolumeMl / 1000}L` : ""}${intent.perTxnMinor ? `，单笔 ${fmtMoney(intent.perTxnMinor, "zh")} 以内` : ""}${intent.allowSubstitute ? "，可以换牌子" : ""}。`,
-            en: `To buy: ${TITLES[intent.kind].query.en}${intent.minVolumeMl ? `, at least ${intent.minVolumeMl / 1000}L` : ""}${intent.perTxnMinor ? `, under ${fmtMoney(intent.perTxnMinor, "en")} per order` : ""}${intent.allowSubstitute ? ", other brands OK" : ""}.`,
+            zh: `要买：${TITLES[intent.kind].query.zh}${intent.minVolumeMl ? `，至少 ${intent.minVolumeMl / 1000}L` : ""}${intent.itemPriceCapMinor ? `，商品价格 ${fmtMoney(intent.itemPriceCapMinor, "zh")} 以内，运费另算` : intent.perTxnMinor ? `，单笔 ${fmtMoney(intent.perTxnMinor, "zh")} 以内` : ""}${intent.allowSubstitute ? "，可以换牌子" : ""}。`,
+            en: `To buy: ${TITLES[intent.kind].query.en}${intent.minVolumeMl ? `, at least ${intent.minVolumeMl / 1000}L` : ""}${intent.itemPriceCapMinor ? `, item price under ${fmtMoney(intent.itemPriceCapMinor, "en")}, shipping extra` : intent.perTxnMinor ? `, under ${fmtMoney(intent.perTxnMinor, "en")} per order` : ""}${intent.allowSubstitute ? ", other brands OK" : ""}.`,
           },
     ),
   ]);
@@ -222,10 +252,12 @@ function respond(taskId: string, intent: Intent) {
 
   const kind = intent.kind === "unknown" ? "detergent" : intent.kind;
   const want = intent.token ?? TITLES[kind].query.zh;
-  // 没提新预算，且已有覆盖这件事的授权 → 直接在授权范围内做
+  // 没提新预算时，只用最晚一份还没买完、且对得上这件商品的授权。对不上商品就停，不改去更早的授权，也不另开一份。
   const covering =
     intent.perTxnMinor === null
-      ? s.mandates.find((m) => m.status === "active" && m.query.zh === want && m.remainingPurchases > 0 && (!intent.curated || m.mode === "curated"))
+      ? s.mandates
+          .filter((m) => m.status === "active" && m.query.zh === want && m.remainingPurchases > 0 && (!intent.curated || m.mode === "curated"))
+          .sort((a, b) => (a.createdAt < b.createdAt ? 1 : a.createdAt > b.createdAt ? -1 : 0))[0]
       : undefined;
 
   if (covering) {
@@ -255,12 +287,20 @@ export function signDraft(taskId: string, blockIndex: number, fields: DraftField
 
 // ---------- 极速版 ----------
 
+function isScriptedMandate(m: MockMandate): boolean {
+  return m.query.zh === "洗衣液" || m.query.zh === "纸巾" || m.query.zh === "保温杯" || m.query.zh === "Laundry liquid" || m.query.zh === "Tissue" || m.query.zh === "Tumbler";
+}
+
+function catalogueCount(m: MockMandate, kind: QueryKind): number {
+  return isScriptedMandate(m) ? candidatesFor(kind).length : productsMatching(m.query.zh).length;
+}
+
 function rank(m: MockMandate, kind: QueryKind, filters?: Filters, exclude: Set<string> = new Set()): Scored[] {
   const s = getState();
   const now = new Date();
-  const scripted = m.query.zh === "洗衣液" || m.query.zh === "纸巾" || m.query.zh === "保温杯" || m.query.zh === "Laundry liquid" || m.query.zh === "Tissue" || m.query.zh === "Tumbler";
-  const list = (scripted ? candidatesFor(kind, exclude) : productsMatching(m.query.zh).filter((p) => !exclude.has(p.id)))
+  const list = (isScriptedMandate(m) ? candidatesFor(kind, exclude) : productsMatching(m.query.zh).filter((p) => !exclude.has(p.id)))
     .filter((p) => {
+      if (m.itemPriceCapMinor && BigInt(p.priceMinor) > BigInt(m.itemPriceCapMinor)) return false;
       if (!filters) return true;
       const mer = merchantOf(p.merchantId);
       if (filters.delivery.length && !filters.delivery.some((d) => covers(d, mer.delivery))) return false;
@@ -386,10 +426,27 @@ function presentConstrained(taskId: string, mandateId: string, round: number) {
     delivery: deliveryWant(text),
     brands: ["品牌甲", "品牌乙", "品牌丙", "品牌丁"].filter((b) => text.includes(b)),
   };
+  const inCatalogue = catalogueCount(m, m.queryKind);
+  const eligible = (list: Scored[]) => list.filter((x) => x.evaluation.outcome !== "DENY");
   let ranked = rank(m, m.queryKind, filters);
-  if (filters.delivery.length && ranked.filter((x) => x.evaluation.outcome !== "DENY").length === 0) {
+  if (filters.delivery.length && eligible(ranked).length === 0) {
     actions.appendBlocks(taskId, [zev(deliveryMiss(filters.delivery[0], m.query.zh))]);
     ranked = rank(m, m.queryKind, { ...filters, delivery: [] });
+  }
+  if (eligible(ranked).length === 0) {
+    actions.appendBlocks(taskId, [
+      zev(
+        inCatalogue === 0
+          ? { zh: `演示目录里没有「${m.query.zh}」，没有换成别的商品。`, en: `Nothing in the demo catalogue matches “${m.query.en}”. It was not switched to a different product.` }
+          : {
+              zh: `「${m.title.zh}」里没有能买的「${m.query.zh}」。这笔不能进行，也没有换成别的商品。`,
+              en: `“${m.title.en}” has nothing it can buy for “${m.query.en}”. This purchase stops, and it was not switched to another product.`,
+            },
+      ),
+      { kind: "hint", at: nowIso() },
+    ]);
+    actions.updateTask(taskId, { status: "failed" });
+    return;
   }
   present(taskId, mandateId, round, ranked);
 }
@@ -402,6 +459,7 @@ function present(taskId: string, mandateId: string, round: number, ranked: Score
     const top = ranked[0];
     if (!top) {
       actions.appendBlocks(taskId, [zev({ zh: `演示目录里没有「${m.query.zh}」，没有换成别的商品。`, en: `Nothing in the demo catalogue matches “${m.query.en}”. It was not switched to a different product.` }), { kind: "hint", at: nowIso() }]);
+      actions.updateTask(taskId, { status: "failed" });
       return;
     }
     actions.appendBlocks(taskId, [{ kind: "denied", productId: top.product.id, mandateId, rules: top.evaluation.rules.filter((r) => r.severity === "DENY"), at: nowIso() }]);
@@ -640,15 +698,114 @@ export function chooseCurated(taskId: string, mandateId: string, productId: stri
  * 任务里的追问。超出当前授权（换了东西或提了新预算）→ 返回新任务 id，由页面跳转；
  * 否则把描述翻译成筛选条件重新推荐。
  */
+function buyAgain(taskId: string, mandateId: string) {
+  const t = task(taskId);
+  const round = Math.max(0, ...(t?.blocks ?? []).map((b) => (b.kind === "pick" ? b.round : 0))) + 1;
+  actions.updateTask(taskId, { status: "running" });
+  actions.appendBlocks(taskId, [{ kind: "working", mandateId, at: nowIso() }]);
+  later(700, () => {
+    actions.addTimeline(taskId, [
+      step("SEARCH", { zh: "再找一次", en: "Searched again" }, { zh: "同一份授权，按剩下的额度和次数再判一次。", en: "Same mandate. Checked again against the budget and purchases left." }),
+    ]);
+    presentConstrained(taskId, mandateId, round);
+  });
+}
+
+/** 授权页「还想改要求」：续在绑定这份授权的对话里，不新开一份。 */
+export function openMandateTask(mandateId: string): string {
+  const existing = getState().tasks.find((t) => t.mandateId === mandateId);
+  if (existing) return existing.id;
+  const m = mandate(mandateId);
+  const id = `t_${Date.now().toString(36)}`;
+  actions.createTask({
+    id,
+    title: m?.title ?? { zh: "继续购买", en: "Continue shopping" },
+    status: "running",
+    mode: m?.mode ?? "quick",
+    mandateId,
+    blocks: [],
+    timeline: [],
+  });
+  return id;
+}
+
+/** 钱包里点进来：用这一封已经签好的授权直接找商品。 */
+export function shopWithMandate(mandateId: string): string | null {
+  const m = mandate(mandateId);
+  if (!m || m.status !== "active" || m.remainingPurchases <= 0) return null;
+  const id = `t_${Date.now().toString(36)}`;
+  actions.createTask({
+    id,
+    title: m.title,
+    status: "running",
+    mode: m.mode,
+    mandateId,
+    blocks: [
+      { kind: "user", text: { zh: `用「${m.title.zh}」买${m.query.zh}`, en: `Buy ${m.query.en} with “${m.title.en}”` }, at: nowIso() },
+      { kind: "in_scope", mandateId, at: nowIso() },
+    ],
+    timeline: [],
+  });
+  if (m.mode === "curated") later(400, () => startCurated(id, mandateId, m.queryKind));
+  else later(400, () => runSearch(id, mandateId));
+  return id;
+}
+
 export function followUp(taskId: string, text: string, understood?: string): string | null {
   const t = task(taskId);
   if (!t) return startTask(text);
   const intent = parseIntent(text);
   const item = taskQuery(t);
-  const switching = Boolean(item && spokenProduct(text).phrase && !namesSameItem(item, text));
+  const amend = readAmendment(text);
+  const spoken = spokenProduct(text);
+  const edit = Boolean(amend) || /改成|改为|最多|次数|不要|无香|规格/.test(text);
+  const switching = Boolean(item && spoken.phrase && !namesSameItem(item, text) && !edit);
   if (!item || switching) return startTask(text);
 
   const m = t.mandateId ? mandate(t.mandateId) : undefined;
+  if (m && amend && (m.status === "active" || m.status === "completed")) {
+    const used = m.maxPurchases - m.remainingPurchases;
+    const remaining = Math.max(0, amend.maxPurchases - used);
+    actions.appendBlocks(taskId, [
+      { kind: "user", text, at: nowIso() },
+      zev({
+        zh: `好，还是这份「${m.title.zh}」。最多购买改成 ${amend.maxPurchases} 次，现在还能买 ${remaining} 次。没有另开一份授权。`,
+        en: `Still “${m.title.en}”. The purchase limit is now ${amend.maxPurchases}, with ${remaining} left. No new mandate.`,
+      }),
+    ]);
+    actions.tightenMandate(
+      m.id,
+      { maxPurchases: amend.maxPurchases, remainingPurchases: remaining },
+      { zh: `最多购买改为 ${amend.maxPurchases} 次`, en: `Purchase limit set to ${amend.maxPurchases}` },
+    );
+    return null;
+  }
+
+  const openPick = t.blocks.some((b) => b.kind === "pick" && (b.state === "offered" || b.state === "awaiting"));
+  const bought = t.blocks.some((b) => b.kind === "receipt" || (b.kind === "pick" && b.state === "paid"));
+  const asksToBuy = /买|补|another|again/i.test(text);
+  if (m && bought && !openPick && asksToBuy) {
+    actions.appendBlocks(taskId, [{ kind: "user", text, at: nowIso() }]);
+    if (m.status !== "active" || m.remainingPurchases <= 0) {
+      actions.appendBlocks(taskId, [
+        zev({
+          zh: `「${m.title.zh}」的购买次数已经用完，这笔不能再进行。`,
+          en: `“${m.title.en}” has no purchases left, so this one cannot go ahead.`,
+        }),
+      ]);
+      actions.updateTask(taskId, { status: "failed" });
+      return null;
+    }
+    actions.appendBlocks(taskId, [
+      zev({
+        zh: `还是这份「${m.title.zh}」，还能买 ${m.remainingPurchases} 次。我按同一份授权再找一件。`,
+        en: `Still “${m.title.en}”, ${m.remainingPurchases} ${m.remainingPurchases > 1 ? "purchases" : "purchase"} left. Looking again under the same mandate.`,
+      }),
+    ]);
+    buyAgain(taskId, m.id);
+    return null;
+  }
+
   const heard = understood ? `${understood}` : "";
   const stay = heard
     ? `${heard}（Zev 只解释这句。还是买「${item}」，没有另开任务，也没有改已签的金额上限。）`

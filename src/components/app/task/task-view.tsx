@@ -274,9 +274,9 @@ export function NewTask({ q }: { q?: string }) {
   };
 
   const examples = [
-    t("帮我补一瓶洗衣液，2L 以上，HK$150 以内，可以换牌子，这周内买到。", "Restock laundry liquid, 2L+, under HK$150, other brands OK, this week."),
+    t("帮我补一瓶洗衣液，2L 以上，$150 以内，可以换牌子，这周内买到。", "Restock laundry liquid, 2L+, under $150, other brands OK, this week."),
     t("再补一瓶洗衣液。", "Another bottle of laundry liquid."),
-    t("买一包纸巾，100 块以内。", "A pack of tissue, under HK$100."),
+    t("买一包纸巾，100 块以内。", "A pack of tissue, under $100."),
     t("帮我细挑一个黑色、极简的保温杯。", "Help me choose a black, minimal tumbler."),
   ];
 
@@ -295,7 +295,7 @@ export function NewTask({ q }: { q?: string }) {
         onSend={start}
         autoFocus
         disabled={mode === "attacker" || s.session.frozen}
-        placeholder={mode === "attacker" ? t("这台设备只能查看", "This device is read-only") : t("比如：帮我补一瓶洗衣液，150 以内", "e.g. Restock laundry liquid under HK$150")}
+        placeholder={mode === "attacker" ? t("这台设备只能查看", "This device is read-only") : t("比如：帮我补一瓶洗衣液，150 以内", "e.g. Restock laundry liquid under $150")}
       />
       <div className="mt-5 flex flex-wrap justify-center gap-2">
         {examples.map((e) => (

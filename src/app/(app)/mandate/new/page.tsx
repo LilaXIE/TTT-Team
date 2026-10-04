@@ -27,12 +27,12 @@ export default function NewMandatePage() {
   const router = useRouter();
   const stepUp = useStepUp();
   const mode = useSessionMode();
-  const [fields, setFields] = useState<DraftFields>(() => draftFromIntent({ kind: "detergent", token: null, label: null, curated: false, perTxnMinor: "15000", minVolumeMl: 2000, allowSubstitute: true }));
+  const [fields, setFields] = useState<DraftFields>(() => draftFromIntent({ kind: "detergent", token: null, label: null, curated: false, perTxnMinor: "15000", itemPriceCapMinor: null, minVolumeMl: 2000, allowSubstitute: true }));
   const [key, setKey] = useState(0);
   const err = draftError(fields);
 
   const reshape = (kind: QueryKind, curated: boolean) => {
-    const next = draftFromIntent({ kind, token: null, label: null, curated, perTxnMinor: fields.perTxnMinor, minVolumeMl: kind === "detergent" ? fields.minVolumeMl : null, allowSubstitute: fields.allowSubstituteBrand });
+    const next = draftFromIntent({ kind, token: null, label: null, curated, perTxnMinor: fields.perTxnMinor, itemPriceCapMinor: fields.itemPriceCapMinor ?? null, minVolumeMl: kind === "detergent" ? fields.minVolumeMl : null, allowSubstitute: fields.allowSubstituteBrand });
     setFields({ ...next, totalMinor: fields.totalMinor, methods: fields.methods, protection: fields.protection });
     setKey((k) => k + 1);
   };

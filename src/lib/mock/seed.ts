@@ -44,7 +44,7 @@ export function seedState(now: number): MockState {
       status: "active",
       mode: "quick",
       queryKind: "detergent",
-      taskText: "帮我补一瓶洗衣液，2L 以上，HK$150 以内，可以换牌子，这周内买到。",
+      taskText: "帮我补一瓶洗衣液，2L 以上，$150 以内，可以换牌子，这周内买到。",
       query: { zh: "洗衣液", en: "Laundry liquid" },
       preferredBrand: "品牌甲",
       allowSubstituteBrand: true,
@@ -114,8 +114,8 @@ export function seedState(now: number): MockState {
       createdAt: "2026-10-01T19:32:00+08:00",
       revokedAt: null,
       versions: [
-        { v: 1, at: "2026-10-01T19:32:00+08:00", note: { zh: "签发：单笔 80.00 港元", en: "Signed: 80.00 per order" } },
-        { v: 2, at: "2026-10-01T19:35:00+08:00", note: { zh: "收紧为只能用 FPS；放宽单笔到 100.00 港元已过冷静期", en: "FPS only; raising the cap to 100.00 passed cooling-off" } },
+        { v: 1, at: "2026-10-01T19:32:00+08:00", note: { zh: "签发：单笔 $80.00", en: "Signed: 80.00 per order" } },
+        { v: 2, at: "2026-10-01T19:35:00+08:00", note: { zh: "收紧为只能用 FPS；放宽单笔到 $100.00 已过冷静期", en: "FPS only; raising the cap to 100.00 passed cooling-off" } },
       ],
     },
   ];
@@ -224,7 +224,7 @@ export function seedState(now: number): MockState {
     prefs: [
       { id: "pf1", group: "style", label: { zh: "极简风", en: "Minimal" }, source: "chat" },
       { id: "pf2", group: "color", label: { zh: "黑色", en: "Black" }, source: "chat" },
-      { id: "pf3", group: "price", label: { zh: "常买价位 100–300 港元", en: "Usually HK$100–300" }, source: "orders" },
+      { id: "pf3", group: "price", label: { zh: "常买价位 100–$300", en: "Usually $100–300" }, source: "orders" },
       { id: "pf4", group: "brand", label: { zh: "常买 品牌甲", en: "Usually Brand Jia" }, source: "orders" },
     ],
     connections: { tapngo: true, kuaikuaiFavorites: false },
@@ -239,7 +239,7 @@ export function seedState(now: number): MockState {
 }
 
 function seedTasks(): MockTask[] {
-  const S1_TEXT = { zh: "帮我补一瓶洗衣液，2L 以上，HK$150 以内，可以换牌子，这周内买到。", en: "Restock laundry liquid for me: 2L or more, under HK$150, any brand is fine, within this week." };
+  const S1_TEXT = { zh: "帮我补一瓶洗衣液，2L 以上，$150 以内，可以换牌子，这周内买到。", en: "Restock laundry liquid for me: 2L or more, under $150, any brand is fine, within this week." };
   return [
     {
       id: "s1",
@@ -282,8 +282,8 @@ function seedTasks(): MockTask[] {
           state: "paid",
           at: "2026-10-03T10:07:00+08:00",
           reason: {
-            zh: "还是你常买的品牌甲。含运费 138.00 港元，和日日鲜一样便宜，但明天就到。",
-            en: "Your usual Brand Jia. HK$138.00 with shipping, same as Riri Fresh, but it arrives tomorrow.",
+            zh: "还是你常买的品牌甲。含运费 $138.00，和日日鲜一样便宜，但明天就到。",
+            en: "Your usual Brand Jia. $138.00 with shipping, same as Riri Fresh, but it arrives tomorrow.",
           },
         },
         { kind: "receipt", orderId: "ord_1001", at: "2026-10-03T10:07:12+08:00" },
@@ -292,9 +292,9 @@ function seedTasks(): MockTask[] {
         { checkpoint: "INTENT", title: { zh: "理解任务", en: "Understand the task" }, detail: { zh: "洗衣液 · 至少 2L · 可以换牌子 · 品类「家居日用」在授权内", en: "Laundry liquid · 2L+ · any brand · Household is in scope" }, outcome: "ALLOW", at: "2026-10-03T10:05:02+08:00" },
         { checkpoint: "SEARCH", title: { zh: "搜索两家商家", en: "Search two stores" }, detail: { zh: "日日鲜百货 3 件，快快屋 3 件。康康保健凭证已撤销，没有搜索。", en: "3 items at Riri Fresh, 3 at KuaiKuai. KangKang Health's credential is revoked, so it was skipped." }, at: "2026-10-03T10:05:04+08:00" },
         { checkpoint: "CANDIDATES", title: { zh: "筛选候选", en: "Filter candidates" }, detail: { zh: "6 件里 2 件含运费超过单笔上限。1 件商品描述里夹着一段指令，Zev 只把它当描述，没有照做。", en: "2 of 6 exceed the per-order cap with shipping. One description hides an instruction; Zev treats it as text and ignores it." }, outcome: "REVIEW", at: "2026-10-03T10:05:06+08:00" },
-        { checkpoint: "QUOTE", title: { zh: "报价", en: "Quote" }, detail: { zh: "首选：快快屋 品牌甲 2L，108.00 + 运费 30.00 = 138.00 港元，是单笔上限的 92%。", en: "Top pick: KuaiKuai Brand Jia 2L, 108.00 + 30.00 shipping = HK$138.00, 92% of the cap." }, outcome: "ALLOW", at: "2026-10-03T10:05:07+08:00" },
+        { checkpoint: "QUOTE", title: { zh: "报价", en: "Quote" }, detail: { zh: "首选：快快屋 品牌甲 2L，108.00 + 运费 30.00 = $138.00，是单笔上限的 92%。", en: "Top pick: KuaiKuai Brand Jia 2L, 108.00 + 30.00 shipping = $138.00, 92% of the cap." }, outcome: "ALLOW", at: "2026-10-03T10:05:07+08:00" },
         { checkpoint: "ROUTE", title: { zh: "选择支付方式", en: "Choose payment" }, detail: { zh: "FPS：授权允许、商家接受、你已启用，手续费 0。", en: "FPS: allowed by the mandate, accepted by the store, enabled by you, no fee." }, outcome: "ALLOW", at: "2026-10-03T10:05:08+08:00" },
-        { checkpoint: "PAY", title: { zh: "结算", en: "Settle" }, detail: { zh: "一次事务里扣额度、扣库存、记账。剩余 162.00 港元，还能买 1 次。", en: "Budget, stock and ledger updated in one transaction. HK$162.00 and 1 purchase left." }, outcome: "ALLOW", at: "2026-10-03T10:07:12+08:00" },
+        { checkpoint: "PAY", title: { zh: "结算", en: "Settle" }, detail: { zh: "一次事务里扣额度、扣库存、记账。剩余 $162.00，还能买 1 次。", en: "Budget, stock and ledger updated in one transaction. $162.00 and 1 purchase left." }, outcome: "ALLOW", at: "2026-10-03T10:07:12+08:00" },
       ],
     },
     {
@@ -316,16 +316,16 @@ function seedTasks(): MockTask[] {
           mandateId: "md_daily",
           state: "awaiting",
           at: "2026-10-03T11:02:08+08:00",
-          reason: { zh: "品牌甲两家都卖完了。品牌丙 2L 含运费 135.00 港元，评分 4.4。", en: "Brand Jia is sold out at both stores. Brand Bing 2L is HK$135.00 with shipping, rated 4.4." },
+          reason: { zh: "品牌甲两家都卖完了。品牌丙 2L 含运费 $135.00，评分 4.4。", en: "Brand Jia is sold out at both stores. Brand Bing 2L is $135.00 with shipping, rated 4.4." },
         },
         { kind: "awaiting", pendingId: "pc_s2", at: "2026-10-03T11:02:08+08:00" },
         { kind: "hint", at: "2026-10-03T11:02:09+08:00" },
       ],
       timeline: [
-        { checkpoint: "INTENT", title: { zh: "理解任务", en: "Understand the task" }, detail: { zh: "在「日用品补货」范围内，还剩 1 次、162.00 港元。", en: "Within “Household restock”: 1 purchase and HK$162.00 left." }, outcome: "ALLOW", at: "2026-10-03T11:02:02+08:00" },
+        { checkpoint: "INTENT", title: { zh: "理解任务", en: "Understand the task" }, detail: { zh: "在「日用品补货」范围内，还剩 1 次、$162.00。", en: "Within “Household restock”: 1 purchase and $162.00 left." }, outcome: "ALLOW", at: "2026-10-03T11:02:02+08:00" },
         { checkpoint: "SEARCH", title: { zh: "搜索两家商家", en: "Search two stores" }, detail: { zh: "品牌甲两家都已售罄。", en: "Brand Jia is sold out at both stores." }, at: "2026-10-03T11:02:04+08:00" },
         { checkpoint: "CANDIDATES", title: { zh: "筛选候选", en: "Filter candidates" }, detail: { zh: "品牌丙 2L 命中「换了牌子」，需要先问你。", en: "Brand Bing 2L hits “different brand”, so Zev asks first." }, outcome: "REVIEW", at: "2026-10-03T11:02:06+08:00" },
-        { checkpoint: "QUOTE", title: { zh: "报价", en: "Quote" }, detail: { zh: "日日鲜百货：115.00 + 运费 20.00 = 135.00 港元。购物车 v2。", en: "Riri Fresh: 115.00 + 20.00 shipping = HK$135.00. Cart v2." }, outcome: "REVIEW", at: "2026-10-03T11:02:08+08:00" },
+        { checkpoint: "QUOTE", title: { zh: "报价", en: "Quote" }, detail: { zh: "日日鲜百货：115.00 + 运费 20.00 = $135.00。购物车 v2。", en: "Riri Fresh: 115.00 + 20.00 shipping = $135.00. Cart v2." }, outcome: "REVIEW", at: "2026-10-03T11:02:08+08:00" },
       ],
     },
     {
@@ -345,7 +345,7 @@ function seedTasks(): MockTask[] {
       timeline: [
         { checkpoint: "INTENT", title: { zh: "理解任务", en: "Understand the task" }, detail: { zh: "洗衣液 · 至少 2.5L。", en: "Laundry liquid · 2.5L+." }, outcome: "ALLOW", at: "2026-10-03T11:10:02+08:00" },
         { checkpoint: "SEARCH", title: { zh: "搜索两家商家", en: "Search two stores" }, detail: { zh: "符合容量的有 2 件。", en: "2 items meet the size." }, at: "2026-10-03T11:10:04+08:00" },
-        { checkpoint: "QUOTE", title: { zh: "报价", en: "Quote" }, detail: { zh: "快快屋 品牌丙 2.5L 含运费 158.00 港元；日日鲜 品牌乙 3L 含运费 159.00 港元。都超过单笔上限 150.00 港元。", en: "KuaiKuai Brand Bing 2.5L is HK$158.00 and Riri Fresh Brand Yi 3L is HK$159.00 with shipping. Both exceed the HK$150.00 cap." }, outcome: "DENY", at: "2026-10-03T11:10:07+08:00" },
+        { checkpoint: "QUOTE", title: { zh: "报价", en: "Quote" }, detail: { zh: "快快屋 品牌丙 2.5L 含运费 $158.00；日日鲜 品牌乙 3L 含运费 $159.00。都超过单笔上限 $150.00。", en: "KuaiKuai Brand Bing 2.5L is $158.00 and Riri Fresh Brand Yi 3L is $159.00 with shipping. Both exceed the $150.00 cap." }, outcome: "DENY", at: "2026-10-03T11:10:07+08:00" },
       ],
     },
     {
@@ -365,7 +365,7 @@ function seedTasks(): MockTask[] {
       timeline: [
         { checkpoint: "INTENT", title: { zh: "理解任务", en: "Understand the task" }, detail: { zh: "保温杯 · 黑色 · 极简 · 约 500ml。精选模式：每一笔都先问你。", en: "Tumbler · black · minimal · ~500ml. Curated: every purchase asks you first." }, outcome: "REVIEW", at: "2026-10-03T11:18:03+08:00" },
         { checkpoint: "SEARCH", title: { zh: "搜索两家商家", en: "Search two stores" }, detail: { zh: "3 件符合。偏好只用于排序，不参与放行判断。", en: "3 items match. Preferences only affect ranking, never approval." }, at: "2026-10-03T11:20:00+08:00" },
-        { checkpoint: "QUOTE", title: { zh: "报价", en: "Quote" }, detail: { zh: "你选了 快快屋 极简黑 500ml：168.00 + 运费 30.00 = 198.00 港元。", en: "You chose KuaiKuai Minimal Black 500ml: 168.00 + 30.00 shipping = HK$198.00." }, outcome: "REVIEW", at: "2026-10-03T11:21:00+08:00" },
+        { checkpoint: "QUOTE", title: { zh: "报价", en: "Quote" }, detail: { zh: "你选了 快快屋 极简黑 500ml：168.00 + 运费 30.00 = $198.00。", en: "You chose KuaiKuai Minimal Black 500ml: 168.00 + 30.00 shipping = $198.00." }, outcome: "REVIEW", at: "2026-10-03T11:21:00+08:00" },
       ],
     },
     {
@@ -386,13 +386,13 @@ function seedTasks(): MockTask[] {
           mandateId: "md_tissue",
           state: "paid",
           at: "2026-10-01T19:40:00+08:00",
-          reason: { zh: "评分最高，含运费 62.00 港元。", en: "Best rated, HK$62.00 with shipping." },
+          reason: { zh: "评分最高，含运费 $62.00。", en: "Best rated, $62.00 with shipping." },
         },
         { kind: "receipt", orderId: "ord_0998", at: "2026-10-01T19:40:31+08:00" },
       ],
       timeline: [
-        { checkpoint: "INTENT", title: { zh: "理解任务", en: "Understand the task" }, detail: { zh: "纸巾 · 100.00 港元以内。", en: "Tissue · under HK$100.00." }, outcome: "ALLOW", at: "2026-10-01T19:36:00+08:00" },
-        { checkpoint: "PAY", title: { zh: "结算", en: "Settle" }, detail: { zh: "62.00 港元，FPS。", en: "HK$62.00 via FPS." }, outcome: "ALLOW", at: "2026-10-01T19:40:31+08:00" },
+        { checkpoint: "INTENT", title: { zh: "理解任务", en: "Understand the task" }, detail: { zh: "纸巾 · $100.00 以内。", en: "Tissue · under $100.00." }, outcome: "ALLOW", at: "2026-10-01T19:36:00+08:00" },
+        { checkpoint: "PAY", title: { zh: "结算", en: "Settle" }, detail: { zh: "$62.00，FPS。", en: "$62.00 via FPS." }, outcome: "ALLOW", at: "2026-10-01T19:40:31+08:00" },
       ],
     },
   ];

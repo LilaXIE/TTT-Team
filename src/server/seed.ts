@@ -1,5 +1,5 @@
 // 种子与演示重置。幂等：重复运行结果一致。
-// 演示账号 alex@demo.hk / demo1234，钱包 HK$1,500（FUNDING journal，treasury → buyer）。
+// 演示账号 alex@demo.hk / demo1234，钱包 $1,500（FUNDING journal，treasury → buyer）。
 import bcrypt from "bcryptjs";
 import type { Tx } from "./db/tx";
 import { loadCatalog, loadRates } from "./fixtures";
