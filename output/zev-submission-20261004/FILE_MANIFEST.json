@@ -1,0 +1,137 @@
+[
+  {
+    "file": "00_READ_ME_FIRST.txt",
+    "bytes": 509,
+    "sha256": "b74dc47c1690bf48f878cd15ad24e2060d09912aa881cd71413c16650ff3a66e"
+  },
+  {
+    "file": "00_Submission_Guide_ZH.html",
+    "bytes": 13315,
+    "sha256": "71275d21436a0b7797314183cab8286ad8fc93afbef25cb4490a1e05aaf23278"
+  },
+  {
+    "file": "00_Submission_Guide_ZH.pdf",
+    "bytes": 323524,
+    "sha256": "74aa07642ab0ae8cd66d1313213293e9c51c8d09bae9879ea61a317357804dee"
+  },
+  {
+    "file": "01_Submission_Links.xlsx",
+    "bytes": 5733,
+    "sha256": "f447c4518c64718bb25c619b1145709bb2e9268e06a63477f4482b8b068937f1"
+  },
+  {
+    "file": "02_Upload/Screenshots/01_Home.jpg",
+    "bytes": 51330,
+    "sha256": "c1d1c04cd59e21a372b4f989ade0ffe324f9c085e0b1764450c71106dc772f49"
+  },
+  {
+    "file": "02_Upload/Screenshots/02_Mandate.jpg",
+    "bytes": 50114,
+    "sha256": "51903a602b685f2e9b33e1569762d19c27d88ff5ac78a4c8818389c8b5dbca05"
+  },
+  {
+    "file": "02_Upload/Screenshots/03_Paid.png",
+    "bytes": 99395,
+    "sha256": "a6871d739458785e35ef47729df1d815ae321d7b50714eafed7ed2e94d8aa3db"
+  },
+  {
+    "file": "02_Upload/Screenshots/04_Review.jpg",
+    "bytes": 55458,
+    "sha256": "b9570dab46775e480ca86ddbd3d25791b48bba6fb470100152f849001bc81a4c"
+  },
+  {
+    "file": "02_Upload/Screenshots/05_Deny.jpg",
+    "bytes": 53106,
+    "sha256": "152fe81ab3fc2a81d6ac395d5b13d3341aff07b53f19d18203c549b2a32951bc"
+  },
+  {
+    "file": "02_Upload/Screenshots/06_Audit.png",
+    "bytes": 73703,
+    "sha256": "bf9adb7430c8c83861932b237217a61873240a5960a6cafa93c6b059a36114d1"
+  },
+  {
+    "file": "02_Upload/Screenshots/Captions_EN.txt",
+    "bytes": 558,
+    "sha256": "c716cfe6be1a6ffc413ce3290cd1f000aa7c4337d08086d04ae61221d34f7d1e"
+  },
+  {
+    "file": "02_Upload/TTT Team_HacKU_Pitch.pdf",
+    "bytes": 1784964,
+    "sha256": "22c170225c25ef70f53d0bfede1c20bc2b9578437b99839c11b750092cb017e4"
+  },
+  {
+    "file": "02_Upload/TTT Team_HacKU_Pitch.pptx",
+    "bytes": 2204037,
+    "sha256": "ca1264dc2a050a659e14355107fe9f8d6a492536a4ecf02fcb86c9fb8a4cc44d"
+  },
+  {
+    "file": "02_Upload/Zev_Character_Design_EN.pdf",
+    "bytes": 203243,
+    "sha256": "5508b7efcbb2a5f31b08e8711eac211ba7d1c42cac4e63ca08108197c41ddf3c"
+  },
+  {
+    "file": "02_Upload/Zev_Character_Design_EN.png",
+    "bytes": 206693,
+    "sha256": "70397f752708448fc7cfee110c7f20f99daaee6c2c78ac50eb7d6325aa5d9aca"
+  },
+  {
+    "file": "02_Upload/Zev_Demo_EN_2m30s_QR.mp4",
+    "bytes": 5426940,
+    "sha256": "051b32d96a12244a32b5c80df11b3faa4777994433a6ade90cb1764822b637e3"
+  },
+  {
+    "file": "02_Upload/Zev_Demo_QR.png",
+    "bytes": 17158,
+    "sha256": "fd34e87930578fff6af0c1b68335cfc4d940e66e7a4ee5c95b0032af7931f11c"
+  },
+  {
+    "file": "02_Upload/Zev_Demo_QR_Card_EN.pdf",
+    "bytes": 83932,
+    "sha256": "8b358d3ec4314efaff6225aa4b3a510aabdd7e400ac36f454a35f321d4341cf8"
+  },
+  {
+    "file": "02_Upload/Zev_Demo_QR_Card_EN.png",
+    "bytes": 138366,
+    "sha256": "e116bd684812ed362771439794106677016832766a49acf457eaeace3537a2b6"
+  },
+  {
+    "file": "02_Upload/Zev_Product_Poster_EN.pdf",
+    "bytes": 83940,
+    "sha256": "19fbc2fb033e5d668e41b7190248c82355b54a930d13b4c09c2dd4cde1e9fbce"
+  },
+  {
+    "file": "02_Upload/Zev_Product_Poster_EN.png",
+    "bytes": 289925,
+    "sha256": "29cbe3cc314e34c99547c482a95e1f3904cf373c40fafbf36f3adc9c1485440d"
+  },
+  {
+    "file": "02_Upload/Zev_Supplemental_Visuals_EN.pdf",
+    "bytes": 624670,
+    "sha256": "156c94caa542c0a13e3a21f040ca6a1fb195b1d026727e1405c279e7e052a578"
+  },
+  {
+    "file": "03_Team_Reference/Demo_Narration_EN.txt",
+    "bytes": 2153,
+    "sha256": "83f24ae4793c47727922f648e3492a927c35fe439d50473cdf460519f453bb2a"
+  },
+  {
+    "file": "03_Team_Reference/Not_For_Main_Upload.txt",
+    "bytes": 289,
+    "sha256": "f8d5b194fdef1a2c6e4f6f5acbe76b8edfade9e6d5478580b6aae9f9c66dc95a"
+  },
+  {
+    "file": "03_Team_Reference/Payment_Rails_ZH.txt",
+    "bytes": 1877,
+    "sha256": "152f45ee381945ae6cbe7f9a88f2e711ce125ee852801e1b7c8933ceca137ede"
+  },
+  {
+    "file": "03_Team_Reference/Pitch_Speaker_Notes_EN.txt",
+    "bytes": 8504,
+    "sha256": "fc01452c36dbfaa39d46db27a473eaff602a828107c9e85239ab2c9c900686f1"
+  },
+  {
+    "file": "03_Team_Reference/Technical_Evidence_ZH.txt",
+    "bytes": 3003,
+    "sha256": "873a1522cec4c4d96fd093129e8cd0a73a41ef6292f9f464094423c99b00c6e7"
+  }
+]

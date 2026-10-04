@@ -1,0 +1,123 @@
+SLIDE 1 — Zev
+
+MAIN PITCH
+
+Meet Zev, a shopping agent for everyday purchases. You tell it what you need and set a spending boundary. Zev compares the offers, handles the shopping work and checks each purchase against your permission.
+
+
+SLIDE 2 — AI shopping still faces a trust barrier
+
+MAIN PITCH
+
+The opportunity is already here. In Hong Kong, 74 percent have used AI assistants for shopping, yet 45 percent are uncomfortable letting AI complete a purchase. People need a clear boundary between receiving advice and spending money.
+
+
+SLIDE 3 — Four dimensions, one complete purchase
+
+MAIN PITCH
+
+We connect four dimensions in one purchase. Trust defines permission. E-commerce compares the basket. The agent does the work. Payment checks the final charge. A mandate keeps all four tied to the limits the user actually authorized.
+
+
+SLIDE 4 — Trust: permission has explicit limits
+
+MAIN PITCH
+
+Trust starts with specific limits: 150 dollars per order, 300 in total, two purchases and an expiry. Zev buys when the rules pass, asks about exceptions and blocks hard violations. This 158-dollar basket cannot be approved around the cap.
+
+
+SLIDE 5 — E-commerce: compare the full basket
+
+MAIN PITCH
+
+E-commerce means comparing what the customer actually pays. Here, a 108-dollar item and a 118-dollar item both become 138 dollars after delivery. Zev compares the complete basket and delivery conditions. The larger bottle exceeds the limit.
+
+
+SLIDE 6 — Agent: turn a request into a draft
+
+MAIN PITCH
+
+For the agent, a simple request becomes an editable draft. Ask for dish soap, and that product stays in the task. DeepSeek helps interpret the sentence. The user signs the limits, while deterministic rules retain authority over payment.
+
+
+SLIDE 7 - Payment: eligibility and funding decide the rail
+
+MAIN PITCH
+
+Payment checks what the mandate allows and the merchant accepts. Our prototype simulates the payment methods. For production, Zev would connect through a contracted wallet or payment provider, then reconcile the result. The proposed integration is in the appendix.
+
+SLIDE 8 — Trust: protect changes that redirect value
+
+MAIN PITCH
+
+We also protect changes that could redirect value. Address changes demonstrate another verification step and a waiting window, giving the owner time to cancel. The intended delay is 24 hours, compressed to two minutes in the demo.
+
+
+SLIDE 9 — E-commerce + Agent: preferences and permissions
+
+MAIN PITCH
+
+Personal preferences improve recommendations without expanding permission. Product descriptions follow the same boundary. One demo listing says ignore the budget. Zev records that it ignored that instruction and continues applying the original mandate.
+
+
+SLIDE 10 — Payment: every charge has a traceable basis
+
+MAIN PITCH
+
+The receipt closes the loop: 118 dollars for the item, 20 for delivery, 138 paid. The record links the mandate, decisions and payment. Backend settlement code rechecks current rules and updates the transaction together.
+
+
+SLIDE 11 - Value starts with repeat household shopping
+
+MAIN PITCH
+
+We focus on repeat household shopping. Existing commerce and payment protocols provide useful foundations. Zev makes reusable limits and explainable decisions visible to the shopper. We will validate repeat-task time, user understanding and repeat delegation. Integration fees and subscriptions remain a commercial hypothesis.
+
+Sources and scope (not spoken):
+Official HacKU Participant Handbook section 7: problem-solution fit, technical execution, trust, UX and integration feasibility. This table proposes measurements, not observed outcomes. Target-user hypothesis: young adults doing repeat household restocking. ACP and AP2 are adjacent infrastructure, not products shown to lack authorization controls. See slide 16 for official sources.
+
+SLIDE 12 — Zev makes delegated shopping inspectable
+
+MAIN PITCH
+
+Zev brings permission, product choice, agent work and payment evidence into one inspectable purchase. We are ready to demonstrate that experience and validate whether users choose to delegate again. Thank you.
+
+
+SLIDE 13 — Appendix: demonstrated capability and remaining work
+
+OPTIONAL Q&A APPENDIX
+
+We distinguish the working experience, the backend implementation and production integration. The website demonstrates task drafts, comparisons, decisions and receipts. The local backend implements deterministic rules and transactional settlement. Payments, authentication and notifications remain simulated or unverified. The address waiting period also needs server-side enforcement: the current local save-address endpoint does not enforce the delay. Before a live deployment, we need to harden those controls, verify the deployed build end to end and complete user testing.
+
+
+SLIDE 14 — Appendix: a demonstration for each dimension
+
+OPTIONAL Q&A APPENDIX
+
+We can demonstrate each dimension directly. For Trust, we show the over-budget basket and its mandate. For E-commerce, we show Curated mode and personal preferences. For Agent, we add a delivery requirement to an existing task and show that the task stays intact when no offer meets it. For Payment, we open the payment-method explanation and its linked receipt. Some follow-up replies still mix English and Chinese, which is a remaining usability improvement.
+
+
+SLIDE 15 — Appendix: sources and evidence
+
+OPTIONAL Q&A APPENDIX
+
+The product examples come from the deployed Zev prototype. The market percentages come from the Adyen Index 2026, based on a YouGov survey of 1,026 Hong Kong adults. Those percentages measure different things and are not a conversion funnel. The engineering explanation follows our product manual and local backend code. Commercial outcomes and savings are hypotheses for validation, not results we have already measured.
+
+
+SLIDE 16 - Where Zev fits among existing approaches
+
+OPTIONAL Q&A APPENDIX
+
+Manual shopping leaves each comparison and approval to the user. ACP connects agents to merchant checkout. AP2 already supports verifiable mandates and delegated purchases. Zev focuses on the shopper experience: reusable limits, visible exceptions and linked decisions for repeat household shopping. We are not claiming to have invented mandates, and we have not yet integrated either protocol.
+
+Sources and scope (not spoken):
+OpenAI, Key concepts - Agentic Commerce: https://developers.openai.com/commerce/guides/key-concepts . Merchant validates and charges through its existing processor. Google Cloud, Powering AI commerce with the new Agent Payments Protocol, 16 September 2025: https://cloud.google.com/blog/products/ai-machine-learning/announcing-agents-to-payments-ap2-protocol . Describes signed Intent and Cart Mandates and human-not-present delegated purchases. Accessed 4 October 2026. Manual workflow is a qualitative baseline, not timed research. Zev positioning is our product interpretation, not a benchmark. No compatibility or superiority claim.
+
+SLIDE 17 - A proposed path to real payment
+
+OPTIONAL Q&A APPENDIX
+
+The production proposal separates permission from fund movement. Zev checks the current mandate. A provider adapter creates an idempotent payment request. The wallet or payment service provider handles funds, and Zev reconciles the result. For FPS, we would work through a participating bank or licensed wallet, initially with customer confirmation. Unattended payments need provider-supported permission. Timeouts stay pending until reconciled. These adapters and external failure handling are proposed work, not completed integrations.
+
+Sources and scope (not spoken):
+HKICL FPS Participants: https://fps.hkicl.com.hk/eng/fps/about_fps/participant.php . FPS participants are eligible banks and licensed SVFs. HKICL merchant scheme: https://fps.hkicl.com.hk/files/page_file/126/3857/FPS%20Merchant%20Payment%20Scheme.pdf . OpenAI ACP Key concepts: https://developers.openai.com/commerce/guides/key-concepts . Sources accessed 4 October 2026. Proposed architecture is Zev design, not a claim of provider API access or partnership. Backend currently implements internal transactional settlement with simulated rails. Live adapters, secure provider credential handling, external reservations/state machine, callbacks, reconciliation, failure and refund handling require implementation and testing. A local DB transaction cannot atomically roll back an external payment.

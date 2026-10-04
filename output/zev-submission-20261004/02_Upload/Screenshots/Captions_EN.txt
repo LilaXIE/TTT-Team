@@ -1,0 +1,8 @@
+Screenshots are existing captures of the English browser demo.
+
+01 Home: funds and shopping permission are separate.
+02 Mandate: set limits and preview buy / ask / decline before delegating.
+03 Paid: HK$138 simulated receipt. On-screen HK$0 Tap & Go fee is a demo value, not a verified tariff.
+04 Review: brand substitution requires consent; the captured approval has expired.
+05 Deny: HK$158 including delivery exceeds the HK$150 cap; confirmation cannot override it.
+06 Audit: trace request, candidates, mandate and receipt; no tamper-proof claim.
