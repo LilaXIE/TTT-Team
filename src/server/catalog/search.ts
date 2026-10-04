@@ -127,3 +127,27 @@ export async function searchProductsTx(
   const result = await tx.query(sql, params);
   return result.rows as unknown as ProductRow[];
 }
+
+const PRODUCT_COLUMNS = `
+  p.id, p.merchant_id, p.sku, p.name, p.brand, p.category, p.spec, p.description,
+  p.price_minor, p.ref_price_minor, p.stock_qty, p.risk_tags, p.image_url,
+  m.name AS merchant_name, m.registered_at AS merchant_registered_at,
+  m.shipping_fee_minor AS merchant_shipping_fee_minor,
+  m.free_shipping_over_minor AS merchant_free_shipping_over_minor,
+  m.delivery_days AS merchant_delivery_days, m.return_days AS merchant_return_days,
+  m.accepts_methods AS merchant_accepts_methods,
+  COALESCE(c.status, 'missing') AS merchant_credential_status
+`;
+
+/** 按 id 取一件仍在售的商品，供用户点选后重新报价。 */
+export async function getProductByIdTx(tx: Tx, id: string): Promise<ProductRow | null> {
+  const result = await tx.query(
+    `SELECT ${PRODUCT_COLUMNS}
+     FROM products p
+     JOIN merchants m ON m.id = p.merchant_id
+     LEFT JOIN credentials c ON c.subject_type = 'merchant' AND c.subject_id = m.id AND c.type = 'merchant_license'
+     WHERE p.id = $1 AND p.status = 'published' AND p.stock_qty > 0`,
+    [id],
+  );
+  return (result.rows[0] as unknown as ProductRow | undefined) ?? null;
+}

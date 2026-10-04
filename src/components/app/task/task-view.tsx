@@ -147,7 +147,7 @@ export function Timeline({ task, className }: { task: MockTask; className?: stri
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function TaskView({ taskId }: { taskId: string }) {
-  if (UUID.test(taskId)) return <LiveRun taskId={taskId} />;
+  if (UUID.test(taskId)) return <LiveRun key={taskId} taskId={taskId} />;
   return <MockTaskView taskId={taskId} />;
 }
 

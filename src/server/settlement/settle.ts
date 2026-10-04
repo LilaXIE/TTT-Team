@@ -78,6 +78,30 @@ export async function settle(req: SettleRequest): Promise<SettleResult> {
     // products(id 排序) → buyer account → merchant account → order。
     const mandate = await lockMandateSnapshot(tx, orderMeta.mandate_id);
     if (!mandate) throw new AppError("NOT_FOUND", "授权书不存在。");
+    // 选择与付款共用授权锁：旧标签页、旧版本和同一任务的第二笔付款均不能扣款。
+    const selection = await tx.query<{ cart_id: string; cart_version: number; context: { selection?: string } }>(
+      `SELECT cart_id, cart_version, context FROM decisions
+       WHERE task_id=$1 AND checkpoint='CANDIDATES' AND cart_id IS NOT NULL ORDER BY id DESC LIMIT 1`,
+      [orderMeta.task_id],
+    );
+    const selected = selection.rows[0];
+    if (!selected || selected.cart_id !== cart.cartId || selected.cart_version !== cart.version) {
+      throw new AppError("VALIDATION_ERROR", "商品选择已更新，请刷新任务后确认当前商品。", { status: 409 });
+    }
+    const run = await tx.query<{ candidates: Array<{ decision?: { outcome?: string } }> }>(
+      `SELECT candidates FROM agent_runs WHERE task_id=$1 ORDER BY created_at DESC LIMIT 1`, [orderMeta.task_id],
+    );
+    const payable = (run.rows[0]?.candidates ?? []).filter((c) => c.decision?.outcome !== "DENY");
+    if (payable.length > 1 && selected.context.selection !== "explicit") {
+      throw new AppError("VALIDATION_ERROR", "请先选择要买的那件商品。", { status: 409 });
+    }
+    const paidTask = await tx.query(`SELECT id FROM orders WHERE task_id=$1 AND status='paid' LIMIT 1`, [orderMeta.task_id]);
+    if (paidTask.rowCount) throw new AppError("ORDER_NOT_PENDING", "这次任务已经付过款。");
+    const task = await tx.query(`SELECT id FROM tasks WHERE id=$1 AND status='awaiting_confirmation'`, [orderMeta.task_id]);
+    if (!task.rowCount) throw new AppError("ORDER_NOT_PENDING", "这次任务已结束，不能继续付款。");
+    if (req.methodId !== cart.methodId) {
+      throw new AppError("VALIDATION_ERROR", "支付方式与报价不一致，请重新选择商品。", { status: 409 });
+    }
     const buyerCred = await lockBuyerCredential(tx, req.userId);
     const merchantCred = await lockMerchantCredential(tx, cart.merchantId);
     const products = await lockProducts(tx, cart.items.map((i) => i.productId));
@@ -99,6 +123,14 @@ export async function settle(req: SettleRequest): Promise<SettleResult> {
       req.methodId,
       new Date(),
     );
+    const payment = await tx.query<{ enabled: boolean; accepted: boolean }>(
+      `SELECT COALESCE(upm.enabled, false) AS enabled, ($2 = ANY(m.accepts_methods)) AS accepted
+       FROM merchants m LEFT JOIN user_payment_methods upm ON upm.user_id=$1 AND upm.method_id=$2
+       WHERE m.id=$3`,
+      [req.userId, cart.methodId, cart.merchantId],
+    );
+    ctx.paymentMethod!.userEnabled = payment.rows[0]?.enabled === true;
+    ctx.paymentMethod!.merchantAccepts = payment.rows[0]?.accepted === true;
     const decision = decide(ctx, "PAY");
     await saveDecision(tx, order.task_id, cart.cartId, cart.version, decision);
 
@@ -138,6 +170,8 @@ export async function settle(req: SettleRequest): Promise<SettleResult> {
 
     // 7. 账本（AGENTS.md 不变量 2: 结算自己写 journal）
     await postSale(tx, orderId, buyerAccount.id, merchantAccount.id, totalMinor);
+    const completed = await tx.query(`UPDATE tasks SET status='completed', updated_at=now() WHERE id=$1 AND status='awaiting_confirmation'`, [order.task_id]);
+    if (!completed.rowCount) throw new AppError("ORDER_NOT_PENDING", "这次任务已结束，不能继续付款。");
 
     // 8. remaining_purchases 变为 0 → mandate.status='completed'
     const remaining = await tx.query<{ remaining_purchases: number }>(
@@ -197,8 +231,8 @@ async function getOrCreateOrder(
   if (!cart) throw new AppError("NOT_FOUND", "购物车版本不存在。");
 
   const task = await tx.query<{ id: string; mandate_id: string }>(
-    `SELECT id, mandate_id FROM tasks WHERE id=(SELECT task_id FROM carts WHERE id=$1)`,
-    [cartId],
+    `SELECT id, mandate_id FROM tasks WHERE id=(SELECT task_id FROM carts WHERE id=$1) AND user_id=$2`,
+    [cartId, userId],
   );
   if (task.rowCount === 0) throw new AppError("NOT_FOUND", "任务不存在。");
 
@@ -232,8 +266,8 @@ interface OrderRow {
 async function readOrderMeta(tx: Tx, orderId: string, userId: string): Promise<OrderRow | null> {
   const result = await tx.query<OrderRow>(
     `SELECT o.id, o.task_id, o.cart_id, o.cart_version, o.status, o.total_minor, t.mandate_id
-     FROM orders o JOIN tasks t ON t.id=o.task_id
-     WHERE o.id=$1 AND o.user_id=$2`,
+     FROM orders o JOIN tasks t ON t.id=o.task_id JOIN mandates m ON m.id=t.mandate_id
+     WHERE o.id=$1 AND o.user_id=$2 AND t.user_id=$2 AND m.user_id=$2`,
     [orderId, userId],
   );
   return result.rows[0] ?? null;
@@ -264,7 +298,8 @@ async function lockMerchantCredential(tx: Tx, merchantId: string) {
     `SELECT status FROM credentials WHERE subject_type='merchant' AND subject_id=$1 AND type='merchant_license' FOR UPDATE`,
     [merchantId],
   );
-  return { status: r.rows[0]?.status ?? "missing", registeredAt: new Date() };
+  const merchant = await tx.query<{ registered_at: Date }>(`SELECT registered_at FROM merchants WHERE id=$1`, [merchantId]);
+  return { status: r.rows[0]?.status ?? "missing", registeredAt: merchant.rows[0]?.registered_at ?? new Date() };
 }
 
 async function lockProducts(tx: Tx, productIds: string[]) {
@@ -405,7 +440,7 @@ async function conditionalUpdateMandate(tx: Tx, mandateId: string, totalMinor: b
 async function conditionalUpdateProducts(tx: Tx, items: Array<{ productId: string; qty: number }>) {
   for (const item of items) {
     const r = await tx.query(
-      `UPDATE products SET stock_qty = stock_qty - $1 WHERE id=$2 AND stock_qty >= $1`,
+      `UPDATE products SET stock_qty = stock_qty - $1 WHERE id=$2 AND stock_qty >= $1 AND status='published'`,
       [item.qty, item.productId],
     );
     if (r.rowCount === 0) throw new AppError("OUT_OF_STOCK", `商品 ${item.productId} 库存不足。`);

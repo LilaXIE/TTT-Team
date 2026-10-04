@@ -1,14 +1,16 @@
 // Agent 任务执行。规格：docs/MANUAL.md §6.1 九步流程。
 import { AppError } from "@/contracts/errors";
+import { hkdToMinor } from "@/contracts/money";
 import type { Decision, EngineContext } from "@/contracts/schemas";
 import { createCartVersion } from "@/server/catalog/cart";
 import type { MerchantInfo, PaymentMethodInfo } from "@/server/catalog/quote";
 import { quoteCart } from "@/server/catalog/quote";
-import { searchProducts, type ProductRow } from "@/server/catalog/search";
+import { searchProductsTx, type ProductRow } from "@/server/catalog/search";
 import { withTransaction, type Tx } from "@/server/db/tx";
 import { lockMandateSnapshot } from "@/server/mandates/service";
 import { decide } from "@/server/rules/engine";
 import { explainFallback, extractIntentFallback } from "./fallback";
+import { judgeQuotedProduct } from "./judge";
 
 export interface TaskContext {
   taskId: string;
@@ -59,6 +61,12 @@ export async function runTask(ctx: TaskContext): Promise<RunResult> {
 
   try {
     return await withTransaction(async (tx) => {
+      const owned = await tx.query(
+        `SELECT t.id FROM tasks t JOIN mandates m ON m.id=t.mandate_id
+         WHERE t.id=$1 AND t.user_id=$2 AND m.user_id=$2 AND m.id=$3`,
+        [ctx.taskId, ctx.userId, ctx.mandateId],
+      );
+      if (!owned.rowCount) throw new AppError("NOT_FOUND", "任务或授权书不存在。");
       // Step 1: 提取意图
       const t1 = Date.now();
       const intent = extractIntentFallback(ctx.inputText);
@@ -110,7 +118,7 @@ export async function runTask(ctx: TaskContext): Promise<RunResult> {
 
       // Step 3: 搜索商品
       const t3 = Date.now();
-      const products = await searchProducts(intent.query, { categories: mandate.scope.categories, limit: 10 });
+      const products = await searchProductsTx(tx, intent.query, { categories: mandate.scope.categories, limit: 10 });
       steps.push({
         tool: "search_catalog",
         inputSummary: intent.query,
@@ -142,70 +150,29 @@ export async function runTask(ctx: TaskContext): Promise<RunResult> {
       }> = [];
 
       for (const p of products) {
+        if (p.stock_qty < intent.qty) continue;
         const merchant = buildMerchantInfo(p);
+        const candidateMethod = merchant.acceptsMethods.includes(method.id)
+          ? method
+          : await getFirstMethod(tx, ctx.userId, mandate.allowedMethods, merchant.acceptsMethods);
         const productWithQty = { ...p, qty: intent.qty };
-        const quote = quoteCart(merchant, [productWithQty], method);
-        const candidateCtx: EngineContext = {
+        const quote = quoteCart(merchant, [productWithQty], candidateMethod);
+        const range = mandate.task.priceRangeHKD;
+        if (range) {
+          const minPrice = hkdToMinor(range.min);
+          const maxPrice = hkdToMinor(range.max);
+          if (quote.totalMinor < minPrice || quote.totalMinor > maxPrice) continue;
+        }
+
+        const mergedDecision = judgeQuotedProduct({
           now: new Date(),
           mandate,
-          buyerCredential: { status: buyerCredentialStatus as ("valid" | "revoked" | "expired" | "missing") },
-          merchant: {
-            id: merchant.id,
-            name: merchant.name,
-            credentialStatus: merchant.credentialStatus as ("valid" | "revoked" | "expired" | "missing"),
-            registeredAt: merchant.registeredAt,
-          },
-          product: {
-            id: p.id,
-            category: p.category,
-            brand: p.brand,
-            spec: p.spec,
-            priceMinor: BigInt(p.price_minor),
-            refPriceMinor: BigInt(p.ref_price_minor),
-            riskTags: p.risk_tags,
-          },
-          cart: {
-            version: 1,
-            items: quote.items.map((item) => ({
-              id: item.productId,
-              category: item.category,
-              brand: item.brand,
-              spec: item.spec,
-              priceMinor: item.unitPriceMinor,
-              refPriceMinor: item.refPriceMinor,
-              riskTags: item.riskTags,
-              qty: item.qty,
-            })),
-            subtotalMinor: quote.subtotalMinor,
-            shippingMinor: quote.shippingMinor,
-            consumerFeeMinor: quote.consumerFeeMinor,
-            totalMinor: quote.totalMinor,
-            quoteExpiresAt: quote.quoteExpiresAt,
-          },
-          paymentMethod: {
-            id: method.id,
-            label: method.label,
-            merchantAccepts: merchant.acceptsMethods.includes(method.id),
-            userEnabled: true,
-          },
-        };
-        const candidateDecision = decide(candidateCtx, "CANDIDATES");
-        const quoteDecision = decide(candidateCtx, "QUOTE");
-        const routeDecision = decide(candidateCtx, "ROUTE");
-
-        // 合并规则
-        const allRules = [...candidateDecision.rules, ...quoteDecision.rules, ...routeDecision.rules];
-        const deduped = Array.from(new Map(allRules.map((r) => [r.id, r])).values());
-        const hasDeny = deduped.some((r) => r.severity === "DENY");
-        const hasReview = deduped.some((r) => r.severity === "REVIEW");
-        const outcome = hasDeny ? "DENY" : hasReview ? "REVIEW" : "ALLOW";
-        const mergedDecision: Decision = {
-          outcome: outcome as "ALLOW" | "REVIEW" | "DENY",
-          checkpoint: "CANDIDATES",
-          rules: deduped.sort((a, b) => (a.severity === b.severity ? 0 : a.severity === "DENY" ? -1 : 1)),
-          mandateVersion: mandate.version,
-          evaluatedAt: new Date().toISOString(),
-        };
+          buyerCredentialStatus,
+          product: p,
+          merchant,
+          quote,
+          method: candidateMethod,
+        });
 
         validCandidates.push({ product: p, merchant, quote, decision: mergedDecision });
       }
@@ -275,15 +242,23 @@ export async function runTask(ctx: TaskContext): Promise<RunResult> {
         });
       }
 
-      // Step 8: 创建购物车版本（首选）
+      // 多件候选时先等用户点选，服务端也不产生可付款的默认购物车。
+      if (validCandidates.length > 1) {
+        await tx.query(`UPDATE tasks SET status='awaiting_confirmation', updated_at=now() WHERE id=$1`, [ctx.taskId]);
+        await saveRun(tx, ctx.taskId, mode, steps, candidates);
+        return { taskId: ctx.taskId, mode, status: "awaiting_confirmation", steps, candidates };
+      }
+
+      // Step 8: 唯一候选可以直接建立购物车，付款仍需显式确认。
       const selected = validCandidates[0];
+      const selectedMethod = await getFirstMethod(tx, ctx.userId, mandate.allowedMethods, selected.merchant.acceptsMethods);
       const t8 = Date.now();
       const cartVersion = await createCartVersion(
         tx,
         ctx.taskId,
         selected.merchant.id,
         selected.quote,
-        method.id,
+        selectedMethod.id,
       );
       steps.push({
         tool: "create_cart_version",
@@ -385,7 +360,7 @@ async function saveRun(tx: Tx, taskId: string, mode: "llm" | "fallback", steps: 
   );
 }
 
-async function getFirstMethod(tx: Tx, userId: string, allowed: string[]): Promise<PaymentMethodInfo> {
+export async function getFirstMethod(tx: Tx, userId: string, allowed: string[], accepted?: string[]): Promise<PaymentMethodInfo> {
   const r = await tx.query<{ id: string; label: string; consumer_fee_minor: string }>(
     `SELECT pm.id, pm.label, pm.consumer_fee_minor
      FROM payment_methods pm
@@ -393,8 +368,10 @@ async function getFirstMethod(tx: Tx, userId: string, allowed: string[]): Promis
      WHERE upm.user_id = $1 AND upm.enabled = true`,
     [userId],
   );
-  const rows = r.rows.filter((row) => allowed.includes(row.id));
-  const pick = rows.find((row) => row.id === "tapngo_mc") ?? rows.find((row) => row.id === "fps") ?? rows[0];
+  const enabled = r.rows.filter((row) => allowed.includes(row.id));
+  const rows = enabled.filter((row) => !accepted || accepted.includes(row.id));
+  // 没有共同方式时交给规则引擎记录 DENY，不让一个不可买的商家中断整个搜索。
+  const pick = rows.find((row) => row.id === "tapngo_mc") ?? rows.find((row) => row.id === "fps") ?? rows[0] ?? enabled[0];
   if (!pick) throw new AppError("VALIDATION_ERROR", "无可用支付方式。");
   return {
     id: pick.id,
@@ -403,7 +380,7 @@ async function getFirstMethod(tx: Tx, userId: string, allowed: string[]): Promis
   };
 }
 
-function buildMerchantInfo(p: ProductRow): MerchantInfo {
+export function buildMerchantInfo(p: ProductRow): MerchantInfo {
   return {
     id: p.merchant_id,
     name: p.merchant_name,

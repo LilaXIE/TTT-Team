@@ -1,5 +1,7 @@
 // S1 集成测试：自动完成正常结算。规格：docs/MANUAL.md §10 S1。
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterAll } from "vitest";
+import { closePool } from "@/server/db/pool";
+import { selectCandidate } from "@/server/agent/select";
 import { withTransaction } from "@/server/db/tx";
 import { resetDemo } from "@/server/seed";
 import { createMandate } from "@/server/mandates/service";
@@ -23,9 +25,11 @@ describe("S1: 自动完成正常结算", () => {
   let userId: string;
 
   beforeEach(async () => {
+    if (!process.env.TEST_DATABASE_URL) throw new Error("TEST_DATABASE_URL is required");
     // 重置演示数据
     userId = await withTransaction((tx) => resetDemo(tx), { statementTimeoutMs: 60_000 });
   });
+  afterAll(closePool);
 
   it("帮我补一瓶洗衣液 2L 以上 150 以内 → A 家品牌甲 118+20=138 → paid", async () => {
     // 1. 创建授权：household，单笔 150，总额 300，2 次
@@ -79,16 +83,14 @@ describe("S1: 自动完成正常结算", () => {
     expect(firstCandidate.quote.totalMinor).toBe(13800n); // 118 + 20
 
     // 3. 结算
-    if (!taskResult.selectedCartId || !taskResult.selectedCartVersion) {
-      throw new Error("未创建购物车");
-    }
+    const selected = await selectCandidate(userId, taskId, firstCandidate.product.id);
 
     const settleResult = await settle({
-      cartId: taskResult.selectedCartId,
-      cartVersion: taskResult.selectedCartVersion,
+      cartId: selected.cartId,
+      cartVersion: selected.cartVersion,
       userId,
       idempotencyKey: `test-${Date.now()}`,
-      methodId: "fps",
+      methodId: selected.methodId,
     });
 
     expect(settleResult.status).toBe("succeeded");
@@ -163,14 +165,14 @@ describe("S1: 自动完成正常结算", () => {
       inputText,
     });
 
-    if (!taskResult.selectedCartId) throw new Error("未创建购物车");
+    const selected = await selectCandidate(userId, taskId, taskResult.candidates[0].product.id);
 
     const idempotencyKey = `test-idempotent-${Date.now()}`;
 
     // 第一次支付
     const result1 = await settle({
-      cartId: taskResult.selectedCartId,
-      cartVersion: taskResult.selectedCartVersion!,
+      cartId: selected.cartId,
+      cartVersion: selected.cartVersion,
       userId,
       idempotencyKey,
       methodId: "fps",
@@ -181,8 +183,8 @@ describe("S1: 自动完成正常结算", () => {
 
     // 第二次支付（相同幂等键）
     const result2 = await settle({
-      cartId: taskResult.selectedCartId,
-      cartVersion: taskResult.selectedCartVersion!,
+      cartId: selected.cartId,
+      cartVersion: selected.cartVersion,
       userId,
       idempotencyKey,
       methodId: "fps",
