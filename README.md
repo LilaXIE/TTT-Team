@@ -45,6 +45,7 @@ curates refined product recommendations through a 4-stage funnel, and completes 
 
 # 📂 Project Structure
 
+```text
 Agent/
 ├── .streamlit/
 │   ├── config.toml         # Streamlit theme & server settings
@@ -52,6 +53,7 @@ Agent/
 ├── app.py                  # Main application
 ├── requirements.txt        # Python dependencies
 └── README.md               # This file
+```
 
 # 🚀 Quick Start
 
