@@ -1,0 +1,24 @@
+Zev — Human narration script
+Read only the English narration below. Blank lines are natural pauses, not long waits.
+
+Shopping agents can save us time. But before we let them spend, we need to decide what they can buy, how much they can spend, and when they must ask us.
+
+Meet Zev. I ask it to restock laundry liquid: at least two litres, under one hundred and fifty Hong Kong dollars, within this week.
+
+Zev turns that request into a draft mandate. I can review the limit per order, total budget, purchase count, and expiry. Before signing, I can preview which purchases it would allow or decline. Zev proposes the boundaries; I approve them.
+
+Here, I confirm through our simulated passkey flow. Zev then compares products and completes a purchase within the mandate. The receipt shows one hundred and thirty-eight dollars, including shipping, together with the remaining allowance. The spending limit applies to the full checkout total.
+
+Now, consider a different brand. Zev asks first. Approval is tied to a specific cart and expires. This example has already expired, so that old approval cannot be reused.
+
+Some decisions are firm. This larger bottle costs one hundred and fifty-eight dollars with shipping. It exceeds the cap, so Zev declines. There is no approve-anyway option.
+
+Our Trust design also separates signing in from granting spending power. In this simulated new-device scenario, a password lets someone view the account. But an attempt to raise the spending limit fails without the passkey.
+
+We also protect where the goods go. An address change requires confirmation and enters a cooling-off period. The current address stays unchanged while the request waits, and the user can cancel it. This is a prototype of that protection.
+
+The user can also revoke a mandate. It can no longer authorize future purchases, while completed orders remain in the records.
+
+Finally, we can trace the mandate, candidate products, rule checks, and receipt. Product descriptions cannot rewrite the spending rules. Payments and identity checks are simulated in this prototype.
+
+Zev combines shopping convenience with clear boundaries and user control.
