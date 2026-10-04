@@ -72,6 +72,7 @@ pip install -r requirements.txt
 
 Create .streamlit/secrets.toml with the following content:
 
+‘‘‘
 ===== DeepSeek =====
 DEEPSEEK_API_KEY = "sk-xxxxxxxxxxxxxxxxxxxxxxxx"
 
@@ -87,6 +88,7 @@ SMTP_PASS = "your_app_password"      # App password, NOT your login password
 SMTP_HOST     = "smtp.gmail.com"
 SMTP_PORT     = 465
 SMTP_USE_SSL  = true
+‘’’
 
 # ⚠️ Never commit secrets.toml to version control. Add .streamlit/secrets.toml to .gitignore.
 
