@@ -124,8 +124,8 @@ Password: password123
 --------------------------------------------------------------------
 DEEPSEEK_API_KEY	   ✅	     DeepSeek API key for LLM reasoning
 TENCENT_SECRET_ID	  ✅	     Tencent Cloud SecretId (for WSA)
-TENCENT_SECRET_KEY    ✅	    Tencent Cloud SecretKey
-SMTP_USER	            ✅      Sender email address
+TENCENT_SECRET_KEY     ✅	    Tencent Cloud SecretKey
+SMTP_USER	             ✅      Sender email address
 SMTP_PASS	            ✅      Sender email app password
 SMTP_HOST	            ❌	    SMTP host (auto-detected)
 SMTP_PORT	            ❌	    SMTP port (auto-detected)
