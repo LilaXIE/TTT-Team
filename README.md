@@ -1,397 +1,152 @@
-# MandateWallet · Zev
+# MandateWallet
 
-**MandateWallet** is an agentic commerce prototype for giving an AI shopping agent a controlled spending wallet. Users describe what they want to buy, define the boundaries the agent must follow, and receive a traceable record of every candidate, decision, confirmation, and simulated payment.
+HacKU 2026 · FinTech PS1 “Give a Machine a Wallet – Agentic Commerce”
 
-> **Live demo:** [https://mandate-wallet-ui.vercel.app/](https://mandate-wallet-ui.vercel.app/)
->
-> **Local demo:** `http://localhost:3000`
+用户写下 AI 购物助理 **Zev** 的花钱边界：买什么、最多花多少、最多买几次、何时失效、哪些情况先问。Zev 在两个模拟商家的目录里比价；边界内从 Agent 零钱包付款，接近边界时暂停询问，越界时拒绝并引用用户自己写的规则。每一笔都能看到命中了哪条规则、哪一版授权、用了哪种支付方式。
 
-MandateWallet is designed around a simple rule: **Zev can act within the mandate you sign, must pause when a configured review condition is triggered, and must refuse when a hard boundary is violated.**
+四个维度落在同一笔交易上：
 
-## Product Overview
-
-MandateWallet turns an everyday shopping request into a controlled agent workflow:
-
-1. The user describes a purchase in natural language.
-2. Zev extracts the shopping intent and searches the available catalog.
-3. The system compares candidates, prices, shipping, delivery information, and merchant status.
-4. A deterministic policy engine evaluates the request against the user's mandate.
-5. An allowed request can be paid automatically through the simulated wallet.
-6. A request requiring review appears in the confirmation inbox.
-7. A request outside the mandate is denied and cannot be approved around the rule.
-8. The complete task history remains available for inspection.
-
-The product is aimed at everyday replenishment and controlled agentic commerce, such as buying laundry liquid, tissues, dish soap, or selecting a household item within a declared budget.
-
-## Key Features
-
-### Mandates and spending boundaries
-
-Users can create a structured mandate that defines:
-
-- What the agent may buy
-- Allowed product categories
-- Per-transaction spending limit
-- Total allowance for the mandate
-- Maximum number of successful purchases
-- Expiration date
-- Whether brand substitutions require confirmation
-- Whether specific categories require confirmation
-- Whether new merchants require confirmation
-- Whether prices above a reference price require confirmation
-- Allowed payment methods
-- Standard or enhanced protection mode
-
-Before signing, the interface previews representative outcomes as:
-
-- **Allow:** Zev can complete the purchase automatically.
-- **Review:** Zev must ask the user first.
-- **Deny:** The purchase is outside the mandate and cannot be approved.
-
-### Traceable agent workflow
-
-Every task exposes the agent's work log, including:
-
-- Intent extraction
-- Catalog search
-- Candidate comparison
-- Quote construction
-- Rule evaluation
-- Cart version creation
-- Confirmation status
-- Payment and receipt information
-
-The agent is responsible for understanding requests, searching, comparing, and explaining. It does not make policy decisions. Authorization and payment decisions are evaluated by the server-side rule engine.
-
-### Rules-first authorization
-
-The policy engine uses stable rule IDs and deterministic outcomes:
-
-- `ALLOW`
-- `REVIEW`
-- `DENY`
-
-Hard-deny examples include:
-
-- Revoked or expired mandate
-- Invalid buyer credential
-- Invalid merchant credential
-- Disallowed category
-- Product specification not met
-- Per-transaction cap exceeded
-- Total allowance exceeded
-- Purchase count exhausted
-- Payment method not allowed
-- Expired quote
-
-Review examples include:
-
-- The purchase is close to the spending cap
-- The product uses a substitute brand
-- The product belongs to a watched category
-- The merchant is new
-- The price is above the reference price
-
-The priority is always:
-
-```text
-DENY > REVIEW > ALLOW
-```
-
-### Wallet and simulated payment
-
-The Agent pocket is kept separate from the user's signed mandate allowance. Users can inspect:
-
-- Pocket balance
-- Funding activity
-- Mandate allowance
-- Remaining purchase count
-- Payment method eligibility
-- Simulated receipts
-
-Payment runs through a transactional settlement flow with idempotency protection, inventory checks, allowance updates, account balances, orders, and ledger entries.
-
-### Confirmation inbox
-
-When a task triggers a review rule, it appears in the **To approve** inbox. A confirmation is bound to:
-
-- The task
-- The cart version
-- The triggered rule IDs
-- An expiration time
-
-If the quoted cart changes, the original confirmation is no longer valid and the task must be evaluated again.
-
-### Records and explanations
-
-The records page connects:
-
-```text
-Mandate → Task → Candidates → Decision → Confirmation → Payment → Receipt
-```
-
-Users can inspect why an action was allowed, paused, or denied, including the mandate version and the rules that were triggered.
-
-### Security and account controls
-
-The prototype includes account-oriented controls for:
-
-- Passkey-style step-up confirmation in the demo flow
-- New-device warnings
-- Account freeze behavior
-- Credential and verification status
-- Delivery address changes shown with a cooling-off state in the demo. That wait is not a 24-hour lock on the server, and saving an address does not write through `/api/profile`
-- User preferences
-- Connected funding providers
-- English/Chinese language switching
-
-### Demo controls
-
-When `DEMO_MODE=true`, the demo control panel can be used to demonstrate safety scenarios such as:
-
-- Revoking a merchant credential
-- Revoking a mandate
-- Simulating an issuer decline
-- Resetting demo data
-- Switching between LLM and fallback behavior
-
-## Live Demo Walkthrough
-
-Open the [public demo](https://mandate-wallet-ui.vercel.app/) and explore the following flow:
-
-1. Start from the **Home** page.
-2. Enter a shopping request or choose one of the suggested prompts.
-3. Open **New mandate** to define a spending boundary.
-4. Review the preview cards before signing the mandate.
-5. Open **Wallet** to inspect the Agent pocket and active mandates.
-6. Create a task and inspect Zev's work log.
-7. Use **To approve** for tasks that require user confirmation.
-8. Open **Records** to inspect completed and denied tasks.
-9. Open **Me** to review security, verification, address, preference, and connection settings.
-10. Use **Demo controls** to reproduce approval, denial, revocation, and payment-failure scenarios.
-
-The demo is available in both Chinese and English through the language toggle in the application shell.
-
-## Application Pages
-
-| Route | Purpose |
-| --- | --- |
-| `/` | Home dashboard, shopping prompt, allowance summary, pending confirmations, recent tasks, and recent transactions |
-| `/task/new` | Create a task or draft a mandate from a shopping request |
-| `/task/[id]` | Inspect the agent run, candidates, decisions, confirmation, payment, and receipt |
-| `/wallet` | Inspect the Agent pocket, funding activity, mandates, and payment-method comparison |
-| `/inbox` | Review tasks that require confirmation |
-| `/ledger` | Browse traceable task, decision, payment, and receipt records |
-| `/mandate/new` | Create a mandate and preview its outcomes before signing |
-| `/mandate/[id]` | Inspect a mandate, its limits, versions, and status |
-| `/pay-methods` | Compare simulated payment methods. FPS has a scoped observed fee. The Tap & Go local-HKD fee is unverified |
-| `/me` | Manage security, verification, address, preferences, and connections |
-| `/demo` | Demonstration controls available only when `DEMO_MODE=true` |
-
-## Architecture
+- **Trust**：买家与商家凭证决定谁能参与；授权书（mandate）决定 Zev 被允许做什么。
+- **E-commerce**：任务、候选、含运费的报价、购物车版本、订单。
+- **Agent**：理解这句话、搜索目录、比较、解释。金额和能不能买不采用模型的输出。
+- **Payment**：先看 FPS 与 Tap & Go 的资格和成本，再在一个数据库事务里结算，并留下平衡账本和收据。
 
 ```mermaid
 flowchart LR
-  UI[Next.js App Router UI] --> API[Route Handlers]
-  API --> AUTH[Session authentication]
-  API --> AGENT[Agent orchestration]
-  AGENT --> CAT[Catalog search and quote]
-  AGENT --> ENGINE[Deterministic rules engine]
-  API --> SETTLE[Transactional settlement]
-  SETTLE --> DB[(PostgreSQL)]
-  CAT --> DB
-  SETTLE --> LEDGER[Orders and double-entry ledger]
+  trust["Trust<br/>凭证与授权"] --> order["同一笔订单"]
+  shop["E-commerce<br/>候选、报价、购物车"] --> order
+  agent["Agent<br/>理解、比较、解释"] --> order
+  pay["Payment<br/>资格、结算、账本"] --> order
 ```
 
-The system is intentionally separated into four concerns:
+演示目录在 `fixtures/catalog.json`，共 500 件。前 98 件的 id 和价格保持不变，用来走自动完成、先问、拒绝这几条脚本。商品名写成「中文 / English」，界面按当前语言只显示一边。
 
-- **Trust:** buyer and merchant credentials, mandate status, expiration, and revocation.
-- **E-commerce:** tasks, candidates, quotes, cart versions, orders, and receipts.
-- **Agent:** intent extraction, search, comparison, ranking, and explanations.
-- **Payment:** method eligibility, simulated settlement, idempotency, and ledger posting.
+## 线上
 
-Important design principles:
+- 带数据库的站点：<https://mandate-wallet.vercel.app>（跟随 `main`）
+- 浏览器内演示：<https://mandate-wallet-ui.vercel.app>（`DEMO_MODE`，数据在访问者浏览器里）
 
-- The rules engine is a pure, deterministic function and does not perform I/O.
-- The settlement path reconstructs the decision context from locked database state instead of trusting the frontend or an agent response.
-- LLM output is limited to intent extraction and explanations; it does not decide authorization or payment.
-- All monetary calculations use integer minor units (`BIGINT`), with HKD as the product currency.
-- Database writes for settlement happen in one transaction.
+演示账号 `alex@demo.hk` / `demo1234`。登录页有「使用演示账号」。`DEMO_MODE` 下未登录也可以在首页问 Zev。
 
-## Technology Stack
+## 本地运行
 
-- Next.js 16 with the App Router
-- React 19 and TypeScript
-- PostgreSQL
-- `pg` and SQL migration files
-- Tailwind CSS and shadcn/ui
-- Zod for runtime validation
-- bcryptjs for password hashing
-- Vitest for unit, integration, and scenario tests
-- Optional OpenAI-compatible LLM provider for agent assistance
-
-## Local Development
-
-### Prerequisites
-
-- Node.js 22 or a compatible current LTS release
-- npm
-- PostgreSQL, either locally installed or through Docker Desktop
-
-### 1. Install dependencies
+需要 Node.js 与 PostgreSQL。
 
 ```powershell
 npm install
+Copy-Item .env.example .env.local
+npm run db:migrate
+npm run db:seed
+npm run dev
 ```
 
-### 2. Configure environment variables
-
-Create `.env.local` in the project root:
-
-```env
-DATABASE_URL=postgresql://mw:mw@localhost:5432/mandate_wallet
-TEST_DATABASE_URL=postgresql://mw:mw@localhost:5432/mandate_wallet
-SESSION_SECRET=replace-with-a-random-secret
-DEMO_MODE=true
-
-# Optional OpenAI-compatible provider configuration
-LLM_BASE_URL=
-LLM_MODEL=
-LLM_API_KEY=
-FORCE_FALLBACK=false
-```
-
-Do not commit `.env.local` or production credentials.
-
-### 3. Start PostgreSQL with Docker
-
-The repository includes a PostgreSQL service in `compose.yaml`:
+`.env.local` 里至少填写 `DATABASE_URL` 和 `SESSION_SECRET`。Docker 可用时：
 
 ```powershell
 docker compose up -d db
 ```
 
-Check the service:
+默认连接串是 `postgresql://mw:mw@localhost:5432/mandate_wallet`。应用在 <http://localhost:3000>。`npm run dev` 监听 `0.0.0.0:3000`，同一局域网可以用本机 IPv4 访问。
 
-```powershell
-docker compose ps
+`DEEPSEEK_API_KEY` 留空时，Zev 用本地关键词从原话里认商品。填上之后才调用 DeepSeek，回复会标明来源。密钥只放在 `.env.local` 或部署环境变量里，不要提交。
+
+`DEMO_MODE` 不是 `true` 时，`/demo` 和 `/api/demo/*` 返回 404。
+
+## 一笔购买怎么走
+
+1. 用户签发授权。签发前有三张预览：会自动买、会先问、会被拒绝。
+2. 对 Zev 说要买什么。多于一件都在授权内时，必须点「就买这件」才会出现付款。
+3. 规则引擎给出 `ALLOW`、`REVIEW` 或 `DENY`。`DENY` 不能靠确认放行。`REVIEW` 只在购物车版本一致、规则都覆盖到、确认未过期、且没有阻断规则时放行。
+4. 结算自己重新构造上下文并调用引擎，不采用页面或模型传来的结论。授权额度、次数、库存、双方余额、订单和账本在同一个事务里更新；任一条件不满足就整笔回滚。
+
+```mermaid
+flowchart TD
+  sign["签发授权"] --> preview["三张预览：会自动买 / 会先问 / 会被拒绝"]
+  preview --> ask["告诉 Zev 要买什么"]
+  ask --> pick{"授权内多于一件？"}
+  pick -->|是| choose["点「就买这件」"]
+  pick -->|否| engine["规则引擎"]
+  choose --> engine
+  engine --> allow["ALLOW"]
+  engine --> review["REVIEW"]
+  engine --> deny["DENY"]
+  allow --> settle["结算"]
+  review --> confirm{"确认仍有效？"}
+  confirm -->|是| settle
+  confirm -->|否| review
+  deny --> stop["拒绝，确认也不能放行"]
+  settle --> book["额度、次数、库存、双方余额、订单、账本同一事务"]
 ```
 
-If Docker Desktop is not available, install PostgreSQL locally and update `DATABASE_URL` accordingly.
+确认要同时满足四件事，少一件就继续停着：
 
-### 4. Run migrations and seed demo data
-
-```powershell
-npm run db:migrate
-npm run db:seed
+```mermaid
+flowchart TD
+  hit["命中 REVIEW"] --> ver{"购物车版本与确认时一致？"}
+  ver -->|否| wait["继续询问"]
+  ver -->|是| rules{"确认盖住了全部命中规则？"}
+  rules -->|否| wait
+  rules -->|是| fresh{"确认未过期？"}
+  fresh -->|否| wait
+  fresh -->|是| block{"含有阻断规则？"}
+  block -->|是| wait
+  block -->|否| go["放行并结算"]
 ```
 
-The seed script creates the reference merchants, products, payment methods, demo buyer, credentials, and initial simulated funding.
+金额在库里是整数分，接口用十进制字符串。预算和余额按商品 + 运费 + 消费者手续费判断。回赠只展示，不入账。
 
-### 5. Start the application
-
-```powershell
-npm run dev
+```mermaid
+flowchart LR
+  price["商品"] --> total["实际扣款"]
+  ship["运费"] --> total
+  fee["消费者手续费"] --> total
+  total --> cap["对照预算、上限、余额"]
+  reward["回赠"] --> show["只展示"]
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+## 代码怎么分工
 
-The dev server listens on `0.0.0.0:3000`, so teammates on the same network can use `http://<your-lan-ip>:3000` when firewall and Wi-Fi isolation rules allow it.
+页面不自己决定能不能买。Agent 只负责听懂、找商品和解释。能不能付钱，由规则引擎在结算时用数据库里锁住的最新数据再算一遍。
 
-## Demo Account
-
-The seed script prints the demo credentials. The default demo account is:
-
-```text
-Email:    alex@demo.hk
-Password: demo1234
+```mermaid
+flowchart LR
+  ui["买家页面"] --> api["Route Handlers"]
+  api --> session["只信任 session 里的用户"]
+  api --> agent["Agent"]
+  agent --> catalog["目录搜索与报价"]
+  agent --> engine["decide：纯函数"]
+  api --> settle["结算"]
+  settle --> engine
+  settle --> db[("PostgreSQL")]
+  catalog --> db
 ```
 
-Use the credentials only in a local or demonstration environment. Change the seed data and session configuration before any production deployment.
-
-## Useful Commands
+## 常用命令
 
 ```powershell
-npm run dev              # Start the development server
-npm run build            # Create a production build
-npm run start            # Start the production server
-npm run lint             # Run ESLint
-npm run typecheck        # Run TypeScript checks
-npm run db:migrate       # Apply pending SQL migrations
-npm run db:seed          # Seed reference and demo data
-npm run demo:reset       # Reset demo state
-npm run fixtures:validate # Validate fixture files
-npm run test:unit        # Run unit tests
-npm run test:integration  # Run integration tests
-npm run test:scenarios    # Run scenario tests
-```
-
-## Database and Migrations
-
-Migrations are applied in filename order and tracked in the `schema_migrations` table. The core schema covers:
-
-- Users and sessions
-- Buyer and merchant credentials
-- Mandates and mandate events
-- Tasks and agent runs
-- Carts and cart versions
-- Decisions and confirmations
-- Orders and payment attempts
-- Accounts, journals, and ledger entries
-- Support requests and audit events
-- User preferences and demo state
-
-Do not edit an already-applied migration in a shared environment. Add a new numbered migration instead.
-
-## Testing Scenarios
-
-The project is built around five safety and correctness scenarios:
-
-| Scenario | Expected behavior |
-| --- | --- |
-| Automatic completion | A candidate within the mandate is paid automatically and recorded in the ledger |
-| Review required | A configured review condition pauses the task until the user confirms |
-| Hard denial | A cap, credential, category, or mandate violation is denied without an approval path |
-| Duplicate and overspend protection | Idempotency and transaction locking prevent duplicate payment and negative balances |
-| Traceability | The records page shows the mandate version, candidate, rules, payment method, and receipt |
-
-Run the test suites with:
-
-```powershell
+npm run typecheck
+npm run lint
 npm run test:unit
-npm run test:integration
-npm run test:scenarios
+npm run fixtures:validate
+npm run demo:reset
 ```
 
-## Project Documentation
+`test:integration` 和 `test:scenarios` 需要 `TEST_DATABASE_URL`。
 
-- [`docs/MANUAL.md`](docs/MANUAL.md) — product and technical specification
-- [`docs/DECISIONS.md`](docs/DECISIONS.md) — architecture and product decisions
-- [`docs/PAYMENT_RAILS.md`](docs/PAYMENT_RAILS.md) — what the simulator already does, and what a real FPS or Tap & Go integration still needs
-- [`docs/rates/README.md`](docs/rates/README.md) — fee observations, screenshots, and scope
-- [`docs/EVIDENCE.md`](docs/EVIDENCE.md) — the 138 / 158 HKD cost check, and the manual timing that has not been measured
-- [`docs/LOCAL_SETUP.md`](docs/LOCAL_SETUP.md) — Windows setup
-- [`AGENTS.md`](AGENTS.md) — project invariants and engineering constraints
-- [`fixtures/README.md`](fixtures/README.md) — fixture format and validation
+## 文档
 
-## Scope and Limitations
+- `docs/MANUAL.md`：产品与技术规格
+- `docs/LOCAL_SETUP.md`：Windows 本地启动
+- `docs/DECISIONS.md`：规格没有写死时的取舍
+- `docs/PAYMENT_RAILS.md`：模拟结算里已执行的部分，以及接入 FPS / Tap & Go 时还要机构做什么
+- `docs/rates/README.md`：费率观测、截图和适用范围
+- `docs/EVIDENCE.md`：成本口径、尚未做的人工计时，以及和自己购物、普通对话助手的差别
+- `AGENTS.md`：实现时不能违反的约束
 
-This is a controlled prototype and demonstration environment.
+## 边界
 
-- Payments are executed by a simulator and do not move real money.
-- Merchant credential verification only means that the checked conditions passed; it does not mean that a merchant is universally trustworthy.
-- The FPS fee of 0 was observed for an HSBC personal customer making a local HKD transfer in the HSBC app or online banking. Other providers may charge. The Tap & Go charges page does not state a local-HKD consumer fee, so that value stays unverified. A 0 booked in the demo ledger is not that observation and is not evidence that Tap & Go is cheaper than FPS. Screenshots are in `docs/rates/`.
-- Rewards were not verified for these simulated merchants and are not used as authorization inputs.
-- Rewards are estimates and are not treated as guaranteed savings or used as authorization inputs.
-- The catalog is a controlled demonstration catalog; it is not a general marketplace integration.
-- The agent does not bypass merchant security controls, payment authentication, or platform restrictions.
-- Real payment, merchant onboarding, production identity verification, and external commerce integrations would require additional provider agreements and security review.
-- The public Vercel deployment is intended for product demonstration, not production financial use.
+支付由模拟器执行。真实扣款、失败查询、退款和对账要支付机构的接口，见 `docs/PAYMENT_RAILS.md`。
 
-## Branches
+FPS 的 0 手续费只对应汇丰个人客户经其 App 或网上理财做的本地港元转账。Tap & Go 的收费表没有写明本地港元消费手续费，观测值是未核实；演示账本里暂记的 0 不是这条费用的观测值，也不能用来说明它比 FPS 便宜。来源和观测时间写在 `fixtures/rates.json`。
 
-`main` is the submission branch. `UI-Design` carries the same product commits.
-
-## License and Attribution
-
-This project was developed for HacKU 2026 · FinTech PS1, **“Give a Machine a Wallet — Agentic Commerce.”** It uses open-source technologies including Next.js, React, Tailwind CSS, shadcn/ui, Base UI, lucide, PostgreSQL, `pg`, Zod, bcryptjs, Vitest, MiSans, and LXGW WenKai, under their own licenses. AI-assisted development tools were used during implementation. The rules engine and settlement do not call a model.
+商家凭证「验证通过」只表示所核验的条件通过。记录是可追溯的授权与交易决策，不表示记录不可被运营方改写。改地址的冷静期只在演示页面里，不是服务端的 24 小时锁定。
