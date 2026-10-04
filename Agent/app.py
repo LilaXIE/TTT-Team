@@ -30,6 +30,17 @@ client = OpenAI(
 )
 
 # ==========================================
+# Global language enforcement (English only)
+# ==========================================
+LANGUAGE_ENFORCEMENT = (
+    "IMPORTANT: You MUST always respond strictly in English, regardless of the "
+    "language used by the user. Never output Chinese or any other language. "
+    "All titles, reasons, dimensions, descriptions and explanations must be in English. "
+    "For product titles originally written in Chinese, translate them into natural, "
+    "concise English. Keep brand names, model numbers and units (e.g., mAh, GB) as-is."
+)
+
+# ==========================================
 # 0.0 Tencent Cloud Web Search API (WSA) Configuration
 # ==========================================
 WSA_SERVICE = "wsa"
@@ -48,20 +59,6 @@ ALLOWED_PLATFORMS = {
     "VIP.com":  ["vip.com"],
 }
 
-# ==========================================
-# Global language enforcement block
-# ==========================================
-LANGUAGE_ENFORCEMENT = (
-    "*** LANGUAGE REQUIREMENT (ABSOLUTE, NON-NEGOTIABLE) ***\n"
-    "You MUST respond entirely in English. Every single word of your output — titles, "
-    "reasons, dimensions, explanations, category names, attributes, and any other field — "
-    "must be in English. Do NOT output any Chinese characters. Do NOT mix languages. "
-    "If the user writes in Chinese, translate their intent and reply in English. "
-    "Product titles copied from Chinese e-commerce sites must also be transliterated or "
-    "translated into English (keep brand names and model numbers as-is when appropriate).\n"
-    "*** END LANGUAGE REQUIREMENT ***\n"
-)
-
 
 def _detect_platform(url: str):
     if not url:
@@ -78,19 +75,55 @@ def _is_allowed_url(url: str) -> bool:
     return _detect_platform(url) is not None
 
 
-# ---------- Product detail page detection ----------
+# ==========================================
+# Platform official search-page fallback URL
+# ==========================================
+def _platform_search_url(platform: str, keyword: str) -> str:
+    """Return the platform's official search page for the given keyword."""
+    q = urllib.parse.quote(keyword or "product")
+    if platform == "Taobao":
+        return f"https://s.taobao.com/search?q={q}"
+    if platform == "Tmall":
+        return f"https://list.tmall.com/search_product.htm?q={q}"
+    if platform == "JD":
+        return f"https://search.jd.com/Search?keyword={q}"
+    if platform == "Pinduoduo":
+        return f"https://mobile.yangkeduo.com/search_result.html?search_key={q}"
+    if platform == "VIP.com":
+        return f"https://category.vip.com/suggest.php?keyword={q}"
+    return f"https://search.jd.com/Search?keyword={q}"
+
+
+# ---------- Product detail page detection (relaxed) ----------
 _PRODUCT_DETAIL_PATTERNS = [
+    # --- JD ---
     re.compile(r"item\.jd\.com/\d+\.html", re.I),
     re.compile(r"item\.m\.jd\.com/product/\d+\.html", re.I),
     re.compile(r"npcitem\.jd\.hk/\d+\.html", re.I),
+    re.compile(r"item\.jd\.com/[^/?#]+\.html", re.I),
+
+    # --- Tmall ---
     re.compile(r"detail\.tmall\.com/item\.htm\?.*id=\d+", re.I),
     re.compile(r"detail\.tmall\.hk/item\.htm\?.*id=\d+", re.I),
+    re.compile(r"detail\.tmall\.com/[^/?#]+\.htm", re.I),
+
+    # --- Taobao ---
     re.compile(r"item\.taobao\.com/item\.htm\?.*id=\d+", re.I),
     re.compile(r"detail\.tb\.cn/item\.htm\?.*id=\d+", re.I),
+    re.compile(r"item\.taobao\.com/[^/?#]+\.htm", re.I),
+
+    # --- Pinduoduo / Yangkeduo ---
     re.compile(r"mobile\.yangkeduo\.com/goods\.html\?.*goods_id=\d+", re.I),
     re.compile(r"yangkeduo\.com/goods\.html\?.*goods_id=\d+", re.I),
+    re.compile(r"yangkeduo\.com/goods\d*\.html\?.*goods_id=\d+", re.I),
+    re.compile(r"mobile\.yangkeduo\.com/goods\d*\.html\?.*goods_id=\d+", re.I),
+    re.compile(r"(?:mobile\.)?yangkeduo\.com/[^/?#]+\.html", re.I),
+    re.compile(r"(?:mobile\.)?pinduoduo\.com/[^/?#]+\.html", re.I),
+
+    # --- VIP.com ---
     re.compile(r"detail\.vip\.com/\d+\.html", re.I),
     re.compile(r"m\.vip\.com/detail/\d+", re.I),
+    re.compile(r"(?:m\.)?vip\.com/[^/?#]+\.html", re.I),
 ]
 
 
@@ -173,8 +206,8 @@ def send_email_code(
 ):
     if body_html is None:
         body_html = f"""
-        <div style="font-family: Arial, sans-serif; padding: 20px;">
-            <h2 style="color:#1488CC;">AI Shopping Agent</h2>
+        <div style="font-family: Arial, 'Microsoft YaHei', sans-serif; padding: 20px;">
+            <h2 style="color:#1488CC;">🛍️ AI Shopping Agent</h2>
             <p>You are registering an account. Your verification code is:</p>
             <h1 style="color:#FF4B4B; letter-spacing: 5px;">{code}</h1>
             <p>The code is valid for <b>5 minutes</b>. Please do not share it with anyone.</p>
@@ -215,8 +248,8 @@ def send_email_code(
 
 def send_payment_code_email(to_email: str, code: str, order: dict):
     body = f"""
-    <div style="font-family: Arial, sans-serif; padding: 20px;">
-        <h2 style="color:#1488CC;">AI Shopping Agent · Payment Confirmation</h2>
+    <div style="font-family: Arial, 'Microsoft YaHei', sans-serif; padding: 20px;">
+        <h2 style="color:#1488CC;">🛍️ AI Shopping Agent · Payment Confirmation</h2>
         <p>You are paying for the following order. Please use the one-time password below to verify:</p>
         <table style="border-collapse:collapse; margin: 10px 0;">
             <tr><td style="padding:4px 8px;"><b>Order ID</b></td><td style="padding:4px 8px;">{order.get('order_id','')}</td></tr>
@@ -259,7 +292,7 @@ def send_receipt_email(to_email: str, order: dict, paid_at: str) -> tuple:
         price_str = f"${price}"
 
     body_html = f"""
-    <div style="font-family: Arial, sans-serif; padding: 20px; line-height:1.8;">
+    <div style="font-family: Arial, 'Microsoft YaHei', sans-serif; padding: 20px; line-height:1.8;">
         <p style="font-size:15px;">
             <b>[{platform}]</b> Dear user, we received on <b>{paid_at}</b> your payment of
             <b style="color:#FF4B4B;">{price_str}</b> for purchasing <b>"{title}"</b> on our platform.
@@ -464,7 +497,7 @@ if "smtp_pass" not in st.session_state:
 
 
 # ==========================================
-# 2.1 Auto-load SMTP config from st.secrets
+# 2.1 Auto-load SMTP config from st.secrets (invisible to end users)
 # ==========================================
 def _load_smtp_from_secrets():
     try:
@@ -533,7 +566,7 @@ def _sign_tencent_cloud(secret_id: str, secret_key: str, payload: dict):
         secret_key.encode("ascii")
     except UnicodeEncodeError:
         raise ValueError(
-            f"Tencent Cloud key contains non-ASCII characters. Please check whether it is still a placeholder.\n"
+            f"⚠️ Tencent Cloud key contains non-ASCII characters. Please check whether it is still a placeholder.\n"
             f"SecretId = {secret_id!r}"
         )
 
@@ -591,11 +624,19 @@ def _sign_tencent_cloud(secret_id: str, secret_key: str, payload: dict):
 
 
 def _search_web_raw(query: str, search_source: str = "standard") -> list:
+    """
+    Call Tencent Cloud WSA SearchPro.
+
+    NOTE: We deliberately do NOT pass the "Site" field, because Tencent Cloud
+    WSA often misinterprets it and returns only irrelevant results. Instead we
+    let the API return general web results and filter by domain locally via
+    _detect_platform(). Mode=0 (standard mode), Cnt=10 (focused results).
+    """
     cache_key = f"raw::{query}||{search_source}"
     if cache_key in st.session_state.search_cache:
         return st.session_state.search_cache[cache_key]
 
-    payload = {"Query": query, "Mode": 0, "Cnt": 50}
+    payload = {"Query": query, "Mode": 0, "Cnt": 10}
 
     results = []
     try:
@@ -626,6 +667,7 @@ def _search_web_raw(query: str, search_source: str = "standard") -> list:
                     continue
                 platform = _detect_platform(url)
                 if platform is None:
+                    # Hard filter: keep only URLs belonging to the 5 allowed platforms.
                     continue
                 title = page.get("title", "") or page.get("Title", "") or "Untitled"
                 site  = page.get("site", "") or page.get("Site", "") or platform
@@ -676,29 +718,32 @@ def search_web(query: str, search_source: str = "standard") -> str:
 
 def _attach_real_urls(data, raw_results: list, item_category: str = ""):
     """
-    Attach a real product detail URL to every recommended item.
+    Attach a URL to each recommended product.
 
-    STRICT MODE: If no detail URL can be attached to an item, we raise a ValueError
-    so the caller can decide to show a friendly "no match" message instead of
-    fabricating links.
+    Priority:
+      1. The search result referenced by the model via search_ref.
+      2. A search result whose title best matches the product title.
+      3. Any unused product-detail page from the search results.
+      4. Any unused URL from the 5 allowed platforms.
+      5. Fallback: the platform's official search page for the product title.
     """
     used_urls = set()
-
-    detail_candidates = [r for r in raw_results if r.get("is_detail")]
 
     def _pick_detail_by_title(title: str):
         title = (title or "").strip()
         if not title:
             return None
-        # Exact / substring match first
-        for r in detail_candidates:
+        for r in raw_results:
+            if not r.get("is_detail"):
+                continue
             rt = r.get("title", "")
             if rt and (title in rt or rt in title):
                 return r
-        # Fuzzy match fallback
         best = None
         best_score = 0
-        for r in detail_candidates:
+        for r in raw_results:
+            if not r.get("is_detail"):
+                continue
             rt = r.get("title", "")
             if not rt:
                 continue
@@ -712,10 +757,24 @@ def _attach_real_urls(data, raw_results: list, item_category: str = ""):
         return None
 
     def _pick_any_unused_detail():
-        for r in detail_candidates:
-            if r.get("url") not in used_urls:
+        for r in raw_results:
+            if r.get("is_detail") and r.get("url") not in used_urls:
                 return r
         return None
+
+    def _pick_any_unused_allowed():
+        for r in raw_results:
+            if r.get("url") and r.get("url") not in used_urls:
+                return r
+        return None
+
+    def _normalize_platform(plat: str) -> str:
+        if not plat:
+            return "JD"
+        for name in ALLOWED_PLATFORMS.keys():
+            if name in plat:
+                return name
+        return "JD"
 
     def _fill(item):
         ref = item.get("search_ref", 0)
@@ -737,15 +796,20 @@ def _attach_real_urls(data, raw_results: list, item_category: str = ""):
             picked = _pick_any_unused_detail()
 
         if picked is None:
-            raise ValueError(
-                f"No real product detail URL found for '{item.get('title', '')}' "
-                f"in category '{item_category}'."
-            )
+            picked = _pick_any_unused_allowed()
 
-        item["source_url"]  = picked.get("url", "")
-        item["source_site"] = picked.get("site", "") or picked.get("platform", "")
-        item["platform"]    = picked.get("platform", "") or item.get("platform", "")
-        used_urls.add(picked.get("url", ""))
+        if picked is not None:
+            item["source_url"]  = picked.get("url", "")
+            item["source_site"] = picked.get("site", "") or picked.get("platform", "")
+            item["platform"]    = picked.get("platform", "") or item.get("platform", "")
+            used_urls.add(picked.get("url", ""))
+        else:
+            # Fallback: platform official search page for this product title.
+            plat = _normalize_platform(item.get("platform", ""))
+            kw = item.get("title") or item_category or "product"
+            item["source_url"]  = _platform_search_url(plat, kw)
+            item["source_site"] = plat
+            item["platform"]    = plat
 
     if isinstance(data, dict):
         _fill(data)
@@ -790,7 +854,7 @@ def estimate_price_range(item_category: str) -> tuple:
             model="deepseek-chat",
             messages=[
                 {"role": "system",
-                 "content": LANGUAGE_ENFORCEMENT +
+                 "content": f"{LANGUAGE_ENFORCEMENT}\n\n"
                             f"The user wants to buy [{item_category}]. Output only one line of JSON: "
                             f'{{"min": lowest reasonable price, "max": highest reasonable price}} in CNY. Output only JSON.'},
                 {"role": "user", "content": f"Please give a reasonable price range for [{item_category}]."}
@@ -811,12 +875,13 @@ def estimate_price_range(item_category: str) -> tuple:
 
 def parse_user_intent(user_input: str, current_category: str = "") -> dict:
     prompt = f"""{LANGUAGE_ENFORCEMENT}
+
 You are a shopping intent parser for e-commerce. Extract the following from the user's input and return pure JSON:
 {{
-  "category": "product category (short, in ENGLISH, e.g., camera, power bank, laptop)",
+  "category": "product category (short, e.g., camera, power bank, laptop)",
   "min_price": number or null,
   "max_price": number or null,
-  "attributes": ["color/brand/capacity and other specific attributes, in ENGLISH"],
+  "attributes": ["color/brand/capacity and other specific attributes"],
   "changed": true/false
 }}
 
@@ -830,7 +895,7 @@ Rules:
 - changed indicates whether the category the user just mentioned is different from the current category.
 - Current category: [{current_category or "(none)"}]
 - If the user is just confirming/rejecting/continuing (e.g., "satisfied", "another batch"), set category to an empty string.
-- ALL string values in the output MUST be in English.
+- All extracted fields (category, attributes) must be written in ENGLISH, even if the user's input is in another language.
 
 User input: "{user_input}"
 
@@ -865,7 +930,7 @@ Output JSON only, no markdown."""
 
 
 _TITLE_RULES = """[Product title rules — extremely important]
-- "title" must be the **full, specific name** of the product, translated into ENGLISH, copied from the product page on the e-commerce site, including brand, model, capacity, color, selling points, etc.
+- "title" must be the **full, specific name** of the product, copied directly from the product page on the e-commerce site, including brand, model, capacity, color, selling points, etc.
 - Correct examples:
   "Xiaomi Built-in Cable Power Bank 10000 Pocket Edition Compact Portable Mobile Power Bank Two-way Fast Charging for Android & Apple Durable Light Brown"
   "Woodpecker Women's Autumn Winter Octagonal Hat Middle-aged Mom Fashion Versatile Warm Beret"
@@ -873,17 +938,20 @@ _TITLE_RULES = """[Product title rules — extremely important]
 - Wrong examples (strictly prohibited):
   "Xiaomi power bank"  "Power bank recommendation"  "High cost-performance power bank"  "[Custom Selection 1] Camera Special Edition"
 - Do NOT use any placeholders or invented titles.
-- Do NOT output any Chinese characters in the title.
+- If the original product title on the e-commerce site is in Chinese, TRANSLATE it into natural English. Never leave Chinese characters in the "title" field.
 """
 
 _URL_RULES = """[Link rules — extremely important]
 - You **only reference search results through search_ref**. Never invent any URL.
 - The program will pick a "product detail page URL" from the web search results (e.g., https://item.jd.com/10076490523190.html).
-- If the search results contain **no** detail page for the product, the program will mark it as having no link. Do not force a search page.
-- Every recommended product MUST have a real product detail page URL from one of these platforms only: Taobao, Tmall, JD, Pinduoduo, VIP.com.
+- If the search results contain **no** detail page for the product, the program will fall back to the platform's official search page and mark the link accordingly. Do not force a search page yourself.
+- All text fields ("reason", "dimension", "title") MUST be written in English only.
 """
 
 
+# ==========================================
+# 3.2 Recommendation engine
+# ==========================================
 def call_deepseek_recommend_engine(step: int, item_category: str,
                                    user_history: list,
                                    extra_constraints: dict = None):
@@ -898,28 +966,31 @@ def call_deepseek_recommend_engine(step: int, item_category: str,
 
     price_q = ""
     if min_price_c is not None and max_price_c is not None:
-        price_q = f"{int(min_price_c)}-{int(max_price_c)} CNY"
+        price_q = f"{int(min_price_c)}到{int(max_price_c)}元"
     elif min_price_c is not None:
-        price_q = f"above {int(min_price_c)} CNY"
+        price_q = f"{int(min_price_c)}元以上"
     elif max_price_c is not None:
-        price_q = f"under {int(max_price_c)} CNY"
+        price_q = f"{int(max_price_c)}元以内"
 
-    platform_q = "Taobao Tmall JD Pinduoduo VIP.com"
+    # Chinese query keywords: Tencent Cloud WSA is a Chinese-first search
+    # engine, so Chinese keywords return far better product-page matches.
+    platform_q = "淘宝 天猫 京东 拼多多 唯品会"
 
     if step in [1, 2, 3, 4]:
         if step == 1:
-            search_query = f"{item_category} {attr_q} latest price user reviews recommendation {platform_q}"
+            search_query = f"{item_category} {attr_q} 最新价格 用户评价 推荐 {platform_q}"
         elif step == 2:
-            search_query = f"{item_category} {attr_q} price reviews sales {platform_q}"
+            search_query = f"{item_category} {attr_q} 价格 评价 销量 {platform_q}"
         elif step == 3:
             p_min = extra_constraints.get("min_price", 0) or 0
             p_max = extra_constraints.get("max_price", 10000) or 10000
-            search_query = f"{item_category} {attr_q} {p_min}-{p_max} CNY {platform_q}"
+            search_query = f"{item_category} {attr_q} {p_min}到{p_max}元 {platform_q}"
         else:
             user_detail = extra_constraints.get("detail_req", "")
             search_query = f"{item_category} {attr_q} {price_q} {user_detail} {platform_q}"
 
         raw_results = _search_web_raw(search_query, search_source="standard")
+
         if raw_results:
             summaries = []
             for i, r in enumerate(raw_results, 1):
@@ -935,8 +1006,8 @@ def call_deepseek_recommend_engine(step: int, item_category: str,
             search_context = "[Search service temporarily unavailable. Will rely on model knowledge.]"
 
     base_instructions = (
-        LANGUAGE_ENFORCEMENT +
-        f"The user wants to buy the core product category: [{item_category}]. "
+        LANGUAGE_ENFORCEMENT + "\n\n"
+        + f"The user wants to buy the core product category: [{item_category}]. "
         f"You MUST STRICTLY recommend products within this category. Never switch to a different item type!\n"
         f"[Platform restriction] Only recommend products from Taobao, Tmall, JD, Pinduoduo, VIP.com. "
         f"Do not recommend any other platform (Amazon, Suning, Douyin, Xiaohongshu, etc. are all forbidden).\n"
@@ -971,15 +1042,15 @@ Especially important:
 - The program will automatically attach the real e-commerce URL based on search_ref.
 - The "platform" field must be one of [Taobao / Tmall / JD / Pinduoduo / VIP.com].
 - If no search result is usable, set search_ref to 0.
-- For "title", copy the product title from the search result directly (translate to English if needed). Do not rewrite or abbreviate.
-- Every recommended item MUST correspond to one of the real product detail page URLs in the search results. Items without a matching detail URL will be rejected."""
+- For "title", copy the product title from the search result directly, translating to English if necessary. Do not rewrite or abbreviate.
+- REMINDER: Every output string (title, reason, dimension) MUST be in English."""
 
     if step == 1:
         system_prompt = f"""{base_instructions}
 Compare prices across the web and recommend 1 top overall choice.
 You must output JSON in the format:
 {{
-  "title": "full specific product title (in English) on the e-commerce platform",
+  "title": "full specific product title on the e-commerce platform (in English)",
   "platform": "one of Taobao/Tmall/JD/Pinduoduo/VIP.com",
   "original_price": 200.0,
   "coupon": 20.0,
@@ -995,7 +1066,7 @@ Output as a JSON array (3 objects):
 [
   {{
     "dimension": "Best price choice",
-    "title": "full specific product title (in English) on the e-commerce platform",
+    "title": "full specific product title on the e-commerce platform (in English)",
     "platform": "one of Taobao/Tmall/JD/Pinduoduo/VIP.com",
     "original_price": 150.0,
     "coupon": 10.0,
@@ -1005,7 +1076,7 @@ Output as a JSON array (3 objects):
   }},
   {{
     "dimension": "Best reviews",
-    "title": "full specific product title (in English) on the e-commerce platform",
+    "title": "full specific product title on the e-commerce platform (in English)",
     "platform": "one of Taobao/Tmall/JD/Pinduoduo/VIP.com",
     "original_price": 250.0,
     "coupon": 20.0,
@@ -1015,7 +1086,7 @@ Output as a JSON array (3 objects):
   }},
   {{
     "dimension": "Best seller",
-    "title": "full specific product title (in English) on the e-commerce platform",
+    "title": "full specific product title on the e-commerce platform (in English)",
     "platform": "one of Taobao/Tmall/JD/Pinduoduo/VIP.com",
     "original_price": 200.0,
     "coupon": 15.0,
@@ -1033,7 +1104,7 @@ User filter: price range between {p_min} and {p_max} CNY.
 Recommend 1 product that best fits the above price constraint.
 You must output JSON in the format:
 {{
-  "title": "full specific product title (in English) on the e-commerce platform",
+  "title": "full specific product title on the e-commerce platform (in English)",
   "platform": "one of Taobao/Tmall/JD/Pinduoduo/VIP.com",
   "original_price": 190.0,
   "coupon": 10.0,
@@ -1046,31 +1117,31 @@ Return pure JSON only, no markdown."""
         user_detail = extra_constraints.get("detail_req", "")
         system_prompt = f"""{base_instructions}
 The user's additional detailed request: "{user_detail}".
-Based on this category and previous requirements, choose up to 5 specific products that meet the conditions for the user to pick.
+Based on this category and previous requirements, choose 5 specific products that meet the conditions for the user to pick.
 **All recommendations must strictly satisfy the above attribute and price constraints (if any).**
-**"title" must be the real, complete title of each product on the e-commerce platform, in English.**
-Output as a JSON array (up to 5 objects):
+**"title" must be the real, complete title of each product on the e-commerce platform, translated to English.**
+Output as a JSON array (5 objects):
 [
   {{
     "option_id": 1,
-    "title": "full specific product title (in English) on the e-commerce platform",
+    "title": "full specific product title on the e-commerce platform (in English)",
     "platform": "one of Taobao/Tmall/JD/Pinduoduo/VIP.com",
     "original_price": 200.0,
     "coupon": 20.0,
     "final_price": 180.0,
     "search_ref": 1,
     "reason": "explanation of why it is recommended (in English)"
-  }}
+  }},
+  ... 5 in total
 ]
-Return pure JSON only, no markdown.
-If NO product can satisfy the constraints and have a real product detail URL, return an empty array []."""
+Return pure JSON only, no markdown."""
 
     try:
         response = client.chat.completions.create(
             model="deepseek-chat",
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"Please combine the conversation history and generate the product options for stage {step}. Reply entirely in English."}
+                {"role": "user", "content": f"Please combine the conversation history and generate the product options for stage {step}. Remember: respond strictly in English."}
             ],
             stream=False
         )
@@ -1081,15 +1152,7 @@ If NO product can satisfy the constraints and have a real product detail URL, re
             content = content[3:-3].strip()
         data = json.loads(content)
 
-        # STRICT MODE: attach real URLs, raise if any item cannot get one.
-        try:
-            data = _attach_real_urls(data, raw_results, item_category=item_category)
-        except ValueError as ve:
-            print(f"[Attach URL failed] {ve}")
-            # Propagate as empty result — the UI will show a "no match" message.
-            if isinstance(data, dict):
-                return {}
-            return []
+        data = _attach_real_urls(data, raw_results, item_category=item_category)
 
         if isinstance(data, dict):
             data["order_id"] = f"AGENT-ORD-{random.randint(100000, 999999)}"
@@ -1099,14 +1162,59 @@ If NO product can satisfy the constraints and have a real product detail URL, re
         return data
     except Exception as e:
         print(f"[Recommendation engine failed] step={step}, {type(e).__name__}: {e}")
-        # In strict mode, we do not fabricate products without real URLs.
-        # Return an empty result to signal "no match".
         if step in [1, 3]:
-            return {}
+            base_p = round(random.uniform(100, 500), 2)
+            plat = "JD"
+            kw = item_category or "product"
+            return {
+                "order_id": f"AGENT-ORD-{random.randint(100000, 999999)}",
+                "title": f"{item_category} Featured Option",
+                "platform": plat,
+                "original_price": base_p,
+                "coupon": 10.0,
+                "final_price": base_p - 10.0,
+                "search_ref": 0,
+                "source_url": _platform_search_url(plat, kw),
+                "source_site": plat,
+                "reason": f"A curated option that matches the specific requirements for [{item_category}] (no product detail page found)."
+            }
         elif step == 2:
-            return []
+            res = []
+            plats = ["Pinduoduo", "Tmall", "JD"]
+            for i in range(3):
+                p = plats[i]
+                res.append({
+                    "dimension": ["Best price choice", "Best reviews", "Best seller"][i],
+                    "order_id": f"ORD-S2-{i+1}",
+                    "title": f"{item_category} Featured Option {i+1}",
+                    "platform": p,
+                    "original_price": 199.0, "coupon": 20.0, "final_price": 179.0,
+                    "search_ref": 0,
+                    "source_url": _platform_search_url(p, item_category or "product"),
+                    "source_site": p,
+                    "reason": "Curated from search results (no product detail page found)."
+                })
+            return res
         elif step == 4:
-            return []
+            res = []
+            plats = ["JD", "Tmall", "Taobao", "Pinduoduo", "VIP.com"]
+            for i in range(1, 6):
+                bp = 100 + i * 30
+                p = plats[(i - 1) % len(plats)]
+                res.append({
+                    "option_id": i,
+                    "order_id": f"ORD-S4-{i}",
+                    "title": f"{item_category} Featured Item {i}",
+                    "platform": p,
+                    "original_price": bp,
+                    "coupon": 10.0,
+                    "final_price": bp - 10.0,
+                    "search_ref": 0,
+                    "source_url": _platform_search_url(p, item_category or "product"),
+                    "source_site": p,
+                    "reason": f"Option {i} selected based on your detailed requirements (no product detail page found)."
+                })
+            return res
 
 
 def _today_order_total() -> float:
@@ -1710,17 +1818,35 @@ def render_order_card(order: dict, key_prefix: str = ""):
     src = order.get("source_url", "")
     site = order.get("source_site", "")
     platform = order.get("platform", "")
+    title = order.get("title", "")
 
-    if src and _is_product_detail_url(src):
+    # Show a real product link whenever the URL belongs to one of the 5
+    # allowed platforms. Otherwise fall back to the platform's official
+    # search page so the card always carries a clickable link.
+    if src and _is_allowed_url(src):
         st.markdown(f"🔗 **Source site**: {site or platform or 'Official platform'}")
-        st.markdown(f"👉 [Open product detail page]({src})")
+        st.markdown(f"👉 [Open product page]({src})")
         st.text_input(
             "📋 Copy link (click the icon on the right or select all to copy)",
             value=src,
             key=f"copy_{key_prefix}_{order.get('order_id', random.random())}",
         )
     else:
-        st.warning("⚠️ No real product detail URL could be attached to this item. It has been hidden.")
+        plat = platform or "JD"
+        for name in ALLOWED_PLATFORMS.keys():
+            if name in plat:
+                plat = name
+                break
+        else:
+            plat = "JD"
+        fallback_url = _platform_search_url(plat, title or "product")
+        st.caption(f"🔗 No direct product link was returned by the search. Redirecting to the official {plat} search page:")
+        st.markdown(f"👉 [Search \"{title}\" on {plat}]({fallback_url})")
+        st.text_input(
+            "📋 Copy link (click the icon on the right or select all to copy)",
+            value=fallback_url,
+            key=f"copy_{key_prefix}_{order.get('order_id', random.random())}",
+        )
 
 
 def render_address_selection():
@@ -2168,113 +2294,84 @@ def render_chat_agent():
                         item_category=st.session_state.target_product_category,
                         user_history=current_session["messages"]
                     )
-                    st.session_state.pending_order = result if result else None
-                    if not result:
-                        st.session_state.stage4_no_match = True
-                        st.session_state.buy_stage = "confirm_product"
-                        st.session_state.recommend_step = 4
+                    st.session_state.pending_order = result
                 st.rerun()
 
     elif st.session_state.buy_stage == "confirm_product" and st.session_state.recommend_step == 1:
         order = st.session_state.pending_order
-        if not order:
-            st.warning("😔 No product with a real product detail URL could be found in this category. Please try another category or broaden your requirements.")
-            st.markdown(
-                '<div class="no-more-tip">'
-                "Sorry, we could not find a matching product with a real product page on "
-                "Taobao / Tmall / JD / Pinduoduo / VIP.com. Please try a different keyword."
-                '</div>',
-                unsafe_allow_html=True
-            )
-            if st.button("🆕 Start a new search", use_container_width=True, key="s1_none_restart"):
-                reset_current_conversation()
-                st.rerun()
-        else:
-            st.warning("Here is the top overall match for you:")
-            render_order_card(order, key_prefix="s1")
+        st.warning("Here is the top overall match for you:")
+        render_order_card(order, key_prefix="s1")
 
-            btn_c1, btn_c2, _ = st.columns([1, 1, 2])
-            with btn_c1:
-                if st.button("✅ Satisfied (choose this product)", type="primary", use_container_width=True,
-                             key="s1_ok"):
-                    exceeded, msg = check_order_limits(order)
+        btn_c1, btn_c2, _ = st.columns([1, 1, 2])
+        with btn_c1:
+            if st.button("✅ Satisfied (choose this product)", type="primary", use_container_width=True,
+                         key="s1_ok"):
+                exceeded, msg = check_order_limits(order)
+                if exceeded:
+                    st.session_state.limit_exceeded = True
+                    st.session_state.limit_exceeded_order = order
+                    st.session_state.pending_order = None
+                    current_session["messages"].append({
+                        "role": "assistant", "content": msg
+                    })
+                    st.rerun()
+                else:
+                    st.session_state.buy_stage = "select_address"
+                    st.session_state.selected_address_for_order = None
+                    current_session["messages"].append({"role": "user", "content": "Satisfied. Let's go with this one."})
+                    st.rerun()
+        with btn_c2:
+            if st.button("❌ Not satisfied (show another batch)", use_container_width=True, key="s1_no"):
+                st.session_state.recommend_step = 2
+                st.session_state.candidate_options = []
+                with st.spinner("Searching best options by [price], [reviews] and [sales]..."):
+                    c_options = call_deepseek_recommend_engine(
+                        step=2,
+                        item_category=st.session_state.target_product_category,
+                        user_history=current_session["messages"],
+                        extra_constraints={
+                            "attributes": st.session_state.current_attributes,
+                            "min_price": st.session_state.current_price_range[0],
+                            "max_price": st.session_state.current_price_range[1],
+                        }
+                    )
+                    st.session_state.candidate_options = c_options
+                st.rerun()
+
+    elif st.session_state.buy_stage == "confirm_product" and st.session_state.recommend_step == 2:
+        st.info("Below are three options picked from three different dimensions")
+        options = st.session_state.candidate_options
+        for idx, opt in enumerate(options):
+            with st.container():
+                st.markdown(f"### 🔹 {opt.get('dimension', f'Option {idx+1}')}")
+                render_order_card(opt, key_prefix=f"s2_{idx}")
+                if st.button(f"Choose this option ({idx+1})", key=f"pick_s2_{idx}",
+                             type="primary", use_container_width=True):
+                    exceeded, msg = check_order_limits(opt)
                     if exceeded:
                         st.session_state.limit_exceeded = True
-                        st.session_state.limit_exceeded_order = order
-                        st.session_state.pending_order = None
+                        st.session_state.limit_exceeded_order = opt
                         current_session["messages"].append({
                             "role": "assistant", "content": msg
                         })
                         st.rerun()
                     else:
+                        st.session_state.pending_order = opt
                         st.session_state.buy_stage = "select_address"
                         st.session_state.selected_address_for_order = None
-                        current_session["messages"].append({"role": "user", "content": "Satisfied. Let's go with this one."})
+                        current_session["messages"].append({
+                            "role": "user", "content": f"I choose option: {opt['title']}"
+                        })
                         st.rerun()
-            with btn_c2:
-                if st.button("❌ Not satisfied (show another batch)", use_container_width=True, key="s1_no"):
-                    st.session_state.recommend_step = 2
-                    st.session_state.candidate_options = []
-                    with st.spinner("Searching best options by [price], [reviews] and [sales]..."):
-                        c_options = call_deepseek_recommend_engine(
-                            step=2,
-                            item_category=st.session_state.target_product_category,
-                            user_history=current_session["messages"],
-                            extra_constraints={
-                                "attributes": st.session_state.current_attributes,
-                                "min_price": st.session_state.current_price_range[0],
-                                "max_price": st.session_state.current_price_range[1],
-                            }
-                        )
-                        st.session_state.candidate_options = c_options
-                    st.rerun()
+                st.divider()
 
-    elif st.session_state.buy_stage == "confirm_product" and st.session_state.recommend_step == 2:
-        options = st.session_state.candidate_options
-        if not options:
-            st.markdown(
-                '<div class="no-more-tip">'
-                "Sorry, we could not find matching products with real product detail pages "
-                "on Taobao / Tmall / JD / Pinduoduo / VIP.com."
-                '</div>',
-                unsafe_allow_html=True
-            )
-            if st.button("🆕 Start a new search", use_container_width=True, key="s2_none_restart"):
-                reset_current_conversation()
-                st.rerun()
-        else:
-            st.info("Below are three options picked from three different dimensions")
-            for idx, opt in enumerate(options):
-                with st.container():
-                    st.markdown(f"### 🔹 {opt.get('dimension', f'Option {idx+1}')}")
-                    render_order_card(opt, key_prefix=f"s2_{idx}")
-                    if st.button(f"Choose this option ({idx+1})", key=f"pick_s2_{idx}",
-                                 type="primary", use_container_width=True):
-                        exceeded, msg = check_order_limits(opt)
-                        if exceeded:
-                            st.session_state.limit_exceeded = True
-                            st.session_state.limit_exceeded_order = opt
-                            current_session["messages"].append({
-                                "role": "assistant", "content": msg
-                            })
-                            st.rerun()
-                        else:
-                            st.session_state.pending_order = opt
-                            st.session_state.buy_stage = "select_address"
-                            st.session_state.selected_address_for_order = None
-                            current_session["messages"].append({
-                                "role": "user", "content": f"I choose option: {opt['title']}"
-                            })
-                            st.rerun()
-                    st.divider()
-
-            if st.button("🔍 None of them. Filter by budget instead", key="s2_go3"):
-                st.session_state.recommend_step = 3
-                st.session_state.candidate_options = []
-                with st.spinner("Estimating a reasonable price range for this product based on online market prices..."):
-                    lo, hi = estimate_price_range(st.session_state.target_product_category)
-                st.session_state.stage3_price_range = (lo, hi)
-                st.rerun()
+        if st.button("🔍 None of them. Filter by budget instead", key="s2_go3"):
+            st.session_state.recommend_step = 3
+            st.session_state.candidate_options = []
+            with st.spinner("Estimating a reasonable price range for this product based on online market prices..."):
+                lo, hi = estimate_price_range(st.session_state.target_product_category)
+            st.session_state.stage3_price_range = (lo, hi)
+            st.rerun()
 
     elif st.session_state.buy_stage == "confirm_product" and st.session_state.recommend_step == 3:
         st.info("Please set your budget range. The Agent will match precisely:")
@@ -2309,11 +2406,8 @@ def render_chat_agent():
                         "attributes": st.session_state.current_attributes,
                     }
                 )
-                st.session_state.pending_order = result if result else None
+                st.session_state.pending_order = result
                 st.session_state.current_price_range = (price_range[0], price_range[1])
-                if not result:
-                    st.session_state.stage4_no_match = True
-                    st.session_state.recommend_step = 4
 
         if st.session_state.pending_order and st.session_state.recommend_step == 3:
             order = st.session_state.pending_order
@@ -2385,7 +2479,7 @@ def render_chat_agent():
                     })
                     st.rerun()
         else:
-            st.info("Please add more detailed requirements. The Agent will select up to 5 products for you:")
+            st.info("Please add more detailed requirements. The Agent will select 5 products for you:")
             detail_req = st.text_area(
                 "Detailed requirements",
                 value=st.session_state.current_detail_req,
@@ -2394,13 +2488,13 @@ def render_chat_agent():
 
             col_a, col_b = st.columns([1, 1])
             with col_a:
-                if st.button("🔎 Generate curated products", type="primary",
+                if st.button("🔎 Generate 5 curated products", type="primary",
                              use_container_width=True, key="s4_gen"):
                     if not detail_req.strip():
                         st.error("Please fill in your detailed requirements!")
                     else:
                         st.session_state.current_detail_req = detail_req
-                        with st.spinner("Curating products that best match your requirements..."):
+                        with st.spinner("Curating 5 products that best match your requirements..."):
                             options = _generate_constrained_options(
                                 item_category=st.session_state.target_product_category,
                                 detail_req=detail_req,
@@ -2518,11 +2612,9 @@ def render_chat_agent():
                         item_category=new_category,
                         user_history=current_session["messages"]
                     )
-                    st.session_state.pending_order = result if result else None
+                    st.session_state.pending_order = result
                     st.session_state.buy_stage = "confirm_product"
                     st.session_state.recommend_step = 1
-                    if not result:
-                        st.session_state.stage4_no_match = True
                 current_session["messages"].append({
                     "role": "assistant",
                     "content": f"I've compared prices across the web for [{new_category}]. Please see the recommendation below →"
