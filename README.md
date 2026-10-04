@@ -100,9 +100,9 @@ SMTP_USE_SSL  = true
 A demo account is pre-loaded for quick testing:
 
 ```text
-Field	     |Value
+Field	    |Value
 -----------------------------
-Email      |test@example.com
+Email     |test@example.com
 Password	 |password123
 ```
 
