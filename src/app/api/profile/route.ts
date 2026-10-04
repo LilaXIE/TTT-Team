@@ -19,13 +19,14 @@ export const GET = route(async (req: Request) => {
 export const POST = route(async (req: Request) => {
   const user = await requireSession(req);
   const body = Body.parse(await readJson(req));
+  if (body.action === "saveAddress") {
+    return json(
+      { error: { code: "NOT_APPLIED", message: "新地址不会直接写入。冷静期只在演示页面里，服务端没有待生效地址，也不能把它当成已经接上的防盗控制。" } },
+      { status: 409 },
+    );
+  }
   await withTransaction(async (tx) => {
-    if (body.action === "saveAddress" && body.address) {
-      const a = body.address;
-      if (a.isDefault) await tx.query("UPDATE user_addresses SET is_default=false WHERE user_id=$1", [user.id]);
-      if (a.id) await tx.query("UPDATE user_addresses SET recipient_name=$1, phone=$2, address=$3, is_default=$4, updated_at=now() WHERE id=$5 AND user_id=$6", [a.name, a.phone, a.address, a.isDefault, a.id, user.id]);
-      else await tx.query("INSERT INTO user_addresses (user_id, recipient_name, phone, address, is_default) VALUES ($1,$2,$3,$4,$5)", [user.id, a.name, a.phone, a.address, a.isDefault]);
-    } else if (body.action === "deleteAddress" && body.addressId) await tx.query("DELETE FROM user_addresses WHERE id=$1 AND user_id=$2", [body.addressId, user.id]);
+    if (body.action === "deleteAddress" && body.addressId) await tx.query("DELETE FROM user_addresses WHERE id=$1 AND user_id=$2", [body.addressId, user.id]);
     else if (body.action === "saveCard" && body.card) {
       const c = body.card;
       if (c.id) await tx.query("UPDATE user_bank_cards SET bank_name=$1, card_type=$2, last_four=$3, balance_minor=$4, updated_at=now() WHERE id=$5 AND user_id=$6", [c.bankName, c.cardType, c.lastFour, c.balanceMinor, c.id, user.id]);

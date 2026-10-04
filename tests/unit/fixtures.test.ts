@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { validateFixtures } from "../../scripts/validate-fixtures";
 import { PaymentMethod, type EngineContext, type Product } from "@/contracts/schemas";
+import { loadCatalog, loadRates, loadScenarios } from "@/server/fixtures";
 import { decide } from "@/server/rules/engine";
 import { isCovered } from "@/server/rules/confirmation";
 
-const { catalog, rates, scenarios } = validateFixtures();
+const catalog = loadCatalog();
+const rates = loadRates();
+const scenarios = loadScenarios();
 const now = new Date("2026-10-03T10:00:00+08:00");
 function context(id: string): EngineContext {
   const p = catalog.products.find((p) => p.id === id)!;
@@ -35,14 +37,14 @@ const hits = (ctx: EngineContext) => decide(ctx, "PAY").rules.map((r) => r.id);
 
 describe("real demo fixtures through the rules engine", () => {
   it("both fixed brand-A laundry quotes total 13800 and allow under standard protection", () => {
-    for (const id of ["A-LAUNDRY-01", "B-LAUNDRY-01"]) {
+    for (const id of ["A-LD-001", "B-LD-001"]) {
       const ctx = context(id);
       expect(ctx.cart!.totalMinor).toBe(13800n);
       expect(decide(ctx, "PAY").outcome).toBe("ALLOW");
     }
   });
   it("15800 exceeds the cap and cannot be confirmed away", () => {
-    const ctx = context("B-LAUNDRY-02");
+    const ctx = context("B-LD-003");
     const decision = decide(ctx, "PAY");
     expect(ctx.cart!.totalMinor).toBe(15800n);
     expect(decision.outcome).toBe("DENY");
@@ -50,13 +52,13 @@ describe("real demo fixtures through the rules engine", () => {
     expect(isCovered(decision, { cartVersion: 1, ruleIds: decision.rules.map((r) => r.id), expiresAt: ctx.cart!.quoteExpiresAt }, 1, now)).toEqual({ covered: false, reason: "DENY" });
   });
   it("brand substitution can pause when a changed user cap permits the total", () => {
-    const ctx = context("B-LAUNDRY-02");
+    const ctx = context("B-LD-003");
     ctx.mandate.caps.perTxnMinor = 20000n;
     expect(decide(ctx, "PAY").outcome).toBe("REVIEW");
     expect(hits(ctx)).toEqual(["SUBSTITUTE_BRAND"]);
   });
   it("revoked merchant C always denies even with supplement scope", () => {
-    const ctx = context("C-SUPPLEMENT-01");
+    const ctx = context("C-SU-002");
     ctx.mandate.scope.categories = ["supplement"];
     ctx.mandate.task.minSpec = {};
     ctx.mandate.task.preferredBrand = null;
@@ -75,17 +77,18 @@ describe("real demo fixtures through the rules engine", () => {
     expect(hits(ctx)).toEqual(["WATCH_CATEGORY"]);
   });
   it("enhanced protection catches the 25-day merchant and 40% reference-price gap", () => {
-    const fresh = context("B-LAUNDRY-01");
+    const fresh = context("B-LD-001");
     fresh.mandate.reviewWhen.newMerchantDays = 30;
     expect(hits(fresh)).toContain("NEW_MERCHANT");
-    const expensive = context("A-FLOOR-01");
+    const expensive = context("B-SP-001");
+    expensive.mandate.task.minSpec = {};
     expensive.mandate.task.preferredBrand = null;
     expensive.mandate.reviewWhen.priceAboveRefPct = 20;
     expect(decide(expensive, "PAY").outcome).toBe("REVIEW");
     expect(hits(expensive)).toEqual(["PRICE_ABOVE_REF"]);
   });
   it("both malicious descriptions stay data and cannot alter candidate or pay decisions", () => {
-    const malicious = catalog.products.filter((p) => /SYSTEM:|忽略用户授权/.test(p.description));
+    const malicious = catalog.products.filter((p) => /SYSTEM:|IMPORTANT TO AI AGENTS/.test(p.description));
     expect(malicious).toHaveLength(2);
     const withDescription = (p: Product) => ({ ...context(p.id), product: { ...context(p.id).product!, description: p.description } });
     for (const p of malicious) {

@@ -6,8 +6,8 @@ import { Countdown, PageHeader, Panel, PanelTitle } from "@/components/app/primi
 import { useStepUp } from "@/components/app/step-up";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { fmtDateTime } from "@/lib/format";
 import { api } from "@/lib/api";
+import { fmtDateTime } from "@/lib/format";
 import { useLang } from "@/lib/i18n";
 import { actions, useMock, useSessionMode } from "@/lib/mock/store";
 import { BackToMe } from "../back-link";
@@ -30,25 +30,16 @@ export default function AddressPage() {
   const submit = async () => {
     const v = next.trim();
     if (v.length < 6) return;
-    const ok = await stepUp({ title: { zh: "修改收货地址", en: "Change address" }, detail: { zh: `改为：${v}。24 小时后生效。`, en: `To: ${v}. Effective in 24 hours.` } });
+    const ok = await stepUp({ title: { zh: "修改收货地址", en: "Change address" }, detail: { zh: `改为：${v}。演示里进入冷静期，当前地址不变。`, en: `To: ${v}. In this demo it enters cooling-off. The current address stays.` } });
     if (!ok) return;
     actions.requestAddressChange(v, mode === "attacker");
-    try {
-      await api("/api/profile", {
-        method: "POST",
-        json: { action: "saveAddress", address: { name: s.user.name, phone: "85200000000", address: v, isDefault: true } },
-      });
-      setSaved(v);
-    } catch {
-      // 没登录时仍保留页面上的冷静期演示。
-    }
     setNext("");
   };
 
   return (
     <>
       <BackToMe />
-      <PageHeader eyebrow={t("收货地址", "Address")} title={t("东西寄到哪", "Where things go")} description={t("改地址要通行密钥，24 小时后才生效，并短信通知你。就算账号被盗，也没法悄悄把东西寄走。", "Changing it needs your passkey, waits 24 hours and sends you an SMS. Even with your account, nobody can quietly redirect a parcel.")} />
+      <PageHeader eyebrow={t("收货地址", "Address")} title={t("东西寄到哪", "Where things go")} description={t("在这个演示里，改地址先进入冷静期，当前地址不会马上换。通行密钥和短信都是页面演示，没有接到银行或短信服务。", "In this demo, an address change enters a cooling-off period and the current address does not change at once. The passkey and SMS are on-screen only. No bank or SMS service is connected.")} />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="space-y-4">
           <Panel>
@@ -98,7 +89,7 @@ export default function AddressPage() {
         </div>
         <Panel>
           <PanelTitle>{t("为什么要等 24 小时", "Why the 24-hour wait")}</PanelTitle>
-          <p className="text-[13px] leading-relaxed text-soft">{t("偷到账号的人最想做的，就是把东西寄到自己那里。等待期加短信通知，给你足够时间发现并取消。演示里压缩成 2 分钟。", "Redirecting parcels is the first thing a thief tries. The wait plus an SMS gives you time to notice and cancel. In this demo it's 2 minutes.")}</p>
+          <p className="text-[13px] leading-relaxed text-soft">{t("偷到账号的人最想做的，就是把东西寄到自己那里。这个演示把等待放在页面上，方便取消。它还不是服务端里的 24 小时锁定。", "Redirecting parcels is the first thing a thief tries. This demo keeps the wait on the page so it can be cancelled. It is not yet a 24-hour lock on the server.")}</p>
         </Panel>
       </div>
     </>

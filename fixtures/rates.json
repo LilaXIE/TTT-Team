@@ -1,6 +1,6 @@
 {
   "_note": "费率只记公开页面上读到的数字。回赠不参与选路，也不入账。",
-  "observedAt": "2026-10-04T04:15:00+08:00",
+  "observedAt": "2026-10-03T01:18:49+08:00",
   "methods": [
     {
       "id": "fps",
@@ -16,11 +16,11 @@
       "id": "tapngo_mc",
       "label": "Tap & Go Mastercard",
       "network": "Mastercard",
-      "consumerFeeMinor": "0",
+      "consumerFeeMinor": null,
       "settlement": "T+1 (simulated)",
       "rewards": null,
       "sourceUrl": "https://www.tapngo.com.hk/eng/charges.html",
-      "notes": "收费表 2026-09-14：Mastercard 以非港币结算收 2%（豁免至 2026-12-31）；海外以港币结算收 1%。本地港元签账没有对应收费项，消费者手续费记 0。现金增值 0.3% 另计，现豁免至 2026-12-31。收费表没有常设消费回赠；0.5% 属于另一张英国 Tap 卡，不记入。"
+      "notes": "收费表页面写明 2026-09-14 更新。上面有 Mastercard 以非港币结算 2%（豁免至 2026-12-31）和海外以港币结算 1%。没有一条写明香港本地港元签账的消费者手续费，所以观测值是 null，不是 0。演示账本需要整数时暂记 0，不能用来证明本地消费免费，也不能用来证明 Tap & Go 比 FPS 便宜。现金增值 0.3% 另计，现豁免至 2026-12-31。收费表没有常设消费回赠；0.5% 属于另一张英国 Tap 卡，不记入。截图在 docs/rates/。"
     }
   ]
 }

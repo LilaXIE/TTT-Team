@@ -110,7 +110,12 @@ export const PaymentMethod = z.object({
 export type PaymentMethod = z.infer<typeof PaymentMethod>;
 
 export const CatalogFixture = z.object({ merchants: z.array(Merchant), products: z.array(Product) });
-export const RatesFixture = z.object({ observedAt: z.string(), methods: z.array(PaymentMethod) });
+
+/** 观测文件允许手续费为 null。可执行的 PaymentMethod 仍必须是已知整数分。 */
+export const ObservedPaymentMethod = PaymentMethod.extend({
+  consumerFeeMinor: MinorString.nullable(),
+});
+export const RatesFixture = z.object({ observedAt: z.string(), methods: z.array(ObservedPaymentMethod) });
 
 /** 授权预览用的固定示例 */
 export const PreviewScenario = z.object({

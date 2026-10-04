@@ -20,7 +20,7 @@ export async function seedReference(tx: Tx) {
        ON CONFLICT (id) DO UPDATE SET label=EXCLUDED.label, network=EXCLUDED.network,
          consumer_fee_minor=EXCLUDED.consumer_fee_minor, settlement=EXCLUDED.settlement, rewards=EXCLUDED.rewards,
          source_url=EXCLUDED.source_url, notes=EXCLUDED.notes, observed_at=EXCLUDED.observed_at`,
-      [m.id, m.label, m.network, m.consumerFeeMinor, m.settlement, m.rewards ? JSON.stringify(m.rewards) : null, m.sourceUrl, m.notes, rates.observedAt],
+      [m.id, m.label, m.network, m.consumerFeeMinor ?? "0", m.settlement, m.rewards ? JSON.stringify(m.rewards) : null, m.sourceUrl, m.consumerFeeMinor === null ? `演示账本暂记 0 分。这不是观测到的手续费。${m.notes}` : m.notes, rates.observedAt],
     );
   }
 

@@ -158,7 +158,7 @@ export function DemoPanel() {
     {
       id: t("付款", "Pay"),
       title: t("零钱包走 Tap & Go", "The pocket pays with Tap & Go"),
-      body: t("本地港元消费两边手续费都是 0。零钱包够、商家也收，就用 Tap & Go。", "Local HKD spending is 0 on both rails. When the pocket covers it and the shop accepts it, use Tap & Go."),
+      body: t("零钱包够、商家也收，就用 Tap & Go。本地港元消费手续费未核实，不是因为比 FPS 便宜。", "When the pocket covers it and the shop accepts it, use Tap & Go. The local-HKD fee is unverified, not because it beats FPS."),
       href: "/pay-methods",
       alt: { href: "/wallet", label: t("零钱包", "Pocket") },
     },
@@ -178,8 +178,8 @@ export function DemoPanel() {
     },
     {
       id: t("地址", "Address"),
-      title: t("改地址等 24 小时", "Address changes wait 24 hours"),
-      body: t("要通行密钥。就算通过，也要等冷静期。攻击者页同样过不了。", "It needs the passkey. Even then it waits out the cooling-off. The attacker tab cannot skip it."),
+      title: t("改地址先进入冷静期", "Address changes wait on screen"),
+      body: t("演示里要通行密钥，通过后当前地址不变。这不是服务端的 24 小时锁定。", "The demo asks for a passkey, then leaves the current address unchanged. This is not a 24-hour lock on the server."),
       href: "/me/address",
       alt: null,
     },
@@ -195,7 +195,7 @@ export function DemoPanel() {
   const attackSteps = [
     t("开一个「攻击者」标签页，用被盗的密码登录。它被识别为新设备，只能查看，并短信通知 Alex。", "Open an attacker tab and sign in with the stolen password. It's a new, view-only device and Alex gets an SMS."),
     t("在攻击者页试着提高上限或签新授权：没有通行密钥，PIN 也不对，失败并记录。", "In that tab, try raising a limit or signing a mandate: no passkey, wrong PIN — it fails and is logged."),
-    t("试着改收货地址：同样需要通行密钥，而且就算成功也要等 24 小时。", "Try changing the address: also needs the passkey, and would still wait 24 hours."),
+    t("试着改收货地址：演示里同样要通行密钥。通过后当前地址不变，等待只发生在页面上。", "Try changing the address: the demo also asks for the passkey. The current address stays; the wait is on the page."),
     t("看洗衣液那单的工作记录：候选描述里的「忽略预算」被当成数据，没有改规则。", "Open the laundry work log: “ignore the budget” in a listing is data and does not change the rules."),
     t("看最大损失：就算一切失守，也不超过下面这个数。零钱包不够时付款会停，不会改从银行扣。", "Check max loss: even in the worst case, it's capped at the number below. A short pocket stops the payment. It does not switch to the bank."),
     t("回到这里一键冻结。攻击者那页立刻失效。", "Come back and freeze. The attacker tab goes dead instantly."),

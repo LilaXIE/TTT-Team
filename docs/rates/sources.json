@@ -1,0 +1,27 @@
+{
+  "observedAt": "2026-10-03T01:18:49.248+08:00",
+  "captureMethod": "真实官方网页，Codex 内置浏览器 JPEG 截图；未修改截图内容。",
+  "sources": [
+    {
+      "screenshot": "fps-hsbc-2026-10-03.jpg",
+      "sourceUrl": "https://www.hsbc.com.hk/zh-hk/help/faq/transfers-and-payments/",
+      "scope": "HSBC 个人 FPS：本地港元付款、即时转账、HSBC 不收费；不代表其他银行免费。",
+      "capturedAt": "2026-10-03T01:16:20.797+08:00",
+      "sha256": "9d54bedabfec6a89015697c9574ca64402ba1d51a123f2ae69bf67f1d1c946dc"
+    },
+    {
+      "screenshot": "tapngo-charges-2026-10-03.jpg",
+      "sourceUrl": "https://www.tapngo.com.hk/eng/charges.html",
+      "scope": "Tap & Go 收费表：没有明确的香港本地港元消费零手续费条目。",
+      "capturedAt": "2026-10-03T01:15:04.353+08:00",
+      "sha256": "a2c6c10d17573c1bce61d940ab587237990458e60ac498f97fc6f64757863ffe"
+    },
+    {
+      "screenshot": "tapngo-theclub-offer-2026-10-03.jpg",
+      "sourceUrl": "https://www.theclub.com.hk/shopping/en/lc/promotions/tapngo-rebate-offer.html",
+      "scope": "The Club 指定商户、会员和支付路径优惠；不适用于 A/B/C 模拟商家。",
+      "capturedAt": "2026-10-03T01:19:09.164+08:00",
+      "sha256": "ff5465a6a8f28757391c5f2841d8939b658e745b909b99dc12a9302b2329efe9"
+    }
+  ]
+}

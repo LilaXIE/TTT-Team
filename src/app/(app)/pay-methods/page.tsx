@@ -111,8 +111,8 @@ export default function PayMethodsPage() {
         <PanelTitle>{t("规则", "The rules")}</PanelTitle>
         <ul className="grid gap-2 text-[13px] text-soft sm:grid-cols-2">
           <li>· {t("零钱包付得起、商家也收 Tap & Go 时，用 Tap & Go。钱本来就是从那里充进来的。", "When the pocket covers it and the shop takes Tap & Go, use Tap & Go. That is where the pocket was funded.")}</li>
-          <li>· {t("否则用 FPS。已观测的个人本地港元手续费是 0。", "Otherwise use FPS. The observed personal local-HKD fee is 0.")}</li>
-          <li>· {t("本地港元消费两边的手续费都是 0。非港币结算或海外以港币结算，Tap & Go 另有收费，这笔演示用不到。", "Local HKD spending is 0 on both rails. Tap & Go charges for foreign-currency settlement and for overseas spends settled in HKD. This demo does not use those.")}</li>
+          <li>· {t("否则用 FPS。已观测到汇丰个人客户的本地港元转账免手续费，其他机构可能收费。", "Otherwise use FPS. An HSBC personal local-HKD transfer was observed with no fee. Other providers may charge.")}</li>
+          <li>· {t("Tap & Go 的本地港元消费手续费未核实。非港币结算或海外以港币结算，收费表另有百分比，这笔演示用不到。", "Tap & Go’s local-HKD consumer fee is unverified. The charges page lists percentages for foreign-currency settlement and overseas spends settled in HKD. This demo does not use those.")}</li>
           <li>· {t("回赠只展示，不参与选择，也不计入预算。", "Rewards are shown only. They never choose the method or count toward the budget.")}</li>
         </ul>
       </Panel>

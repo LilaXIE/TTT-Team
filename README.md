@@ -70,8 +70,15 @@ npm run demo:reset
 - `docs/MANUAL.md`：产品与技术规格
 - `docs/LOCAL_SETUP.md`：Windows 本地启动
 - `docs/DECISIONS.md`：规格没有写死时的取舍
+- `docs/PAYMENT_RAILS.md`：模拟结算里已执行的部分，以及接入 FPS / Tap & Go 时还要机构做什么
+- `docs/rates/README.md`：费率观测、截图和适用范围
+- `docs/EVIDENCE.md`：成本口径、尚未做的人工计时，以及和自己购物、普通对话助手的差别
 - `AGENTS.md`：实现时不能违反的约束
+
+## 开源库
+
+界面与应用：Next.js、React、Tailwind CSS、shadcn/ui、Base UI、lucide。数据与校验：PostgreSQL（`pg`）、Zod。密码哈希：bcryptjs。测试：Vitest。字体：MiSans、霞鹜文楷。这些库按各自许可证使用。AI 辅助写过代码；规则判断和结算不调用模型。
 
 ## 边界
 
-支付由模拟器执行。费率来自公开页面在某一时刻的观测，来源和观测时间写在 `fixtures/rates.json`。商家凭证「验证通过」只表示所核验的条件通过。记录是可追溯的授权与交易决策，不表示记录不可被运营方改写。
+支付由模拟器执行。真实扣款、失败查询、退款和对账要支付机构的接口，见 `docs/PAYMENT_RAILS.md`。FPS 的 0 手续费只对应汇丰个人客户经其 App 或网上理财做的本地港元转账。Tap & Go 的本地港元消费手续费未核实，演示账本里的 0 不是这条费用的观测值。商家凭证「验证通过」只表示所核验的条件通过。记录是可追溯的授权与交易决策，不表示记录不可被运营方改写。改地址的冷静期只在演示页面里，不是服务端的 24 小时锁定。
