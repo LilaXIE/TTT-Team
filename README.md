@@ -136,7 +136,8 @@ SMTP_USE_SSL	       ❌	     Use SSL (auto-detected)
 This project is provided for educational and demonstration purposes. Use at your own risk. Ensure compliance with the terms of service of all third-party APIs (DeepSeek, Tencent Cloud, and the e-commerce platforms referenced).
 
 # Acknowledgements
+```text
 Streamlit – Rapid UI framework
 DeepSeek – LLM reasoning engine
 Tencent Cloud WSA – Real-time web search
-
+```
